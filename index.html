@@ -287,6 +287,7 @@
     <label><input type="radio" name="marker" class="rb" value="marker15">Repair H.</label>
     <label><input type="radio" name="marker" class="rb" value="marker16">3rd Gen S.</label>
     <label><input type="radio" name="marker" class="rb" value="marker17">Allosaurus</label>
+    <label><input type="radio" name="marker" class="rb" value="marker18">Corite</label>
     <label><input type="radio" name="marker" class="rb" value="">None</label>
   </div>
 
@@ -310,6 +311,7 @@
     <img src="img/repairhub.png" id="marker15" class="marker"> 
     <img src="img/thirdgens.png" id="marker16" class="marker"> 
     <img src="img/tank.png" id="marker17" class="marker"> 
+    <img src="img/corite.png" id="marker18" class="marker">
   </div>
 </div>
 
@@ -421,96 +423,170 @@
 <footer>Mechabreak Mashmak Interactive Map © 2026 Kusanagi</footer>
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+
 <script>
 
 // Disable right-click
-  document.addEventListener('contextmenu', function(e) {
+document.addEventListener('contextmenu', function(e) {
+  e.preventDefault();
+  alert("Copyright Kusanagi 2026 Philippines!");
+});
+
+// Disable F12 and common dev tools shortcuts
+document.addEventListener('keydown', function(e) {
+
+  // F12
+  if (e.key === 'F12') {
     e.preventDefault();
     alert("Copyright Kusanagi 2026 Philippines!");
-  });
+  }
 
-  // Disable F12 and common dev tools shortcuts
-  document.addEventListener('keydown', function(e) {
-    // F12
-    if (e.key === 'F12') {
+  // Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C
+  if (e.ctrlKey && e.shiftKey) {
+    if (['I','J','C'].includes(e.key.toUpperCase())) {
       e.preventDefault();
       alert("Copyright Kusanagi 2026 Philippines!");
     }
+  }
 
-    // Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C
-    if (e.ctrlKey && e.shiftKey) {
-      if (['I', 'J', 'C'].includes(e.key.toUpperCase())) {
-        e.preventDefault();
-        alert("Copyright Kusanagi 2026 Philippines!");
-      }
-    }
-    
-    // Ctrl+U (view source) optionally
-    if (e.ctrlKey && e.key.toUpperCase() === 'U') {
-      e.preventDefault();
-      alert("Copyright Kusanagi 2026 Philippines!");
-    }
-  });
+  // Ctrl+U (view source)
+  if (e.ctrlKey && e.key.toUpperCase() === 'U') {
+    e.preventDefault();
+    alert("Copyright Kusanagi 2026 Philippines!");
+  }
+
+});
+
 
 // === Three.js HUD Background ===
 const canvas = document.getElementById('bg-canvas');
+
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 0.1, 1000);
-const renderer = new THREE.WebGLRenderer({canvas, antialias:true});
+
+const camera = new THREE.PerspectiveCamera(
+  60,
+  window.innerWidth/window.innerHeight,
+  0.1,
+  1000
+);
+
+const renderer = new THREE.WebGLRenderer({
+  canvas,
+  antialias:true
+});
+
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setPixelRatio(window.devicePixelRatio);
+
 camera.position.z = 60;
 
-const grid = new THREE.GridHelper(200, 50, 0x00ffff, 0x00ffff);
+
+// Grid
+const grid = new THREE.GridHelper(200,50,0x00ffff,0x00ffff);
 grid.rotation.x = Math.PI/2;
 scene.add(grid);
 
+
+// Particles
 const particles = new THREE.BufferGeometry();
 const particleCount = 500;
+
 const positions = [];
+
 for(let i=0;i<particleCount;i++){
+
   positions.push((Math.random()-0.5)*200);
   positions.push((Math.random()-0.5)*200);
   positions.push((Math.random()-0.5)*200);
+
 }
-particles.setAttribute('position', new THREE.Float32BufferAttribute(positions,3));
-const particleMaterial = new THREE.PointsMaterial({color:0x00ffff, size:0.7});
-const particleSystem = new THREE.Points(particles, particleMaterial);
+
+particles.setAttribute(
+  'position',
+  new THREE.Float32BufferAttribute(positions,3)
+);
+
+const particleMaterial = new THREE.PointsMaterial({
+  color:0x00ffff,
+  size:0.7
+});
+
+const particleSystem = new THREE.Points(
+  particles,
+  particleMaterial
+);
+
 scene.add(particleSystem);
 
+
+// Animation
 function animate(){
+
   requestAnimationFrame(animate);
+
   grid.rotation.z += 0.001;
   particleSystem.rotation.y += 0.002;
+
   renderer.render(scene,camera);
+
 }
+
 animate();
+
 
 // === Radio Button Marker Logic ===
 const radios = document.querySelectorAll('.radios input[type="radio"]');
+
 radios.forEach(radio => {
+
   radio.addEventListener('change', () => {
+
     const markerId = radio.value;
-    document.querySelectorAll('.marker').forEach(m => m.style.display = 'none');
-    if(markerId) {
+
+    document.querySelectorAll('.marker')
+      .forEach(m => m.style.display='none');
+
+    if(markerId){
+
       const marker = document.getElementById(markerId);
-      if(marker) marker.style.display = 'block';
+
+      if(marker){
+        marker.style.display='block';
+      }
+
     }
+
   });
+
 });
 
-// Get the current count from localStorage
-    let count = localStorage.getItem('visitCount') || 0;
-    count = parseInt(count) + 1; // Increment
-    document.getElementById('counter').innerText = count;
-    localStorage.setItem('visitCount', count); // Save updated count
+
+// === View Counter ===
+let count = localStorage.getItem('visitCount');
+
+if(!count){
+  count = 0;
+}
+
+count = parseInt(count) + 1;
+
+document.getElementById('counter').innerText = "Total Views: " + count;
+
+localStorage.setItem('visitCount', count);
+
 
 // === Table Popup Logic ===
 const popup = document.getElementById('table-popup');
-document.getElementById('open-table-btn').addEventListener('click',()=>{popup.style.display='block';});
-document.getElementById('close-table-btn').addEventListener('click',()=>{popup.style.display='none';});
+
+document.getElementById('open-table-btn')
+  .addEventListener('click', () => {
+    popup.style.display='block';
+});
+
+document.getElementById('close-table-btn')
+  .addEventListener('click', () => {
+    popup.style.display='none';
+});
 </script>
 </body>
 </html>
-
-
