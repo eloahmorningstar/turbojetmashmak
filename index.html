@@ -292,6 +292,7 @@
 
 <!-- Right side links panel -->
 <div class="links-panel">
+  <div id="counter">0</div>
   <a href="https://www.youtube.com/watch?v=Ajk52h9dD9s" target="_blank">Watch Turbo Jet 1</a>
   <a href="https://www.youtube.com/watch?v=J5U6Zd2xB30" target="_blank">Watch Turbo Jet 2</a>
   <a href="https://www.youtube.com/watch?v=4zanbLTm7Ak" target="_blank">Watch Turbo Jet 3</a>
@@ -473,6 +474,12 @@ radios.forEach(radio => {
     }
   });
 });
+
+// Get the current count from localStorage
+    let count = localStorage.getItem('visitCount') || 0;
+    count = parseInt(count) + 1; // Increment
+    document.getElementById('counter').innerText = count;
+    localStorage.setItem('visitCount', count); // Save updated count
 
 // === Table Popup Logic ===
 const popup = document.getElementById('table-popup');
