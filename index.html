@@ -436,8 +436,10 @@ document.addEventListener('contextmenu', function(e) {
 document.addEventListener('keydown', function(e) {
 
   // Disable all images
-document.querySelectorAll("img").forEach(img => {
-    img.addEventListener("dragstart", e => e.preventDefault());
+document.addEventListener("dragstart", function(e) {
+    if (e.target.tagName === "IMG") {
+        e.preventDefault();
+    }
 });
   
   // F12
@@ -595,4 +597,5 @@ document.getElementById('close-table-btn')
 </script>
 </body>
 </html>
+
 
