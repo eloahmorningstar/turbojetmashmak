@@ -435,6 +435,11 @@ document.addEventListener('contextmenu', function(e) {
 // Disable F12 and common dev tools shortcuts
 document.addEventListener('keydown', function(e) {
 
+  // Disable all images
+document.querySelectorAll("img").forEach(img => {
+    img.addEventListener("dragstart", e => e.preventDefault());
+});
+  
   // F12
   if (e.key === 'F12') {
     e.preventDefault();
@@ -590,3 +595,4 @@ document.getElementById('close-table-btn')
 </script>
 </body>
 </html>
+
