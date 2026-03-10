@@ -3,19 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="icon" type="image/png" href="https://i.postimg.cc/VLW7xRjf/Logo-Turbojet.png">
+<link rel="icon" type="image/png" href="img/Logo-Turbojet.png">
 
 <meta name="description" content="turbojet mechabreak, mashmak map, turbo jet mechabreak, meacha break">
 <meta name="keywords" content="turbojet mechabreak, mashmak map, turbo jet mechabreak, meacha break">
-<meta name="author" content="EMDV EloahMorningstar Kusanagi">
+<meta name="author" content="EloahMorningstar">
 
 <meta name="robots" content="index, follow">
 
 <meta property="og:title" content="Mechabreak Turbo Jet Covert-OPS Mashmak">
 <meta property="og:description" content="Ultimate guide for Covert-OPS Mashmak">
-<meta property="og:image" content="https://i.postimg.cc/VLW7xRjf/Logo-Turbojet.png">
+<meta property="og:image" content="img/Logo-Turbojet.png">
 <meta property="og:type" content="website">
-  
+
 <title>Turbo Jet: Mashmak Covert-OPS</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
@@ -269,6 +269,7 @@
 <div class="container">
   <div class="radios">
 <label>Select only one!</label>
+    <label><input type="radio" name="marker" class="rb" value="marker0">Important</label>
     <label><input type="radio" name="marker" class="rb" value="marker1">Blue RZ</label>
     <label><input type="radio" name="marker" class="rb" value="marker2">Purple RZ</label>
     <label><input type="radio" name="marker" class="rb" value="marker3">Gold RZ</label>
@@ -290,24 +291,25 @@
   </div>
 
   <div id="map-container">
-    <img src="https://i.postimg.cc/LX9CQyDB/map.png" alt="Map" id="map">
-    <img src="https://i.postimg.cc/yNXpPqmR/bluerz.png" id="marker1" class="marker">
-    <img src="https://i.postimg.cc/yW40txK5/purplerz.png" id="marker2" class="marker">
-    <img src="https://i.postimg.cc/W3NWY98t/goldrz.png" id="marker3" class="marker">
-    <img src="https://i.postimg.cc/q7XDLfs2/goldbox.png" id="marker4" class="marker">
-    <img src="https://i.postimg.cc/YSfD3c6m/cextrators.png" id="marker5" class="marker">
-    <img src="https://i.postimg.cc/6QLb0srd/frigates.png" id="marker6" class="marker">
-    <img src="https://i.postimg.cc/Tw3TrvyS/lsplitters.png" id="marker7" class="marker">
-    <img src="https://i.postimg.cc/d0mNBM27/drillers.png" id="marker8" class="marker">
-    <img src="https://i.postimg.cc/KzGqp9f1/makalu.png" id="marker9" class="marker">
-    <img src="https://i.postimg.cc/5tqK3cBQ/constatine.png" id="marker10" class="marker">
-    <img src="https://i.postimg.cc/N07C4h66/eship.png" id="marker11" class="marker">
-    <img src="https://i.postimg.cc/RFSspPdn/profitablefarmarea.png" id="marker12" class="marker">
-    <img src="https://i.postimg.cc/SNwJLRfk/Exit.png" id="marker13" class="marker">  
-    <img src="https://i.postimg.cc/rFHm9sc9/cargo.png" id="marker14" class="marker">
-    <img src="https://i.postimg.cc/ncWz1rZk/repairhub.png" id="marker15" class="marker"> 
-    <img src="https://i.postimg.cc/25QhJhS8/thirdgens.png" id="marker16" class="marker"> 
-    <img src="https://i.postimg.cc/W34mkts4/tank.png" id="marker17" class="marker"> 
+    <img src="img/map.png" alt="Map" id="map">
+    <img src="img/ultimate.png" id="marker0" class="marker">
+    <img src="img/bluerz.png" id="marker1" class="marker">
+    <img src="img/purplerz.png" id="marker2" class="marker">
+    <img src="img/goldrz.png" id="marker3" class="marker">
+    <img src="img/goldbox.png" id="marker4" class="marker">
+    <img src="img/cextrators.png" id="marker5" class="marker">
+    <img src="img/frigates.png" id="marker6" class="marker">
+    <img src="img/lsplitters.png" id="marker7" class="marker">
+    <img src="img/drillers.png" id="marker8" class="marker">
+    <img src="img/makalu.png" id="marker9" class="marker">
+    <img src="img/constatine.png" id="marker10" class="marker">
+    <img src="img/eship.png" id="marker11" class="marker">
+    <img src="img/profitablefarmarea.png" id="marker12" class="marker">
+    <img src="img/Exit.png" id="marker13" class="marker">  
+    <img src="img/cargo.png" id="marker14" class="marker">
+    <img src="img/repairhub.png" id="marker15" class="marker"> 
+    <img src="img/thirdgens.png" id="marker16" class="marker"> 
+    <img src="img/tank.png" id="marker17" class="marker"> 
   </div>
 </div>
 
@@ -368,13 +370,14 @@
         <tr><td>Inventory</td><td>Inventory Management</td><td>Sell Corrupted Engines for Blue Coins, carry only needed ammo, scrap guns below blue tier, keep mods installed in mechs, combine low-tier mods with Blue Coins for upgrades.</td></tr>
 
         <!-- Route Flow -->
-        <tr><td>Route Flow</td><td>Step 1</td><td>Destroy Large Splitter / Drilling Rig and check Gold Box locations.</td></tr>
-        <tr><td>Route Flow</td><td>Step 2</td><td>Destroy Frigates.</td></tr>
-        <tr><td>Route Flow</td><td>Step 3</td><td>Locate and kill Constantine.</td></tr>
-        <tr><td>Route Flow</td><td>Step 4</td><td>Complete Gold / 2 Purple Restricted Zones.</td></tr>
-        <tr><td>Route Flow</td><td>Step 5</td><td>Extract after clearing Small Extractors, Troopship, and Martlet targets.</td></tr>
-        <tr><td>Route Flow</td><td>Step 6</td><td>Destroy 5 Colossal Extractors.</td></tr>
-        <tr><td>Route Flow</td><td>Step 7</td><td>Destroy Makalu.</td></tr>
+        <tr><td>Route Flow</td><td>Step 1</td><td>Drop your Modular Weapon and Ammo</td></tr>
+        <tr><td>Route Flow</td><td>Step 2</td><td>Destroy Colossal Extractors 5 - 6.</td></tr>
+        <tr><td>Route Flow</td><td>Step 3</td><td>Meet at the Midlle and Destroy Makalu.</td></tr>
+        <tr><td>Route Flow</td><td>Step 4</td><td>Destroy Large Splitter / Drilling Rig and check Gold Box locations.</td></tr>
+        <tr><td>Route Flow</td><td>Step 5</td><td>Destroy Frigates.</td></tr>
+        <tr><td>Route Flow</td><td>Step 6</td><td>Locate and kill Constantine.</td></tr>
+        <tr><td>Route Flow</td><td>Step 7</td><td>Complete Gold / 2 Purple Restricted Zones.</td></tr>
+        <tr><td>Route Flow</td><td>Step 8</td><td>Extract after clearing Small Extractors, Troopship, and Martlet targets.</td></tr>
 
         <!-- Team Composition -->
         <tr><td>Team Composition</td><td>Example Turbo Jet Team</td><td>Alphard: Modular Weapon V. Pinaka: Suppression Glider V + Modular Weapon V. Stella: Support Glider V + Modular Weapon V. Inferno: Sword + Suppression Glider V + Modular Weapon V.</td></tr>
@@ -509,4 +512,3 @@ document.getElementById('close-table-btn').addEventListener('click',()=>{popup.s
 </script>
 </body>
 </html>
-
