@@ -164,3 +164,52 @@ document.getElementById('close-table-btn')
   .addEventListener('click', () => {
     popup.style.display='none';
 });
+
+/* Block PrintScreen */
+document.addEventListener("keyup", function(e){
+    if(e.key === "PrintScreen"){
+        navigator.clipboard.writeText("");
+        alert("Screenshots are disabled on this interface.");
+    }
+});
+
+/* Block common screenshot shortcuts */
+document.addEventListener("keydown", function(e){
+
+    /* Windows Snipping Tool */
+    if(e.key === "PrintScreen"){
+        e.preventDefault();
+    }
+
+    /* Windows + Shift + S */
+    if(e.ctrlKey && e.shiftKey && e.key === "S"){
+        e.preventDefault();
+    }
+
+    /* Ctrl + P (print screenshot) */
+    if(e.ctrlKey && e.key === "p"){
+        e.preventDefault();
+    }
+
+});
+
+/* Detect DevTools */
+setInterval(function(){
+
+    const widthThreshold = window.outerWidth - window.innerWidth > 160;
+    const heightThreshold = window.outerHeight - window.innerHeight > 160;
+
+    if(widthThreshold || heightThreshold){
+        document.body.innerHTML =
+        "<h1 style='color:red;text-align:center;margin-top:20%;font-family:Orbitron;'>Copyright Kusanagi 2026 Philippines!</h1>";
+    }
+
+},1000);
+
+window.addEventListener("blur", function(){
+    document.body.style.filter = "blur(20px)";
+});
+
+window.addEventListener("focus", function(){
+    document.body.style.filter = "none";
+});
