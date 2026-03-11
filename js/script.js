@@ -169,7 +169,7 @@ document.getElementById('close-table-btn')
 document.addEventListener("keyup", function(e){
     if(e.key === "PrintScreen"){
         navigator.clipboard.writeText("");
-        alert("Screenshots are disabled on this interface.");
+        alert("Copyright Kusanagi 2026 Philippines!");
     }
 });
 
