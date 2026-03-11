@@ -25,11 +25,20 @@
 <canvas id="bg-canvas"></canvas>
 <div id="overlay"></div>
 
-<header>Turbo Jet: Covert-OPS Mashmak by Kusanagi</header>
+<header class="ironman-header">
+  <div class="hud-line left"></div>
+
+  <h4>
+    <span class="accent">Turbo Jet</span>: Covert-OPS Mashmak  
+    <small>by Kusanagi • Version 2.1</small>
+  </h4>
+
+  <div class="hud-line right"></div>
+</header>
 
 <div class="container">
-  <div class="radios">
-<label>Select only one!</label>
+<div class="radios">
+    <label>Select only one!</label>
     <label><input type="radio" name="marker" class="rb" value="marker0">Important</label>
     <label><input type="radio" name="marker" class="rb" value="marker1">Blue RZ</label>
     <label><input type="radio" name="marker" class="rb" value="marker2">Purple RZ</label>
@@ -50,7 +59,7 @@
     <label><input type="radio" name="marker" class="rb" value="marker17">Allosaurus</label>
     <label><input type="radio" name="marker" class="rb" value="marker18">Corite</label>
     <label><input type="radio" name="marker" class="rb" value="">None</label>
-  </div>
+</div>
 
   <div id="map-container">
     <img src="img/map.png" alt="Map" id="map">
@@ -82,7 +91,7 @@
   <a href="https://www.youtube.com/playlist?list=PL4Db_G1ZmF64K025GKT0H795t6mW5iUve" target="_blank">Watch Turbo Jet Runs</a>
   <a href="https://mechabreak.seasungames.com/zt/msmk/en/index.html#/" target="_blank">Mashmak Survival Guide</a>
   <a href="https://mechabreak.seasungames.com/en/mecha-list.html#/" target="_blank">Strikers</a>
-    <a href="https://mechabreak.seasungames.com/p/zt/2024/07/25/twitch-drop/en/index.html#/" target="_blank">Twitch Drops</a>
+  <a href="https://mechabreak.seasungames.com/p/zt/2024/07/25/twitch-drop/en/index.html#/" target="_blank">Twitch Drops</a>
 
   <!-- Button moved under links -->
   <button id="open-table-btn">Open Turbo Jet Table</button>
@@ -504,11 +513,24 @@ The Counter: Kiting. Welkin is a "Versatile" melee threat with high physical res
   </div>
 </div>
 
-<footer>Mechabreak Mashmak Interactive Map © 2026 Kusanagi Version 2.1</footer>
+<footer class="jarvis-footer">
+
+  <div class="footer-line left"></div>
+
+  <div class="footer-content">
+    <span class="system">STARK SYSTEM ONLINE</span>
+    <span class="separator">|</span>
+    <span class="module">Turbo Jet: Covert-OPS Mashmak</span>
+    <span class="separator">|</span>
+    <span class="version">Build v2.1</span>
+  </div>
+
+  <div class="footer-line right"></div>
+
+</footer>
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
 <script src="js/script.js"></script>
 
 </body>
 </html>
-
