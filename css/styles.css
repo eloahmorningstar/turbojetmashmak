@@ -241,13 +241,13 @@ header.ironman-header{
 
 #open-table-btn{
   background:var(--hud-bg);
-  color:var(--hud-primary);
-  border:2px solid var(--hud-primary);
+  color:#FFD700; /* Hot pink text */
+  border:2px solid #FFD700; /* Hot pink border */
   border-radius:8px;
   padding:10px 20px;
   cursor:pointer;
   font-family:'Orbitron',sans-serif;
-  text-shadow:0 0 5px var(--hud-primary);
+  text-shadow:0 0 8px #FFD700; /* Glow effect */
   text-align:center;
   margin-top:10px;
 }
