@@ -317,7 +317,7 @@ display: grid;
   display: inline-block;
   line-height: 0;
   flex-shrink: 0;
-  max-width: 700px;
+  max-width: 1000px;
   width: 100%;
   z-index: 1;
 }
@@ -807,8 +807,8 @@ flex-shrink: 0; /* Prevents the footer from squishing */
 }
 
 #table-popup td img {
-  width: 80px;
-  height: 80px;
+  width: 140px;
+  height: 140px;
   object-fit: contain;
   display: block;
   cursor: zoom-in;
@@ -1234,7 +1234,7 @@ flex-shrink: 0; /* Prevents the footer from squishing */
     <source src="mp3/guide.mp3" type="audio/mpeg">
     </audio>
     <button id="cyberMuteBtn" class="hud-btn" type="button">
-    <span class="text">⊞ TJ Voice</span>
+    <span class="text">⊞ Start</span>
     </button>
 </div>
 
@@ -2055,10 +2055,10 @@ btnEl.addEventListener('click', () => {
 
     // Update UI based on state
     if (audioEl.muted) {
-        labelEl.textContent = "Unmute";
+        labelEl.textContent = "⊞ Listen";
         btnEl.style.opacity = "0.5";
     } else {
-        labelEl.textContent = "Mute";
+        labelEl.textContent = "⊞ Mute";
         btnEl.style.opacity = "1";
     }
 });
@@ -2066,4 +2066,3 @@ btnEl.addEventListener('click', () => {
 
 </body>
 </html>
-
