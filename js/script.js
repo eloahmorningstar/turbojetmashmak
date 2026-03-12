@@ -213,3 +213,23 @@ window.addEventListener("blur", function(){
 window.addEventListener("focus", function(){
     document.body.style.filter = "none";
 });
+
+  const audio = document.getElementById('myAudio');
+  const muteBtn = document.getElementById('muteBtn');
+
+  // Start music after first user interaction
+  function startMusic() {
+    audio.volume = 0.1; // 50% volume
+    audio.play().catch(e => console.log("Autoplay blocked:", e));
+    window.removeEventListener('click', startMusic);
+    window.removeEventListener('keydown', startMusic);
+  }
+
+  window.addEventListener('click', startMusic);
+  window.addEventListener('keydown', startMusic);
+
+  // Mute/unmute toggle
+  muteBtn.addEventListener('click', () => {
+    audio.muted = !audio.muted;
+    muteBtn.textContent = audio.muted ? "Unmute" : "Mute";
+  });
