@@ -233,5 +233,3 @@ window.addEventListener("focus", function(){
     audio.muted = !audio.muted;
     muteBtn.textContent = audio.muted ? "Unmute" : "Mute";
   });
-
-
