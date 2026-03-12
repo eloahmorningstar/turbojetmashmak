@@ -8,7 +8,6 @@
 <meta name="description" content="turbojet mechabreak, mashmak map, turbo jet mechabreak, meacha break">
 <meta name="keywords" content="turbojet mechabreak, mashmak map, turbo jet mechabreak, meacha break">
 <meta name="author" content="EloahMorningstar">
-
 <meta name="robots" content="index, follow">
 
 <meta property="og:title" content="Mechabreak Turbo Jet Covert-OPS Mashmak">
@@ -16,540 +15,1969 @@
 <meta property="og:image" content="https://i.postimg.cc/VLW7xRjf/Logo-Turbojet.png">
 <meta property="og:type" content="website">
 
-<link rel="stylesheet" href="css/styles.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 
 <title>Turbo Jet: Mashmak Covert-OPS</title>
+
+<style>
+/* =============================================
+   RESET & ROOT
+============================================= */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --cyan:    #00ffff;
+  --magenta: #ff00ff;
+  --gold:    #FFD700;
+  --bg:      #060810;
+  --panel:   rgba(0, 20, 30, 0.75);
+  --border:  rgba(0, 255, 255, 0.3);
+  --glow-c:  0 0 8px #00ffff, 0 0 20px rgba(0,255,255,0.4);
+  --glow-m:  0 0 8px #ff00ff, 0 0 20px rgba(255,0,255,0.4);
+  --glow-g:  0 0 8px #FFD700, 0 0 20px rgba(255,215,0,0.4);
+  --font-hud: 'Orbitron', sans-serif;
+  --font-mono:'Share Tech Mono', monospace;
+}
+
+html, body {
+  height: 100%;
+  background: var(--bg);
+  color: var(--cyan);
+  font-family: var(--font-hud);
+  overflow-x: hidden;
+}
+
+/* =============================================
+   THREE.JS CANVAS BACKGROUND
+============================================= */
+canvas#bg-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+}
+
+#overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  background: radial-gradient(ellipse at 50% 0%, rgba(0,40,60,0.6) 0%, rgba(6,8,16,0.85) 70%);
+  pointer-events: none;
+}
+
+/* =============================================
+   APP SHELL
+============================================= */
+#app {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  min-height: 100vh;
+}
+
+/* =============================================
+   HEADER
+============================================= */
+header.hud-header {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  padding: 14px 28px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(0,10,18,0.9);
+  backdrop-filter: blur(12px);
+  gap: 20px;
+  animation: headerGlow 4s ease-in-out infinite;
+}
+
+@keyframes headerGlow {
+  0%,100% { border-color: rgba(0,255,255,0.2); }
+  50%      { border-color: rgba(0,255,255,0.6); }
+}
+
+.header-left, .header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: rgba(0,255,255,0.5);
+}
+
+.header-right { justify-content: flex-end; }
+
+.stat-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: rgba(0,255,255,0.05);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 4px 10px;
+  gap: 2px;
+  white-space: nowrap;
+}
+
+.stat-chip .label { font-size: 9px; opacity: 0.5; letter-spacing: 2px; }
+.stat-chip .value { font-size: 13px; color: var(--cyan); text-shadow: var(--glow-c); }
+.stat-chip .value.gold { color: var(--gold); text-shadow: var(--glow-g); }
+
+.header-center {
+  text-align: center;
+}
+
+.header-center h1 {
+  font-size: clamp(14px, 2vw, 20px);
+  font-weight: 900;
+  letter-spacing: 4px;
+  color: var(--cyan);
+  text-shadow: var(--glow-c);
+  line-height: 1.2;
+}
+
+.header-center h1 .accent {
+  color: var(--magenta);
+  text-shadow: var(--glow-m);
+}
+
+.header-center .sub {
+  font-size: 10px;
+  font-family: var(--font-mono);
+  color: rgba(0,255,255,0.4);
+  letter-spacing: 3px;
+  margin-top: 3px;
+}
+
+/* Scanning line animation */
+.header-scan {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+  animation: scanLine 3s linear infinite;
+  opacity: 0.5;
+}
+
+@keyframes scanLine {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* =============================================
+   MAIN LAYOUT
+============================================= */
+main.hud-main {
+  display: grid;
+  grid-template-columns: 220px 1fr 200px;
+  grid-template-rows: 1fr;
+  gap: 0;
+  height: calc(100vh - 110px);
+  max-height: calc(100vh - 110px);
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* =============================================
+   LEFT PANEL — LAYER CONTROLS
+============================================= */
+.left-panel {
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--border);
+  background: rgba(0,8,16,0.8);
+  backdrop-filter: blur(8px);
+  overflow-y: auto;
+}
+
+.panel-header {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  font-size: 9px;
+  letter-spacing: 3px;
+  color: rgba(0,255,255,0.4);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.panel-header::before {
+  content: '';
+  display: block;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--cyan);
+  box-shadow: var(--glow-c);
+  animation: blink 2s ease-in-out infinite;
+}
+
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+
+.radio-list {
+  padding: 10px 0;
+  flex: 1;
+  list-style: none;
+}
+
+.radio-list li {
+  position: relative;
+}
+
+.radio-list label {
+  display: flex;
+  align-items: center;
+  padding: 7px 16px;
+  font-size: 11px;
+  font-family: var(--font-mono);
+  cursor: pointer;
+  gap: 10px;
+  color: rgba(0,255,255,0.5);
+  transition: all 0.2s;
+  border-left: 2px solid transparent;
+}
+
+.radio-list label:hover {
+  color: var(--cyan);
+  background: rgba(0,255,255,0.05);
+  border-left-color: var(--cyan);
+}
+
+.radio-list input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  width: 0; height: 0;
+}
+
+.radio-list input[type="radio"]:checked + span {
+  color: var(--gold);
+  text-shadow: var(--glow-g);
+}
+
+.radio-list label:has(input:checked) {
+  color: var(--gold);
+  border-left-color: var(--gold);
+  background: rgba(255,215,0,0.05);
+}
+
+.radio-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  border: 1px solid currentColor;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+
+.radio-list label:has(input:checked) .radio-dot {
+  background: var(--gold);
+  box-shadow: var(--glow-g);
+}
+
+.radio-list .section-divider {
+  padding: 8px 16px 4px;
+  font-size: 8px;
+  letter-spacing: 3px;
+  color: rgba(0,255,255,0.2);
+  border-top: 1px solid rgba(0,255,255,0.1);
+  margin-top: 4px;
+}
+
+/* =============================================
+   CENTER — MAP
+============================================= */
+.map-area {
+  position: relative;
+  overflow: auto;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+#hud-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+#map-container {
+  position: relative;
+  display: inline-block;
+  line-height: 0;
+  flex-shrink: 0;
+  max-width: 700px;
+  width: 100%;
+  z-index: 1;
+}
+
+#map {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: brightness(1.05) saturate(1.1);
+}
+
+.marker {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  object-fit: fill;
+  display: none;
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+/* =============================================
+   RED ALERT 3 MAP BORDER — GOLD
+============================================= */
+
+/* Outer frame */
+#map-container::before {
+  content: '';
+  position: absolute;
+  inset: -5px;
+  z-index: 5;
+  pointer-events: none;
+  border: 2px solid rgba(200,160,0,0.9);
+  box-shadow:
+    0 0 0 1px rgba(255,210,0,0.25),
+    inset 0 0 0 1px rgba(255,200,0,0.1),
+    0 0 20px rgba(200,150,0,0.55),
+    inset 0 0 14px rgba(180,130,0,0.12);
+  animation: ra3FramePulse 2.8s ease-in-out infinite;
+}
+
+@keyframes ra3FramePulse {
+  0%,100% {
+    box-shadow: 0 0 0 1px rgba(255,210,0,0.25), inset 0 0 0 1px rgba(255,200,0,0.1),
+                0 0 20px rgba(200,150,0,0.55), inset 0 0 14px rgba(180,130,0,0.12);
+  }
+  50% {
+    box-shadow: 0 0 0 1px rgba(255,220,0,0.45), inset 0 0 0 1px rgba(255,210,0,0.2),
+                0 0 32px rgba(220,170,0,0.75), inset 0 0 22px rgba(200,150,0,0.2);
+  }
+}
+
+/* Corner pieces */
+#map-container .corner-tl,
+#map-container .corner-tr,
+#map-container .corner-bl,
+#map-container .corner-br {
+  position: absolute;
+  width: 48px;
+  height: 48px;
+  z-index: 6;
+  pointer-events: none;
+}
+
+/* L-bracket bars */
+#map-container .corner-tl::before,
+#map-container .corner-tr::before,
+#map-container .corner-bl::before,
+#map-container .corner-br::before,
+#map-container .corner-tl::after,
+#map-container .corner-tr::after,
+#map-container .corner-bl::after,
+#map-container .corner-br::after {
+  content: '';
+  position: absolute;
+  background: linear-gradient(90deg, #c8a000, #ffe040, #c8a000);
+  box-shadow: 0 0 10px rgba(255,210,0,0.9), 0 0 3px #ffe040;
+}
+
+/* Horizontal bars */
+#map-container .corner-tl::before { top: 0;    left: 0;  width: 48px; height: 4px; background: linear-gradient(90deg, #ffe040, #c8a000); }
+#map-container .corner-tr::before { top: 0;    right: 0; width: 48px; height: 4px; background: linear-gradient(270deg, #ffe040, #c8a000); }
+#map-container .corner-bl::before { bottom: 0; left: 0;  width: 48px; height: 4px; background: linear-gradient(90deg, #ffe040, #c8a000); }
+#map-container .corner-br::before { bottom: 0; right: 0; width: 48px; height: 4px; background: linear-gradient(270deg, #ffe040, #c8a000); }
+
+/* Vertical bars */
+#map-container .corner-tl::after { top: 0;    left: 0;  width: 4px; height: 48px; background: linear-gradient(180deg, #ffe040, #c8a000); }
+#map-container .corner-tr::after { top: 0;    right: 0; width: 4px; height: 48px; background: linear-gradient(180deg, #ffe040, #c8a000); }
+#map-container .corner-bl::after { bottom: 0; left: 0;  width: 4px; height: 48px; background: linear-gradient(0deg, #ffe040, #c8a000); }
+#map-container .corner-br::after { bottom: 0; right: 0; width: 4px; height: 48px; background: linear-gradient(0deg, #ffe040, #c8a000); }
+
+/* Corner positions */
+#map-container .corner-tl { top: -5px;    left: -5px;  }
+#map-container .corner-tr { top: -5px;    right: -5px; }
+#map-container .corner-bl { bottom: -5px; left: -5px;  }
+#map-container .corner-br { bottom: -5px; right: -5px; }
+
+/* Diamond accent */
+#map-container .corner-tl .diamond,
+#map-container .corner-tr .diamond,
+#map-container .corner-bl .diamond,
+#map-container .corner-br .diamond {
+  position: absolute;
+  width: 9px; height: 9px;
+  background: #ffe040;
+  transform: rotate(45deg);
+  box-shadow: 0 0 12px #ffd700, 0 0 24px rgba(255,210,0,0.7);
+  animation: ra3DiamondPulse 1.6s ease-in-out infinite;
+  z-index: 7;
+}
+
+@keyframes ra3DiamondPulse {
+  0%,100% { background: #c8a000; box-shadow: 0 0 8px #ffd700,  0 0 18px rgba(255,200,0,0.4); }
+  50%     { background: #ffe040; box-shadow: 0 0 16px #ffe878, 0 0 32px rgba(255,230,0,0.8); }
+}
+
+#map-container .corner-tl .diamond { top: -4px;    left: -4px;  }
+#map-container .corner-tr .diamond { top: -4px;    right: -4px; }
+#map-container .corner-bl .diamond { bottom: -4px; left: -4px;  }
+#map-container .corner-br .diamond { bottom: -4px; right: -4px; }
+
+/* Edge bars */
+#map-container .edge-top,
+#map-container .edge-bottom,
+#map-container .edge-left,
+#map-container .edge-right {
+  position: absolute;
+  z-index: 5;
+  pointer-events: none;
+}
+
+#map-container .edge-top {
+  top: -5px; left: 52px; right: 52px; height: 4px;
+  background: linear-gradient(90deg,
+    transparent 0%, rgba(200,160,0,0.5) 10%,
+    rgba(255,215,0,0.25) 30%, rgba(255,215,0,0.6) 50%,
+    rgba(255,215,0,0.25) 70%, rgba(200,160,0,0.5) 90%, transparent 100%);
+  box-shadow: 0 0 8px rgba(255,200,0,0.5);
+}
+#map-container .edge-bottom {
+  bottom: -5px; left: 52px; right: 52px; height: 4px;
+  background: linear-gradient(90deg,
+    transparent 0%, rgba(200,160,0,0.5) 10%,
+    rgba(255,215,0,0.25) 30%, rgba(255,215,0,0.6) 50%,
+    rgba(255,215,0,0.25) 70%, rgba(200,160,0,0.5) 90%, transparent 100%);
+  box-shadow: 0 0 8px rgba(255,200,0,0.5);
+}
+#map-container .edge-left {
+  left: -5px; top: 52px; bottom: 52px; width: 4px;
+  background: linear-gradient(180deg,
+    transparent 0%, rgba(200,160,0,0.5) 10%,
+    rgba(255,215,0,0.25) 30%, rgba(255,215,0,0.6) 50%,
+    rgba(255,215,0,0.25) 70%, rgba(200,160,0,0.5) 90%, transparent 100%);
+  box-shadow: 0 0 8px rgba(255,200,0,0.5);
+}
+#map-container .edge-right {
+  right: -5px; top: 52px; bottom: 52px; width: 4px;
+  background: linear-gradient(180deg,
+    transparent 0%, rgba(200,160,0,0.5) 10%,
+    rgba(255,215,0,0.25) 30%, rgba(255,215,0,0.6) 50%,
+    rgba(255,215,0,0.25) 70%, rgba(200,160,0,0.5) 90%, transparent 100%);
+  box-shadow: 0 0 8px rgba(255,200,0,0.5);
+}
+
+/* Center notches */
+#map-container .notch-top,
+#map-container .notch-bottom {
+  position: absolute;
+  z-index: 7;
+  pointer-events: none;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 70px; height: 10px;
+  background: transparent;
+  border-left: 3px solid #c8a000;
+  border-right: 3px solid #c8a000;
+  box-shadow: -2px 0 10px rgba(255,200,0,0.5), 2px 0 10px rgba(255,200,0,0.5);
+}
+#map-container .notch-top    { top: -5px;    border-top: 3px solid #c8a000; }
+#map-container .notch-bottom { bottom: -5px; border-bottom: 3px solid #c8a000; }
+
+/* Side mid-notches (left & right center ticks) */
+#map-container .notch-left,
+#map-container .notch-right {
+  position: absolute;
+  z-index: 7;
+  pointer-events: none;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 10px; height: 50px;
+  background: transparent;
+  border-top: 3px solid #c8a000;
+  border-bottom: 3px solid #c8a000;
+  box-shadow: 0 -2px 10px rgba(255,200,0,0.5), 0 2px 10px rgba(255,200,0,0.5);
+}
+#map-container .notch-left  { left: -5px;  border-left: 3px solid #c8a000; }
+#map-container .notch-right { right: -5px; border-right: 3px solid #c8a000; }
+
+/* Scan line overlay */
+#map-container .scan-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  overflow: hidden;
+}
+#map-container .scan-overlay::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(255,210,0,0.3), rgba(255,230,80,0.5), rgba(255,210,0,0.3), transparent);
+  box-shadow: 0 0 8px rgba(255,200,0,0.4);
+  animation: ra3Scan 5s linear infinite;
+  top: 0;
+}
+
+@keyframes ra3Scan {
+  0%   { top: 0%;   opacity: 0; }
+  5%   { opacity: 1; }
+  95%  { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+
+/* =============================================
+   RIGHT PANEL — LINKS & CONTROLS
+============================================= */
+.right-panel {
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid var(--border);
+  background: rgba(0,8,16,0.8);
+  backdrop-filter: blur(8px);
+  overflow-y: auto;
+}
+
+.panel-section {
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(0,255,255,0.08);
+}
+
+.panel-section-title {
+  font-size: 8px;
+  letter-spacing: 3px;
+  color: rgba(0,255,255,0.3);
+  margin-bottom: 10px;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 8px;
+  font-size: 11px;
+  font-family: var(--font-mono);
+  color: rgba(0,255,255,0.55);
+  text-decoration: none;
+  border-radius: 4px;
+  transition: all 0.2s;
+  border-left: 2px solid transparent;
+  margin-bottom: 4px;
+}
+
+.nav-link::before {
+  content: '›';
+  font-size: 14px;
+  color: var(--magenta);
+  flex-shrink: 0;
+}
+
+.nav-link:hover {
+  color: var(--cyan);
+  background: rgba(0,255,255,0.06);
+  border-left-color: var(--magenta);
+  text-shadow: var(--glow-c);
+}
+
+.social-link { gap: 6px; }
+
+.social-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: 900;
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+}
+
+.social-icon.fb { background: #1877f2; color: #fff; }
+.social-icon.yt { background: #ff0000; color: #fff; font-size: 8px; }
+.social-icon.x  { background: #000;    color: #fff; border: 1px solid #333; font-size: 9px; }
+.social-icon.rd { background: #ff4500; color: #fff; font-size: 9px; }
+.social-icon.dc { background: #5865f2; color: #fff; font-size: 11px; }
+
+.counter-box {
+  background: rgba(0,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 10px;
+  text-align: center;
+}
+
+.counter-box .ctr-label {
+  font-size: 8px;
+  letter-spacing: 2px;
+  color: rgba(0,255,255,0.3);
+  margin-bottom: 4px;
+}
+
+.counter-box #counter {
+  font-size: 16px;
+  font-family: var(--font-mono);
+  color: var(--cyan);
+  text-shadow: var(--glow-c);
+}
+
+.hud-btn {
+  display: block;
+  width: 100%;
+  padding: 9px 12px;
+  background: rgba(255,215,0,0.05);
+  color: var(--gold);
+  border: 1px solid rgba(255,215,0,0.5);
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: var(--font-hud);
+  font-size: 10px;
+  letter-spacing: 1px;
+  text-shadow: var(--glow-g);
+  transition: all 0.2s;
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.hud-btn:hover {
+  background: rgba(255,215,0,0.12);
+  border-color: var(--gold);
+  box-shadow: var(--glow-g);
+}
+
+.audio-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.audio-row button {
+  flex: 1;
+  padding: 7px;
+  background: rgba(0,255,255,0.05);
+  color: var(--cyan);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  transition: all 0.2s;
+}
+
+.audio-row button:hover {
+  background: rgba(0,255,255,0.1);
+  box-shadow: var(--glow-c);
+}
+
+/* =============================================
+   FOOTER
+============================================= */
+footer.hud-footer {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  padding: 10px 28px;
+  border-top: 1px solid var(--border);
+  background: rgba(0,6,12,0.95);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: rgba(0,255,255,0.35);
+  gap: 16px;
+  animation: headerGlow 4s ease-in-out infinite reverse;
+}
+
+.footer-left { text-align: left; }
+.footer-center { text-align: center; color: var(--magenta); text-shadow: var(--glow-m); opacity: 0.7; }
+.footer-right { text-align: right; }
+
+/* =============================================
+   TABLE POPUP MODAL
+============================================= */
+#modal-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(0,0,0,0.8);
+  backdrop-filter: blur(6px);
+  align-items: center;
+  justify-content: center;
+}
+
+#modal-backdrop.open {
+  display: flex !important;
+}
+
+#table-popup {
+  position: relative;
+  width: 94%;
+  max-width: 1200px;
+  max-height: 88vh;
+  overflow: auto;
+  background: rgba(4,12,22,0.98);
+  border: 1px solid var(--cyan);
+  border-radius: 12px;
+  box-shadow: 0 0 40px rgba(0,255,255,0.25), inset 0 0 60px rgba(0,0,0,0.5);
+  padding: 24px;
+}
+
+.popup-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.popup-header h2 {
+  font-size: 16px;
+  letter-spacing: 4px;
+  color: var(--cyan);
+  text-shadow: var(--glow-c);
+}
+
+#close-table-btn {
+  background: rgba(255,0,0,0.08);
+  color: rgba(255,80,80,0.8);
+  border: 1px solid rgba(255,0,0,0.3);
+  border-radius: 6px;
+  padding: 6px 14px;
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  transition: all 0.2s;
+}
+
+#close-table-btn:hover {
+  background: rgba(255,0,0,0.15);
+  color: #ff4444;
+}
+
+#table-popup table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+#table-popup th {
+  background: rgba(0,255,255,0.08);
+  color: var(--cyan);
+  text-shadow: var(--glow-c);
+  padding: 10px 12px;
+  text-align: left;
+  letter-spacing: 2px;
+  font-size: 10px;
+  border: 1px solid rgba(0,255,255,0.2);
+  position: sticky;
+  top: 0;
+}
+
+#table-popup td {
+  padding: 8px 12px;
+  border: 1px solid rgba(0,255,255,0.1);
+  color: rgba(0,255,255,0.75);
+  vertical-align: top;
+  line-height: 1.5;
+}
+
+#table-popup td img {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  display: block;
+  cursor: zoom-in;
+  border: 1px solid rgba(0,255,255,0.15);
+  border-radius: 6px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  background: rgba(0,0,0,0.3);
+}
+
+#table-popup td img.icon-inline {
+  width: auto;
+  height: auto;
+  max-width: none;
+  display: inline;
+  border: none;
+  border-radius: 0;
+  background: none;
+  cursor: default;
+  vertical-align: middle;
+}
+
+#table-popup td img:hover {
+  border-color: var(--cyan);
+  box-shadow: var(--glow-c);
+}
+
+/* Lightbox */
+#img-lightbox {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(0,0,0,0.92);
+  backdrop-filter: blur(8px);
+  align-items: center;
+  justify-content: center;
+  cursor: zoom-out;
+}
+
+#img-lightbox.open {
+  display: flex !important;
+}
+
+#img-lightbox img {
+  max-width: 90vw;
+  max-height: 90vh;
+  object-fit: contain;
+  border: 1px solid var(--cyan);
+  border-radius: 10px;
+  box-shadow: 0 0 40px rgba(0,255,255,0.3);
+  animation: zoomIn 0.15s ease;
+}
+
+@keyframes zoomIn {
+  from { transform: scale(0.85); opacity: 0; }
+  to   { transform: scale(1);    opacity: 1; }
+}
+
+#table-popup tbody tr:nth-child(even) td {
+  background: rgba(0,255,255,0.03);
+}
+
+#table-popup tbody tr:hover td {
+  background: rgba(0,255,255,0.06);
+}
+
+/* Scrollbar */
+#table-popup::-webkit-scrollbar { width: 8px; height: 8px; }
+#table-popup::-webkit-scrollbar-track { background: rgba(0,255,255,0.03); border-radius: 8px; }
+#table-popup::-webkit-scrollbar-thumb { background: var(--magenta); border-radius: 8px; box-shadow: var(--glow-m); }
+#table-popup::-webkit-scrollbar-thumb:hover { background: var(--cyan); }
+
+/* =============================================
+   SCROLLBAR (global)
+============================================= */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(0,255,255,0.2); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(0,255,255,0.5); }
+
+/* =============================================
+   RESPONSIVE
+============================================= */
+@media (max-width: 900px) {
+  main.hud-main {
+    grid-template-columns: 160px 1fr;
+    grid-template-rows: 1fr auto;
+  }
+  .right-panel {
+    grid-column: 1 / -1;
+    flex-direction: row;
+    flex-wrap: wrap;
+    border-left: none;
+    border-top: 1px solid var(--border);
+    height: auto;
+    max-height: none;
+  }
+  .panel-section { flex: 1; min-width: 140px; }
+}
+</style>
 </head>
 <body>
 
 <canvas id="bg-canvas"></canvas>
 <div id="overlay"></div>
 
-<header class="ironman-header">
-  <div class="hud-line left"></div>
+<div id="app">
 
-  <h4>
-    <span class="accent">Turbo Jet</span>: Covert-OPS Mashmak  
-    <small >by Kusanagi • Version 2.3</small>
-  </h4>
+  <!-- ======== HEADER ======== -->
+  <header class="hud-header" style="position:relative;overflow:hidden;">
+    <div class="header-scan"></div>
 
-  <div class="hud-line right"></div>
-</header>
+    <div class="header-left">
+      <div class="stat-chip">
+        <span class="label">PROTOCOL</span>
+        <span class="value">TURBOJET</span>
+      </div>
+      <div class="stat-chip">
+        <span class="label">BUILD</span>
+        <span class="value">v2.3</span>
+      </div>
+    </div>
 
-<div class="container">
-<div class="radios">
-    <label>Select only one!</label>
-    <label><input type="radio" name="marker" class="rb" value="marker0">Important</label>
-    <label><input type="radio" name="marker" class="rb" value="marker1">Blue RZ</label>
-    <label><input type="radio" name="marker" class="rb" value="marker2">Purple RZ</label>
-    <label><input type="radio" name="marker" class="rb" value="marker3">Gold RZ</label>
-    <label><input type="radio" name="marker" class="rb" value="marker4">G. Box</label>
-    <label><input type="radio" name="marker" class="rb" value="marker5">C. Extractors</label>
-    <label><input type="radio" name="marker" class="rb" value="marker6">Frigates</label>
-    <label><input type="radio" name="marker" class="rb" value="marker7">L. Splitters</label>
-    <label><input type="radio" name="marker" class="rb" value="marker8">Drillers</label>
-    <label><input type="radio" name="marker" class="rb" value="marker9">Makalu</label>
-    <label><input type="radio" name="marker" class="rb" value="marker10">Constatine</label>
-    <label><input type="radio" name="marker" class="rb" value="marker11">E. Ships</label>
-    <label><input type="radio" name="marker" class="rb" value="marker12">Farm Area</label>
-    <label><input type="radio" name="marker" class="rb" value="marker13">RZ Entrance/Exit</label>
-    <label><input type="radio" name="marker" class="rb" value="marker14">Cargo R.</label>
-    <label><input type="radio" name="marker" class="rb" value="marker15">Repair H.</label>
-    <label><input type="radio" name="marker" class="rb" value="marker16">3rd Gen S.</label>
-    <label><input type="radio" name="marker" class="rb" value="marker17">Allosaurus</label>
-    <label><input type="radio" name="marker" class="rb" value="marker18">Corite</label>
-    <label><input type="radio" name="marker" class="rb" value="">None</label>
-</div>
+    <div class="header-center">
+      <h1><span class="accent">TURBO JET</span>: COVERT-OPS MASHMAK</h1>
+      <div class="sub">TACTICAL INTELLIGENCE SYSTEM · by Kusanagi</div>
+    </div>
 
-  <div id="map-container">
-    <img src="img/map.png" alt="Map" id="map">
-    <img src="img/ultimate.png" id="marker0" class="marker">
-    <img src="img/bluerz.png" id="marker1" class="marker">
-    <img src="img/purplerz.png" id="marker2" class="marker">
-    <img src="img/goldrz.png" id="marker3" class="marker">
-    <img src="img/goldbox.png" id="marker4" class="marker">
-    <img src="img/cextrators.png" id="marker5" class="marker">
-    <img src="img/frigates.png" id="marker6" class="marker">
-    <img src="img/lsplitters.png" id="marker7" class="marker">
-    <img src="img/drillers.png" id="marker8" class="marker">
-    <img src="img/makalu.png" id="marker9" class="marker">
-    <img src="img/constatine.png" id="marker10" class="marker">
-    <img src="img/eship.png" id="marker11" class="marker">
-    <img src="img/profitablefarmarea.png" id="marker12" class="marker">
-    <img src="img/Exit.png" id="marker13" class="marker">  
-    <img src="img/cargo.png" id="marker14" class="marker">
-    <img src="img/repairhub.png" id="marker15" class="marker"> 
-    <img src="img/thirdgens.png" id="marker16" class="marker"> 
-    <img src="img/tank.png" id="marker17" class="marker"> 
-    <img src="img/corite.png" id="marker18" class="marker">
+    <div class="header-right">
+      <div class="stat-chip">
+        <span class="label">VIEWS</span>
+        <span class="value gold" id="counter">—</span>
+      </div>
+      <div class="stat-chip">
+        <span class="label">STATUS</span>
+        <span class="value" style="color:#00ff88;text-shadow:0 0 8px #00ff88">ONLINE</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ======== MAIN GRID ======== -->
+  <main class="hud-main">
+
+    <!-- LEFT: LAYER SELECTOR -->
+    <aside class="left-panel">
+      <div class="panel-header">INTEL LAYERS</div>
+
+      <ul class="radio-list">
+        <li class="section-divider">PRIORITY</li>
+        <li>
+          <label>
+            <input type="radio" name="marker" value="marker0">
+            <span class="radio-dot"></span>
+            <span>Important</span>
+          </label>
+        </li>
+
+        <li class="section-divider">RESTRICTED ZONES</li>
+        <li>
+          <label>
+            <input type="radio" name="marker" value="marker1">
+            <span class="radio-dot"></span>
+            <span>Blue RZ</span>
+          </label>
+        </li>
+        <li>
+          <label>
+            <input type="radio" name="marker" value="marker2">
+            <span class="radio-dot"></span>
+            <span>Purple RZ</span>
+          </label>
+        </li>
+        <li>
+          <label>
+            <input type="radio" name="marker" value="marker3">
+            <span class="radio-dot"></span>
+            <span>Gold RZ</span>
+          </label>
+        </li>
+        <li>
+          <label>
+            <input type="radio" name="marker" value="marker13">
+            <span class="radio-dot"></span>
+            <span>RZ Entry/Exit</span>
+          </label>
+        </li>
+
+        <li class="section-divider">OBJECTIVES</li>
+        <li>
+          <label>
+            <input type="radio" name="marker" value="marker4">
+            <span class="radio-dot"></span>
+            <span>G. Box</span>
+          </label>
+        </li>
+        <li>
+          <label>
+            <input type="radio" name="marker" value="marker5">
+            <span class="radio-dot"></span>
+            <span>C. Extractors</span>
+          </label>
+        </li>
+        <li>
+          <label>
+            <input type="radio" name="marker" value="marker6">
+            <span class="radio-dot"></span>
+            <span>Frigates</span>
+          </label>
+        </li>
+        <li>
+          <label>
+            <input type="radio" name="marker" value="marker7">
+            <span class="radio-dot"></span>
+            <span>L. Splitters</span>
+          </label>
+        </li>
+        <li>
+          <label>
+            <input type="radio" name="marker" value="marker8">
+            <span class="radio-dot"></span>
+            <span>Drillers</span>
+          </label>
+        </li>
+
+        <li class="section-divider">ENEMIES</li>
+        <li>
+          <label>
+            <input type="radio" name="marker" value="marker9">
+            <span class="radio-dot"></span>
+            <span>Makalu</span>
+          </label>
+        </li>
+        <li>
+          <label>
+            <input type="radio" name="marker" value="marker10">
+            <span class="radio-dot"></span>
+            <span>Constantine</span>
+          </label>
+        </li>
+        <li>
+          <label>
+            <input type="radio" name="marker" value="marker17">
+            <span class="radio-dot"></span>
+            <span>Allosaurus</span>
+          </label>
+        </li>
+        <li>
+          <label>
+            <input type="radio" name="marker" value="marker11">
+            <span class="radio-dot"></span>
+            <span>E. Ships</span>
+          </label>
+        </li>
+        <li>
+          <label>
+            <input type="radio" name="marker" value="marker16">
+            <span class="radio-dot"></span>
+            <span>3rd Gen S.</span>
+          </label>
+        </li>
+
+        <li class="section-divider">FACILITIES</li>
+        <li>
+          <label>
+            <input type="radio" name="marker" value="marker12">
+            <span class="radio-dot"></span>
+            <span>Farm Area</span>
+          </label>
+        </li>
+        <li>
+          <label>
+            <input type="radio" name="marker" value="marker18">
+            <span class="radio-dot"></span>
+            <span>Corite</span>
+          </label>
+        </li>
+        <li>
+          <label>
+            <input type="radio" name="marker" value="marker14">
+            <span class="radio-dot"></span>
+            <span>Cargo R.</span>
+          </label>
+        </li>
+        <li>
+          <label>
+            <input type="radio" name="marker" value="marker15">
+            <span class="radio-dot"></span>
+            <span>Repair H.</span>
+          </label>
+        </li>
+
+        <li class="section-divider">CLEAR</li>
+        <li>
+          <label>
+            <input type="radio" name="marker" value="">
+            <span class="radio-dot"></span>
+            <span>None</span>
+          </label>
+        </li>
+      </ul>
+    </aside>
+
+    <!-- CENTER: MAP -->
+    <section class="map-area">
+      <canvas id="hud-canvas"></canvas>
+      <div id="map-container">
+        <div class="corner-tl"><div class="diamond"></div></div>
+        <div class="corner-tr"><div class="diamond"></div></div>
+        <div class="corner-bl"><div class="diamond"></div></div>
+        <div class="corner-br"><div class="diamond"></div></div>
+        <div class="edge-top"></div>
+        <div class="edge-bottom"></div>
+        <div class="edge-left"></div>
+        <div class="edge-right"></div>
+        <div class="notch-top"></div>
+        <div class="notch-bottom"></div>
+        <div class="notch-left"></div>
+        <div class="notch-right"></div>
+        <div class="scan-overlay"></div>
+        <img src="img/map.png" alt="Map" id="map">
+        <img src="img/ultimate.png"           id="marker0"  class="marker">
+        <img src="img/bluerz.png"             id="marker1"  class="marker">
+        <img src="img/purplerz.png"           id="marker2"  class="marker">
+        <img src="img/goldrz.png"             id="marker3"  class="marker">
+        <img src="img/goldbox.png"            id="marker4"  class="marker">
+        <img src="img/cextrators.png"         id="marker5"  class="marker">
+        <img src="img/frigates.png"           id="marker6"  class="marker">
+        <img src="img/lsplitters.png"         id="marker7"  class="marker">
+        <img src="img/drillers.png"           id="marker8"  class="marker">
+        <img src="img/makalu.png"             id="marker9"  class="marker">
+        <img src="img/constatine.png"         id="marker10" class="marker">
+        <img src="img/eship.png"              id="marker11" class="marker">
+        <img src="img/profitablefarmarea.png" id="marker12" class="marker">
+        <img src="img/Exit.png"               id="marker13" class="marker">
+        <img src="img/cargo.png"              id="marker14" class="marker">
+        <img src="img/repairhub.png"          id="marker15" class="marker">
+        <img src="img/thirdgens.png"          id="marker16" class="marker">
+        <img src="img/tank.png"               id="marker17" class="marker">
+        <img src="img/corite.png"             id="marker18" class="marker">
+      </div>
+    </section>
+
+    <!-- RIGHT: LINKS & CONTROLS -->
+    <aside class="right-panel">
+
+      <div class="panel-header">MISSION LINKS</div>
+
+      <div class="panel-section">
+        <div class="panel-section-title">SOCIAL MEDIA</div>
+        <a class="nav-link social-link" href="https://www.facebook.com/groups/mechabreakglobal" target="_blank">
+          <span class="social-icon fb">f</span>FB Group
+        </a>
+        <a class="nav-link social-link" href="https://www.facebook.com/MechaBREAK" target="_blank">
+          <span class="social-icon fb">f</span>Facebook
+        </a>
+        <a class="nav-link social-link" href="https://www.youtube.com/@MechaBREAK" target="_blank">
+          <span class="social-icon yt">▶</span>YouTube
+        </a>
+        <a class="nav-link social-link" href="https://x.com/MechaBREAK/highlights" target="_blank">
+          <span class="social-icon x">𝕏</span>X / Twitter
+        </a>
+        <a class="nav-link social-link" href="https://www.reddit.com/r/mechabreak/" target="_blank">
+          <span class="social-icon rd">👾</span>Reddit
+        </a>
+        <a class="nav-link social-link" href="https://discord.com/invite/mechabreak" target="_blank">
+          <span class="social-icon dc">◈</span>Discord
+        </a>
+      </div>
+
+      <div class="panel-section">
+        <div class="panel-section-title">RESOURCES</div>
+        <a class="nav-link" href="https://www.youtube.com/playlist?list=PL4Db_G1ZmF64K025GKT0H795t6mW5iUve" target="_blank">Watch TJ Runs</a>
+        <a class="nav-link" href="https://mechabreak.seasungames.com/zt/msmk/en/index.html#/" target="_blank">Survival Guide</a>
+        <a class="nav-link" href="https://mechabreak.seasungames.com/en/mecha-list.html#/" target="_blank">Strikers</a>
+        <a class="nav-link" href="https://mechabreak.seasungames.com/p/zt/2024/07/25/twitch-drop/en/index.html#/" target="_blank">Twitch Drops</a>
+      </div>
+
+      <div class="panel-section">
+        <div class="panel-section-title">INTEL DATABASE</div>
+        <button class="hud-btn" id="open-table-btn">⊞ Advance Tips</button>
+      </div>
+
+      <div class="panel-section">
+        <div class="panel-section-title">AUDIO</div>
+        <div class="audio-row">
+          <button id="muteBtn">⏸ Mute</button>
+        </div>
+        <audio id="myAudio" loop>
+          <source src="mp3/theme.mp3" type="audio/mpeg">
+        </audio>
+        <div style="margin-top:12px; text-align:center;">
+          <img src="https://i.postimg.cc/VLW7xRjf/Logo-Turbojet.png" alt="Turbo Jet Logo"
+               style="width:100%; max-width:160px; height:auto; display:block; margin:0 auto;
+                      filter: drop-shadow(0 0 8px rgba(255,215,0,0.6)) drop-shadow(0 0 16px rgba(255,215,0,0.3));">
+        </div>
+      </div>
+
+    </aside>
+
+  </main>
+
+  <!-- ======== FOOTER ======== -->
+  <footer class="hud-footer">
+    <div class="footer-left">STARK SYSTEM ONLINE · PH-2026</div>
+    <div class="footer-center">TURBO JET · COVERT-OPS MASHMAK</div>
+    <div class="footer-right">BUILD v2.3 · KUSANAGI</div>
+  </footer>
+
+</div><!-- /#app -->
+
+<!-- ======== TABLE MODAL ======== -->
+<div id="modal-backdrop">
+  <div id="table-popup">
+    <div class="popup-header">
+      <h2>ADVANCE TIPS</h2>
+      <button id="close-table-btn">✕ CLOSE</button>
+    </div>
+    <div style="overflow-x:auto;">
+      <table>
+        <thead>
+          <tr>
+            <th>Section</th>
+            <th>Topic</th>
+            <th>Key Details</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Overview</td><td>Turbo Jet Protocol</td><td>Turbo Jet is a codename for an elite tactical movement protocol, not a weapon or device. Emphasizes speed, precision, coordination, disciplined routing, strategic looting, and controlled engagements. Requires strong map awareness and high-level team coordination.</td></tr>
+          <tr><td>Preparation</td><td>Key Management</td><td>Purple Keys: Best for full teams, highest loot return. Blue Keys: Best for solo/duo, still provide seasonal crates on failed runs. Gold Keys: High risk; recommended only for coordinated teams with strong DPS and teamwork.</td></tr>
+          <tr><td>Preparation</td><td>Loadout Preparation</td><td>Recommended Mashmak weapons, purple-tier gear sufficient. NPC clearing weapons: Howitzer, Charge Blaster, Twin Rocket Launcher, Hex Rocket Launcher. Movement combos: Sword + Charge Blaster, Thermal Sword + Howitzer. Melee boosting consumes energy only, not durability unless hitting a target. Bring large ammo reserves due to heavy weapon consumption.</td></tr>
+          <tr><td>Preparation</td><td>Recommended Mechs</td><td>Pinaka: Fast NPC clearing. Serenith: Sustained routes. Inferno: High burst damage. Luminae: Aerial mobility. Alphard: Extreme mobility & gold chest scouting. Hurricane: High survivability with shields/drones. Aquila: Airborne booster mech with strong ranged burst.</td></tr>
+          <tr><td>Preparation</td><td>Suggested Equipment</td><td>Suppression Pack Glider (Gold/Purple), Enhancement Glider (for DPS), plus ammo, repair kits, cargo rockets, extra keys. Optional: Extraction Beacon (slow activation).</td></tr>
+          <tr><td>Boss Strategy</td><td>Makalu Fast Kill</td><td>Stay behind Makalu. When he charges/spins, back armor opens exposing weak spot. Use burst weapons (Howitzer / Charge Blaster). Kill possible in under 30 seconds with good timing.</td></tr>
+          <tr><td>Boss Strategy</td><td>Makalu Spawn Conditions</td><td>Spawns by killing enemies in zone or RNG selection. Appears only in Covert Mode (Middle). Higher spawn chance in Coop mode.</td></tr>
+          <tr><td>Boss Strategy</td><td>Storm Dependency</td><td>Makalu and Constantine cannot spawn during Corite storms. Storms occur when Colossal Corite Extractors land. Destroying extractors reduces storms and increases boss spawn chances. Typical match has 5–6 extractors.</td></tr>
+          <tr><td>Core Strategy</td><td>Player Mode Strategy</td><td>Solo: Use Blue Keys. Teams: Use Purple Keys. Highly coordinated teams: Attempt Gold Keys.</td></tr>
+          <tr><td>Core Strategy</td><td>Map Entry</td><td>Any entrance works as long as one door is opened.</td></tr>
+          <tr><td>Core Strategy</td><td>Essential Items</td><td>Recommended: 2–3 Cargo Rockets, 1 Repair Kit, 1 Weapon Bay, 1 Blue Key. Optional slots: ammo, extra rockets, repairs, keys, extraction beacon.</td></tr>
+          <tr><td>Core Strategy</td><td>Loot Priority</td><td>Focus on Glider weapons/parts, Seasonal Chests, Black Boxes, Corrupted Cascade Engines, RZ Keys, Gold/Purple Mod Chests.</td></tr>
+          <tr><td>Core Strategy</td><td>Loot to Ignore</td><td>Skip low-tier guns, low-tier support modules, green/white Corrite, blue/green mod packs, unused ammo.</td></tr>
+          <tr><td>Late Game</td><td>Endgame Tips</td><td>After Makalu, target Constantine. Clear turrets first, move early to avoid storms, prioritize energy-efficient mechs, avoid rushing engagements.</td></tr>
+          <tr><td>Advanced Techniques</td><td>Mobility Tricks</td><td>Melee Boosting: Swing melee without hitting to gain flight speed. Tier 5 Gliders: Best for mobility. Suppression/Enhancement Gliders: Improve movement & combat output.</td></tr>
+          <tr><td>Advanced Techniques</td><td>Boss Spawn Setup</td><td>Destroy all Colossal Extractors to trigger Constantine spawn.</td></tr>
+          <tr><td>Advanced Techniques</td><td>Cargo Rockets</td><td>Each rocket allows +3 stack deposits per player, increasing resource efficiency.</td></tr>
+          <tr><td>Inventory</td><td>Inventory Management</td><td>Sell Corrupted Engines for Blue Coins, carry only needed ammo, scrap guns below blue tier, keep mods installed in mechs, combine low-tier mods with Blue Coins for upgrades.</td></tr>
+          <tr><td>Route Flow</td><td>Step 1</td><td>Drop your Modular Weapon and Ammo</td></tr>
+          <tr><td>Route Flow</td><td>Step 2</td><td>Destroy Colossal Extractors 5 - 6.</td></tr>
+          <tr><td>Route Flow</td><td>Step 3</td><td>Meet at the Middle and Destroy Makalu.</td></tr>
+          <tr><td>Route Flow</td><td>Step 4</td><td>Destroy Large Splitter / Drilling Rig and check Gold Box locations.</td></tr>
+          <tr><td>Route Flow</td><td>Step 5</td><td>Destroy Frigates.</td></tr>
+          <tr><td>Route Flow</td><td>Step 6</td><td>Locate and kill Constantine.</td></tr>
+          <tr><td>Route Flow</td><td>Step 7</td><td>Complete Gold / 2 Purple Restricted Zones.</td></tr>
+          <tr><td>Route Flow</td><td>Step 8</td><td>Extract after clearing Small Extractors, Troopship, and Martlet targets.</td></tr>
+          <tr><td>Team Composition</td><td>Example Turbo Jet Team</td><td>Alphard: Modular Weapon V. Pinaka: Suppression Glider V + Modular Weapon V. Stella: Support Glider V + Modular Weapon V. Inferno: Sword + Suppression Glider V + Modular Weapon V.</td></tr>
+          <tr><td>Personal Role</td><td>Alphard / Skyraider / Falcon Route</td><td>Spawn → Deploy modular weapon → Destroy extractor legs (each extractor has 4 legs). Extractor spawn locations change each match.</td></tr>
+          <tr><td>Mid Run</td><td>Combat Objectives</td><td>Team destroys 5 Extractors → Makalu → Frigates → Gold Boxes → Blue/Silver Boxes → Drilling Rig → Large Splitter.</td></tr>
+          <tr><td>Mid Run</td><td>Boss Progression</td><td>After map clearing, engage Constantine and destroy.</td></tr>
+          <tr><td>Dungeon</td><td>Hellcat Gold Key</td><td>Use Gold Decoy placed in center immediately upon entering for safer deployment.</td></tr>
+          <tr><td>Encounters</td><td>Hellcat Strategy</td><td>Fight normally if team has sufficient coordination and DPS.</td></tr>
+          <tr><td>Encounters</td><td>Morena Strategy</td><td>Use "in-and-out" method — engage briefly and disengage to avoid heavy damage.</td></tr>
+          <tr><td>Performance</td><td>Strategy Reliability</td><td>Approx 7.5/10 success with random teams, up to 9.5/10 with coordinated teams familiar with route.</td></tr>
+          <tr><td>Mech Builds</td><td>Effective Configurations</td><td>Pinaka: Suppression Glider + 2 Auto Splitters V. Stella: Support Glider + Charge Blaster V + Auto Splitters V. Inferno: Sword + Charge Blaster burst build. Alphard: Dual Auto Splitters V mobility. Skyraider: Auto Splitters V + Charge Blaster flexible DPS/scout.</td></tr>
+          <tr><td>Speedrun Strategy</td><td>Team Mindset</td><td>Maintain KWTD (Know What To Do) mentality, run Mobility Kit + Suppression Glider V, keep constant communication.</td></tr>
+          <tr><td>Speedrun Strategy</td><td>Scouting Role</td><td>Alphard / Skyraider scout for Gold Boxes and Makalu.</td></tr>
+          <tr><td>Speedrun Strategy</td><td>Clear Role</td><td>Pinaka handles fast clearing using frequent Aux 3 bursts.</td></tr>
+          <tr><td>Objective Priority</td><td>Standard Run Order</td><td>Makalu → Constantine / Gold Key → Purple Keys → Gold Boxes → Frigates → Remaining POIs.</td></tr>
+          <tr><td>Success Factors</td><td>Performance Breakdown</td><td>Mobility: 35% success factor. Pathing & objectives: 25%. Team execution & DPS: 20%. Mech synergy & builds: 20%.</td></tr>
+
+          <tr><td><strong>Research</strong></td><td><strong>Research Cost</strong></td><td><strong>Research Time</strong></td></tr>
+          <tr><td><img src="research/extractionbeacons.gif"></td><td>Extraction Beacon Drive / Core / Framework<br><img src="research/matrixcredit.webp" class="icon-inline"> 1000 – 2000</td><td>2 – 10 minutes</td></tr>
+          <tr><td><img src="research/gliders.gif"></td><td>Material Framework / Cascade Engine / Aerodynamic Module<br><img src="research/matrixcredit.webp" class="icon-inline"> 1,000 – 16,000</td><td>12 – 60 hours</td></tr>
+          <tr><td><img src="research/reconbeacons.gif"></td><td>Recon Device Driver / Core<br><img src="research/matrixcredit.webp" class="icon-inline"> 80 – 400</td><td>10 – 50 minutes</td></tr>
+          <tr><td><img src="research/decoy.gif"></td><td>Decoy Device Driver / Core<br><img src="research/matrixcredit.webp" class="icon-inline"> 100 – 800</td><td>4 – 20 hours</td></tr>
+          <tr><td><img src="research/repairstations.gif"></td><td>Repair Station Driver / Core<br><img src="research/matrixcredit.webp" class="icon-inline"> 40 – 200</td><td>2 – 10 minutes</td></tr>
+
+          <tr><td><strong>Strikers</strong></td><td><strong>Strengths</strong></td><td><strong>Weaknesses</strong></td></tr>
+          <tr><td><img src="striker/Alphard.png"></td><td>High AoE Damage (A) and excellent Chain Control (B). Effective at punishing grouped enemies.</td><td>Low Survivability (D) and slow Movement Speed (C). The Counter: Outlast the Burst — spread out to avoid AoE chains, engage after cooldowns expire.</td></tr>
+          <tr><td><img src="striker/ALYSSNES.png"></td><td>High Handling (A) and solid all-around defense in Armored Form.</td><td>Lower Energy Defense (D) and Combat Range (D). The Counter: Long-Range Snipers or Energy-based Strikers.</td></tr>
+          <tr><td><img src="striker/AQUILLA.png"></td><td>Maximum Combat Range (A) and strong Air Combat (B).</td><td>The Counter: High-Mobility Close-Quarters Strikers (like Falcon). Close the gap where its sniper rifle is less effective.</td></tr>
+          <tr><td><img src="striker/FALCON.png"></td><td>Exceptional Air Combat (A), Handling (A), and Solo Combat (A).</td><td>Extremely low Armor (E) and Ballistic Defense (E). The Counter: Heavy Defenders or AOE Attackers.</td></tr>
+          <tr><td><img src="striker/FREYR.png"></td><td>Balanced defenses (B/B/B) and solid Solo/Team combat.</td><td>Very low Air Combat (E) and Combat Range (D). The Counter: Aerial Strikers (Falcon) or Snipers.</td></tr>
+          <tr><td><img src="striker/HELL.png"></td><td>High Energy Defense (B) and strong Support/Team Combat (B).</td><td>Low Ballistic Defense (D) and Air Combat (E). The Counter: Ballistic-focused Attackers.</td></tr>
+          <tr><td><img src="striker/HURRICANE.png"></td><td>Maximum Armor (A) and Energy Defense (A).</td><td>Low Air Combat (D) and Handling (D). The Counter: Mobility and Physical/Blast Damage.</td></tr>
+          <tr><td><img src="striker/INFERNO.png"></td><td>High Team Combat (A) and Energy Defense (A).</td><td>Low Solo Combat (D) and Support (E). The Counter: Solo Duelists — isolate it 1-on-1.</td></tr>
+          <tr><td><img src="striker/LUMINAE.png"></td><td>Max Support (A) and Team Combat (A).</td><td>Lowest Armor (E) and Ballistic Defense (D). The Counter: Prioritize as a First Target — dive and delete.</td></tr>
+          <tr><td><img src="striker/MIKI.png"></td><td>Max Ballistic Defense (A), Physical Defense (A), and Armor (A).</td><td>Very low Air Combat (E). The Counter: Energy-based Snipers and Aerial Combatants.</td></tr>
+          <tr><td><img src="striker/NARUKAMI.png"></td><td>Max Combat Range (A) and Team Combat (B).</td><td>Lowest Armor (E) and Ballistic Defense (E). The Counter: Stealth or Fast Gap-Closers.</td></tr>
+          <tr><td><img src="striker/Norne.png"></td><td>Team Buffing (A) and AoE Debuffing (B). Strong support and zone control.</td><td>Low Offensive Pressure (D) and fragile against burst (E). The Counter: Focus Fire & Disrupt — target her first in team fights.</td></tr>
+          <tr><td><img src="striker/PANTHER.png"></td><td>High Handling (A) and Solo Combat (A); solid Armor (B).</td><td>Lowest Air Combat (E), Team Combat (E), and Support (E). The Counter: Aerial Suppression — hover above and kite.</td></tr>
+          <tr><td><img src="striker/PINAKA.png"></td><td>Maximum Support (A) and strong Team Combat (B).</td><td>Low Solo Combat (D) and Air Combat (E). The Counter: Assassin Dive — bypass and force 1v1.</td></tr>
+          <tr><td><img src="striker/SERENITH.png"></td><td>Maximum Team Combat (A) and decent Solo Combat (B) for a support.</td><td>Very low Ballistic DEF (E) and Armor (D). The Counter: Ballistic Artillery.</td></tr>
+          <tr><td><img src="striker/SKYRAIDER.png"></td><td>Maximum Air Combat (A) and strong Team Combat (B).</td><td>Low Armor (D) and Combat Range (C). The Counter: Anti-Air Ballistics.</td></tr>
+          <tr><td><img src="striker/STEGO.png"></td><td>Maximum Team Combat (A) and Physical DEF (A).</td><td>Lowest Air Combat (E) and Handling (D). The Counter: High-Mobility Energy Attackers — circle-strafe with energy damage.</td></tr>
+          <tr><td><img src="striker/STELLARUS.png"></td><td>Maximum Solo Combat (A) and Handling (A); strong Physical DEF (B).</td><td>Lowest Team Combat (E), Support (E), and Combat Range (E). The Counter: Zoning and Range.</td></tr>
+          <tr><td><img src="striker/TRICERA.png"></td><td>Max Armor (A), Team Combat (A), Support (A), and Ballistic/Blast/Physical DEF (A).</td><td>Lowest Air Combat (E) and Energy DEF (C). The Counter: Energy Bombardment — stay airborne.</td></tr>
+          <tr><td><img src="striker/WELKIN.png"></td><td>Maximum Physical DEF (A) and solid Solo/Team Combat (B).</td><td>Lowest Air Combat (E) and low Combat Range (D). The Counter: Kiting — exploit its low range with ranged strikers.</td></tr>
+
+          <tr><td><strong>Tier</strong></td><td><strong>Role</strong></td><td><strong>Reason</strong></td></tr>
+          <tr><td>Tier S: PINAKA</td><td>Medium Support</td><td>Repeatedly flagged as overpowered — topped win rates even after nerfs, devs watching closely</td></tr>
+          <tr><td>Tier S: MIKILLJA</td><td>Ultra-Heavy Attacker</td><td>Dominated Season 2 meta, environment kills, high pick rates, required multiple nerfs</td></tr>
+          <tr><td>Tier S: NORNE</td><td>Light Sniper</td><td>Top-tier utilization rate at S2 launch, then buffed further in Dec patch</td></tr>
+          <tr><td>Tier A: SERENITH</td><td>Light Support</td><td>Overperforming in specific match types, received nerf in S3</td></tr>
+          <tr><td>Tier A: ALPHARD</td><td>Medium Attacker</td><td>Overperforming in S3, nerfed; strong frontline bombardment kit</td></tr>
+          <tr><td>Tier A: NARUKAMI</td><td>Light Sniper</td><td>Consistent top presence, buffed extensively, Kanon TYPE-S variant is premium unlock</td></tr>
+          <tr><td>Tier A: STELLARUS</td><td>Light Brawler</td><td>Buffed multiple times through S1 and S2, solid stealth assassin</td></tr>
+          <tr><td>Tier B: WELKIN</td><td>Heavy Brawler</td><td>Multiple balance tweaks; Defense Field nerfed but remains viable</td></tr>
+          <tr><td>Tier B: PANTHER</td><td>Medium Brawler</td><td>Received buffs in S3 (better Lance feel, shield restores); also got CUSTOM</td></tr>
+          <tr><td>Tier B: INFERNO</td><td>Ultra-Heavy Attacker</td><td>Several nerfs but energy/reload buffs helped; strong but inconsistent</td></tr>
+          <tr><td>Tier B: LUMINAE</td><td>Light Support</td><td>Buffed in S3 with lock-on and cooldown improvements; got CUSTOM</td></tr>
+          <tr><td>Tier B: HEL</td><td>Medium Attacker</td><td>Multiple buffs; versatile but skill-dependent</td></tr>
+          <tr><td>Tier C: ALYSNES</td><td>Medium Attacker</td><td>Balanced across patches, not flagged as over/undertuned</td></tr>
+          <tr><td>Tier C: SKYRAIDER</td><td>Medium Attacker</td><td>Hit with nerfs in S1, then given reload buff in S2</td></tr>
+          <tr><td>Tier C: HURRICANE</td><td>Ultra-Heavy Defender</td><td>Consistently underperforming its defender role; multiple reworks ongoing</td></tr>
+          <tr><td>Tier C: TRICERA</td><td>Ultra-Heavy Defender</td><td>Buffed in S3 but previously considered slow/exploitable</td></tr>
+          <tr><td>Tier C: STEGO</td><td>Ultra-Heavy Attacker</td><td>Buffed in S3, but consistently struggled in fast-paced battles</td></tr>
+          <tr><td>Tier C: AQUILA</td><td>Heavy Sniper</td><td>Low play rates, modest buffs; energy regen nerfs hurt sustain</td></tr>
+          <tr><td>Tier C: FALCON</td><td>Light Attacker</td><td>High skill ceiling but low impact; devs acknowledged "not making much impact" in S2</td></tr>
+          <tr><td>Tier C: FREYR</td><td>Heavy Attacker</td><td>Brand new in S3 — too early to place higher; bug-heavy launch, devs monitoring</td></tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>
-
-<!-- Right side links panel -->
-<div class="links-panel">
-  <div id="counter">0</div>
-  <a href="https://www.youtube.com/playlist?list=PL4Db_G1ZmF64K025GKT0H795t6mW5iUve" target="_blank">Watch Turbo Jet Runs</a>
-  <a href="https://mechabreak.seasungames.com/zt/msmk/en/index.html#/" target="_blank">Mashmak Survival Guide</a>
-  <a href="https://mechabreak.seasungames.com/en/mecha-list.html#/" target="_blank">Strikers</a>
-  <a href="https://mechabreak.seasungames.com/p/zt/2024/07/25/twitch-drop/en/index.html#/" target="_blank">Twitch Drops</a>
-
-  <!-- Button moved under links -->
-  <button id="open-table-btn">Open Turbo Jet Table</button>
-</div>
-
-<!-- Table Popup Modal -->
-<div id="table-popup">
-  <button id="close-table-btn">Close</button>
-  <h2 style="color:#00ffff; text-align:center; text-shadow:0 0 5px #00ffff,0 0 10px #00ffff; font-family:'Orbitron',sans-serif;">Turbo Jet: Covert-OPS Table</h2>
-  <div style="overflow-x:auto;">
-<table style="width:100%; border-collapse: collapse;">
-      <thead>
-        <tr>
-          <th>Section</th>
-          <th>Topic</th>
-          <th>Key Details</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td>Overview</td><td>Turbo Jet Protocol</td><td>Turbo Jet is a codename for an elite tactical movement protocol, not a weapon or device. Emphasizes speed, precision, coordination, disciplined routing, strategic looting, and controlled engagements. Requires strong map awareness and high-level team coordination.</td></tr>
-        
-        <!-- Preparation -->
-        <tr><td>Preparation</td><td>Key Management</td><td>Purple Keys: Best for full teams, highest loot return. Blue Keys: Best for solo/duo, still provide seasonal crates on failed runs. Gold Keys: High risk; recommended only for coordinated teams with strong DPS and teamwork.</td></tr>
-        <tr><td>Preparation</td><td>Loadout Preparation</td><td>Recommended Mashmak weapons, purple-tier gear sufficient. NPC clearing weapons: Howitzer, Charge Blaster, Twin Rocket Launcher, Hex Rocket Launcher. Movement combos: Sword + Charge Blaster, Thermal Sword + Howitzer. Melee boosting consumes energy only, not durability unless hitting a target. Bring large ammo reserves due to heavy weapon consumption.</td></tr>
-        <tr><td>Preparation</td><td>Recommended Mechs</td><td>Pinaka: Fast NPC clearing. Serenith: Sustained routes. Inferno: High burst damage. Luminae: Aerial mobility. Alphard: Extreme mobility & gold chest scouting. Hurricane: High survivability with shields/drones. Aquila: Airborne booster mech with strong ranged burst.</td></tr>
-        <tr><td>Preparation</td><td>Suggested Equipment</td><td>Suppression Pack Glider (Gold/Purple), Enhancement Glider (for DPS), plus ammo, repair kits, cargo rockets, extra keys. Optional: Extraction Beacon (slow activation).</td></tr>
-
-        <!-- Boss Strategy -->
-        <tr><td>Boss Strategy</td><td>Makalu Fast Kill</td><td>Stay behind Makalu. When he charges/spins, back armor opens exposing weak spot. Use burst weapons (Howitzer / Charge Blaster). Kill possible in under 30 seconds with good timing.</td></tr>
-        <tr><td>Boss Strategy</td><td>Makalu Spawn Conditions</td><td>Spawns by killing enemies in zone or RNG selection. Appears only in Covert Mode (Middle). Higher spawn chance in Coop mode.</td></tr>
-        <tr><td>Boss Strategy</td><td>Storm Dependency</td><td>Makalu and Constantine cannot spawn during Corite storms. Storms occur when Colossal Corite Extractors land. Destroying extractors reduces storms and increases boss spawn chances. Typical match has 5–6 extractors.</td></tr>
-
-        <!-- Core Strategy -->
-        <tr><td>Core Strategy</td><td>Player Mode Strategy</td><td>Solo: Use Blue Keys. Teams: Use Purple Keys. Highly coordinated teams: Attempt Gold Keys.</td></tr>
-        <tr><td>Core Strategy</td><td>Map Entry</td><td>Any entrance works as long as one door is opened.</td></tr>
-        <tr><td>Core Strategy</td><td>Essential Items</td><td>Recommended: 2–3 Cargo Rockets, 1 Repair Kit, 1 Weapon Bay, 1 Blue Key. Optional slots: ammo, extra rockets, repairs, keys, extraction beacon.</td></tr>
-        <tr><td>Core Strategy</td><td>Loot Priority</td><td>Focus on Glider weapons/parts, Seasonal Chests, Black Boxes, Corrupted Cascade Engines, RZ Keys, Gold/Purple Mod Chests.</td></tr>
-        <tr><td>Core Strategy</td><td>Loot to Ignore</td><td>Skip low-tier guns, low-tier support modules, green/white Corrite, blue/green mod packs, unused ammo.</td></tr>
-
-        <!-- Late Game -->
-        <tr><td>Late Game</td><td>Endgame Tips</td><td>After Makalu, target Constantine. Clear turrets first, move early to avoid storms, prioritize energy-efficient mechs, avoid rushing engagements.</td></tr>
-
-        <!-- Advanced Techniques -->
-        <tr><td>Advanced Techniques</td><td>Mobility Tricks</td><td>Melee Boosting: Swing melee without hitting to gain flight speed. Tier 5 Gliders: Best for mobility. Suppression/Enhancement Gliders: Improve movement & combat output.</td></tr>
-        <tr><td>Advanced Techniques</td><td>Boss Spawn Setup</td><td>Destroy all Colossal Extractors to trigger Constantine spawn.</td></tr>
-        <tr><td>Advanced Techniques</td><td>Cargo Rockets</td><td>Each rocket allows +3 stack deposits per player, increasing resource efficiency.</td></tr>
-
-        <!-- Inventory -->
-        <tr><td>Inventory</td><td>Inventory Management</td><td>Sell Corrupted Engines for Blue Coins, carry only needed ammo, scrap guns below blue tier, keep mods installed in mechs, combine low-tier mods with Blue Coins for upgrades.</td></tr>
-
-        <!-- Route Flow -->
-        <tr><td>Route Flow</td><td>Step 1</td><td>Drop your Modular Weapon and Ammo</td></tr>
-        <tr><td>Route Flow</td><td>Step 2</td><td>Destroy Colossal Extractors 5 - 6.</td></tr>
-        <tr><td>Route Flow</td><td>Step 3</td><td>Meet at the Midlle and Destroy Makalu.</td></tr>
-        <tr><td>Route Flow</td><td>Step 4</td><td>Destroy Large Splitter / Drilling Rig and check Gold Box locations.</td></tr>
-        <tr><td>Route Flow</td><td>Step 5</td><td>Destroy Frigates.</td></tr>
-        <tr><td>Route Flow</td><td>Step 6</td><td>Locate and kill Constantine.</td></tr>
-        <tr><td>Route Flow</td><td>Step 7</td><td>Complete Gold / 2 Purple Restricted Zones.</td></tr>
-        <tr><td>Route Flow</td><td>Step 8</td><td>Extract after clearing Small Extractors, Troopship, and Martlet targets.</td></tr>
-
-        <!-- Team Composition -->
-        <tr><td>Team Composition</td><td>Example Turbo Jet Team</td><td>Alphard: Modular Weapon V. Pinaka: Suppression Glider V + Modular Weapon V. Stella: Support Glider V + Modular Weapon V. Inferno: Sword + Suppression Glider V + Modular Weapon V.</td></tr>
-
-        <!-- Personal Role -->
-        <tr><td>Personal Role</td><td>Alphard / Skyraider / Falcon Route</td><td>Spawn → Deploy modular weapon → Destroy extractor legs (each extractor has 4 legs). Extractor spawn locations change each match.</td></tr>
-
-        <!-- Mid Run -->
-        <tr><td>Mid Run</td><td>Combat Objectives</td><td>Team destroys 5 Extractors → Makalu → Frigates → Gold Boxes → Blue/Silver Boxes → Drilling Rig → Large Splitter.</td></tr>
-        <tr><td>Mid Run</td><td>Boss Progression</td><td>After map clearing, engage Constantine and destroy.</td></tr>
-
-        <!-- Dungeon -->
-        <tr><td>Dungeon</td><td>Hellcat Gold Key</td><td>Use Gold Decoy placed in center immediately upon entering for safer deployment.</td></tr>
-
-        <!-- Encounters -->
-        <tr><td>Encounters</td><td>Hellcat Strategy</td><td>Fight normally if team has sufficient coordination and DPS.</td></tr>
-        <tr><td>Encounters</td><td>Morena Strategy</td><td>Use “in-and-out” method — engage briefly and disengage to avoid heavy damage.</td></tr>
-
-        <!-- Performance -->
-        <tr><td>Performance</td><td>Strategy Reliability</td><td>Approx 7.5/10 success with random teams, up to 9.5/10 with coordinated teams familiar with route.</td></tr>
-
-        <!-- Mech Builds -->
-        <tr><td>Mech Builds</td><td>Effective Configurations</td><td>Pinaka: Suppression Glider + 2 Auto Splitters V. Stella: Support Glider + Charge Blaster V + Auto Splitters V. Inferno: Sword + Charge Blaster burst build. Alphard: Dual Auto Splitters V mobility. Skyraider: Auto Splitters V + Charge Blaster flexible DPS/scout.</td></tr>
-
-        <!-- Speedrun Strategy -->
-        <tr><td>Speedrun Strategy</td><td>Team Mindset</td><td>Maintain KWTD (Know What To Do) mentality, run Mobility Kit + Suppression Glider V, keep constant communication.</td></tr>
-        <tr><td>Speedrun Strategy</td><td>Scouting Role</td><td>Alphard / Skyraider scout for Gold Boxes and Makalu.</td></tr>
-        <tr><td>Speedrun Strategy</td><td>Clear Role</td><td>Pinaka handles fast clearing using frequent Aux 3 bursts.</td></tr>
-
-        <!-- Objective Priority -->
-        <tr><td>Objective Priority</td><td>Standard Run Order</td><td>Makalu → Constantine / Gold Key → Purple Keys → Gold Boxes → Frigates → Remaining POIs.</td></tr>
-
-        <!-- Success Factors -->
-        <tr><td>Success Factors</td><td>Performance Breakdown</td><td>Mobility: 35% success factor. Pathing & objectives: 25%. Team execution & DPS: 20%. Mech synergy & builds: 20%.</td></tr>
-
-<tr>
-<td><a href="">Research</a></td>
-<td><a href="">Research Cost</a></td>
-<td><a href="">Research Time</a></td>
-</tr>
-
-<tr>
-<td><img src="research/extractionbeacons.gif"></td>
-<td>Extraction Beacon Drive
-Extraction Beacon Core
-Extraction Beacon Framework
-<img src="research/matrixcredit.webp"> 1000 - <img src="research/matrixcredit.webp"> 2000</td>
-<td>2 - 10 minutes</td>
-</tr>
-
-<tr>
-<td><img src="research/gliders.gif"></td>
-<td>Material Framework Module
-Cascade Engine Module
-Aerodynamic Module
-<img src="research/matrixcredit.webp"> 1,000 - <img src="research/matrixcredit.webp"> 16,000</td>
-<td>12 - 60 hours</td>
-</tr>
-
-<tr>
-<td><img src="research/reconbeacons.gif"></td>
-<td>Recon Device Driver
-Recon Device Core
-<img src="research/matrixcredit.webp"> 80 - MatrixCredit <img src="research/matrixcredit.webp"> 400 - MatrixCredit</td>
-<td>10 - 50 minutes</td>
-</tr>
-
-<tr>
-<td><img src="research/decoy.gif"></td>
-<td>Decoy Device Driver
-Decoy Device Core
-<img src="research/matrixcredit.webp"> 100 - MatrixCredit <img src="research/matrixcredit.webp"> 800 - MatrixCredit</td>
-<td>4 - 20 hours</td>
-</tr>
-
-<tr>
-<td><img src="research/repairstations.gif"></td>
-<td>Repair Station Driver
-Repair Station Core
-<img src="research/matrixcredit.webp"> 40 - <img src="research/matrixcredit.webp"> 200</td>
-<td>2 - 10 minutes</td>
-</tr>
-
-<tr>
-  <td><a href="">Strikers</a></td>
-  <td><a href="">Strengths</a></td>
-  <td><a href="">Weaknesses</a></td>
-</tr>
-
-<tr>
-  <td><img src="striker/Alphard.png"></td>
-  <td>Strengths: High AoE Damage (A) and excellent Chain Control (B). Effective at punishing grouped enemies.</td>
-  <td>Weaknesses: Low Survivability (D) and slow Movement Speed (C). Vulnerable to sustained harassment and focused fire.
-
-The Counter: Outlast the Burst. Alphard excels in short windows of control and damage. Use mobile strikers or ranged units to dodge initial bursts, spread out to avoid AoE chains, and engage after cooldowns expire. Sustained harassment prevents Alphard from chaining stuns effectively.</td>
-</tr>
-
-<tr>
-  <td><img src="striker/ALYSSNES.png"></td>
-  <td>Strengths: High Handling (A) and solid all-around defense in Armored Form.</td>
-  <td>Weakness: Lower Energy Defense (D) and Combat Range (D).
-
-The Counter: Use Long-Range Snipers (like Aquila or Narukami) or Energy-based Strikers. Since it has low range, kiting it from a distance while exploiting its weak energy resistance is key.</td>
-</tr>
-
-<tr>
-  <td><img src="striker/AQUILLA.png"></td>
-  <td>Strengths: Maximum Combat Range (A) and strong Air Combat (B).</td>
-  <td>The Counter: High-Mobility Close-Quarters Strikers (like Falcon). Snipers are vulnerable once you close the gap. Use mechs with high "Handling" and "Solo Combat" to outmaneuver it up close where its sniper rifle is less effective. 
-  </td>
-</tr>
-
-<tr>
-  <td><img src="striker/FALCON.png"></td>
-  <td>Strengths: Exceptional Air Combat (A), Handling (A), and Solo Combat (A).</td>
-  <td>Weakness: Extremely low Armor (E) and Ballistic Defense (E).
-
-The Counter: Heavy Defenders or AOE Attackers (like Hurricane or Mikillja). Falcon is a "glass cannon." It can't handle direct hits. Use high-accuracy ballistic weapons or wide-area attacks to catch it mid-air; even a few hits will likely ground it.</td>
-</tr>
-
-<tr>
-  <td><img src="striker/FREYR.png"></td>
-  <td>Strengths: Balanced defenses (B/B/B) and solid Solo/Team combat.</td>
-  <td>Weakness: Very low Air Combat (E) and Combat Range (D).
-
-The Counter: Aerial Strikers (Falcon) or Snipers. Freyr is a ground-based "Line Breaker." By staying in the air or at extreme range, you negate its "Line Breaker" utility entirely. </td>
-</tr>
-
-<tr>
-  <td><img src="striker/HELL.png"></td>
-  <td>Strengths: High Energy Defense (B) and strong Support/Team Combat (B).</td>
-  <td>Weakness: Low Ballistic Defense (D) and Air Combat (E).
-
-The Counter: Ballistic-focused Attackers (Alysnes in Armored form or Mikillja). Since Hel relies on "Deception" and "Reflective Attack," use physical projectiles rather than energy beams to bypass its high energy resistance.</td>
-</tr>
-
-<tr>
-  <td><img src="striker/HURRICANE.png"></td>
-  <td>Strengths: Maximum Armor (A) and Energy Defense (A).</td>
-  <td>Weakness: Low Air Combat (D) and Handling (D).
-
-The Counter: Mobility and Physical/Blast Damage. Hurricane is a literal tank. Don't use Energy weapons against it. Instead, use mechs with high Blast damage to chip away at its armor, and use high Handling to stay behind its shield/slow turn radius.</td>
-</tr>
-
-<tr>
-  <td><img src="striker/INFERNO.png"></td>
-  <td>Strengths: High Team Combat (A) and Energy Defense (A).</td>
-  <td>Weakness: Low Solo Combat (D) and Support (E).
-
-The Counter: Solo Duelists. Inferno thrives in team fights ("Mobility Suppression"). If you can isolate it 1-on-1 with a high-handling striker (Alysnes or Falcon), it lacks the solo stats to defend itself effectively.</td>
-</tr>
-
-<tr>
-  <td><img src="striker/LUMINAE.png"></td>
-  <td>Strengths: Max Support (A) and Team Combat (A).</td>
-  <td>Weakness: Lowest Armor (E) and Ballistic Defense (D).
-
-The Counter: Prioritize as a First Target. Luminae keeps the team alive. Like the Falcon, it has E-rank Armor. Any dedicated attacker can delete Luminae quickly. Use a "Dive" strategy to bypass the front line and take the support out first. </td>
-</tr>
-
-<tr>
-  <td><img src="striker/MIKI.png"></td>
-  <td>Strengths: Max Ballistic Defense (A), Physical Defense (A), and Armor (A).</td>
-  <td>Weakness: Very low Air Combat (E).
-
-The Counter: Energy-based Snipers and Aerial Combatants. Mikillja is a fortress against physical bullets. However, its Energy Defense is only a B, and it cannot fight back effectively against targets high in the sky. </td>
-</tr>
-
-<tr>
-  <td><img src="striker/NARUKAMI.png"></td>
-  <td>Strengths: Max Combat Range (A) and Team Combat (B).</td>
-  <td>Weakness: Lowest Armor (E) and Ballistic Defense (E).
-
-The Counter: Stealth or Fast Gap-Closers. Narukami relies on "Area Cloaking" and distance. Use mechs with high Handling to dodge incoming shots while closing the distance. Once you are in Solo Combat range, its E-rank Armor makes it a very quick kill. 
-</td>
-</tr>
-
-<tr>
-  <td><img src="striker/Norne.png"></td>
-  <td>Strengths: Team Buffing (A) and AoE Debuffing (B). Provides strong support for allies and zone control.</td>
-  <td>Weaknesses: Low Offensive Pressure (D) and fragile against burst (E). Struggles to solo carry fights.
-
-The Counter: Focus Fire & Disrupt. Norne’s strength lies in supporting allies rather than direct combat. Target her first in team fights or push her out of range to neutralize buffs. Burst-heavy strikers or high mobility units prevent her from setting up optimal debuffs.
-</td>
-</tr>
-
-<tr>
-  <td><img src="striker/PANTHER.png"></td>
-  <td>Strengths: High Handling (A) and Solo Combat (A); solid Armor (B) and Ballistic/Blast DEF (B).</td>
-  <td>Weakness: Lowest possible Air Combat (E), Team Combat (E), and Support (E).
-
-The Counter: Aerial Suppression. Panther is a ground-based duelist. Because it has E-rank Air Combat and low Combat Range, mechs like Falcon or Skyraider can hover above it and chip away at its health. Since it also has lower Energy DEF (C), using energy-based kiting is highly effective. </td>
-</tr>
-
-<tr>
-  <td><img src="striker/PINAKA.png"></td>
-  <td>Strengths: Maximum Support (A) and strong Team Combat (B).</td>
-  <td>Weakness: Low Solo Combat (D) and Air Combat (E).
-
-The Counter: Assassin Dive. Like most supports, Pinaka cannot defend itself alone. Use a high-mobility striker to bypass the "Cover Airdrop" and force a 1v1. With D-rank Solo Combat, it will likely lose any direct engagement if isolated from its team.
-</td>
-</tr>
-
-<tr>
-  <td><img src="striker/SERENITH.png"></td>
-  <td>Strengths: Maximum Team Combat (A) and decent Solo Combat (B) for a support.</td>
-  <td>Weakness: Very low Ballistic DEF (E) and Armor (D).
-
-The Counter: Ballistic Artillery. Serenith is built for "Ultra-Range Artillery," but its own ballistic resistance is non-existent. Use a Sniper or Heavy Attacker with high-caliber ballistic rounds. Even though it has okay solo stats, it simply doesn't have the health pool to survive a direct trade of fire. 
-</td>
-</tr>
-
-<tr>
-  <td><img src="striker/SKYRAIDER.png"></td>
-  <td>Strengths: Maximum Air Combat (A) and strong Team Combat (B).</td>
-  <td>Weakness: Low Armor (D) and Combat Range (C).
-
-The Counter: Anti-Air Ballistics. Skyraider needs to be in the air to be effective, but its D-rank Armor makes it fragile. Use Hurricane or Mikillja—strikers with high Ballistic DEF and decent range—to swat it out of the sky. It lacks the "Solo Combat" (C) to win a sustained dogfight against a dedicated anti-air build. </td>
-</tr>
-
-<tr>
-  <td><img src="striker/STEGO.png"></td>
-  <td>Strengths: Maximum Team Combat (A) and Physical DEF (A).</td>
-  <td>Weakness: Lowest Air Combat (E) and Handling (D).
-
-The Counter: High-Mobility Energy Attackers. Stego is a "Fire Suppression" tank that is very difficult to kill with physical weapons. However, its low Handling (D) means it turns slowly. Circle-strafe it with Stellarus or Alysnes, focusing on Energy damage to bypass its physical plating. 
-</td>
-</tr>
-
-<tr>
-  <td><img src="striker/STELLARUS.png"></td>
-  <td>Strengths: Maximum Solo Combat (A) and Handling (A); strong Physical DEF (B).</td>
-  <td>Weakness: Lowest Team Combat (E), Support (E), and Combat Range (E).
-
-The Counter: Zoning and Range. Stellarus is an "Ambush" specialist that is deadly up close but helpless at a distance. Use Narukami or Aquila to keep it spotted and damaged before it can get within melee range. If it gets close, use mechs with high Blast DEF to survive its initial burst. 
-</td>
-</tr>
-
-<tr>
-  <td><img src="striker/TRICERA.png"></td>
-  <td>Strengths: Max Armor (A), Team Combat (A), Support (A), and Ballistic/Blast/Physical DEF (A).</td>
-  <td>Weakness: Lowest Air Combat (E) and Energy DEF (C).
-
-The Counter: Energy Bombardment. Tricera is a "Fortress" that is almost immune to physical and ballistic damage. Its glaring weakness is Energy DEF (C). Use energy-heavy strikers and stay in the air—Tricera has zero vertical presence (E-rank Air Combat) and cannot chase you. 
-</td>
-</tr>
-
-<tr>
-  <td><img src="striker/WELKIN.png"></td>
-  <td>Strengths: Maximum Physical DEF (A) and solid Solo/Team Combat (B).</td>
-  <td>Weakness: Lowest Air Combat (E) and low Combat Range (D).
-
-The Counter: Kiting. Welkin is a "Versatile" melee threat with high physical resistance. To beat it, you must exploit its low range. Use a striker with B-rank or higher Combat Range and keep your distance. As long as you don't let it pull you into a physical brawl, it lacks the tools to close the gap effectively. 
-</td>
-</tr>
-
-<tr>
-<td><a href="">Tier and Strikers</a></td>
-<td><a href="">Role</a></td>
-<td><a href="">Reason - Reference Patch Notes and Dev Notes</a></td>
-</tr>
-<tr>
-<td>Tier S: PINAKA</td>
-<td>Medium Support</td>
-<td>Repeatedly flagged as overpowered — topped win rates even after nerfs, devs watching closely</td>
-</tr>
-<tr>
-<td>Tier S: MIKILLJA</td>
-<td>Ultra-Heavy Attacker</td>
-<td>Dominated Season 2 meta, environment kills, high pick rates, required multiple nerfs</td>
-</tr>
-<tr>
-<td>Tier S: NORNE</td>
-<td>Light Sniper</td>
-<td>Top-tier utilization rate at S2 launch, then buffed further in Dec patch</td>
-</tr>
-
-<tr>
-<td>Tier A: SERENITH</td>
-<td>Light Support</td>
-<td>Overperforming in specific match types, received nerf in S3; described as "almost completely intact" on acquisition</td>
-</tr>
-<tr>
-<td>Tier A: ALPHARD</td>
-<td>Medium Attacker</td>
-<td>Overperforming in S3, nerfed; strong frontline bombardment kit</td>
-</tr>
-<tr>
-<td>Tier A: NARUKAMI</td>
-<td>Light Sniper</td>
-<td>Consistent top presence, buffed extensively, Kanon TYPE-S variant is premium unlock</td>
-</tr>
-<tr>
-<td>Tier A: STELLARUS</td>
-<td>Light Brawler</td>
-<td>Buffed multiple times through S1 and S2, solid stealth assassin</td>
-</tr>
-
-<tr>
-<td>Tier B: WELKIN</td>
-<td>Heavy Brawler</td>
-<td>Multiple balance tweaks, received Custom; Defense Field nerfed but remains viable</td>
-</tr>
-<tr>
-<td>Tier B: PANTHER</td>
-<td>Medium Brawler</td>
-<td>Frequently mentioned in feedback, received buffs in S3 (better Lance feel, shield restores); also got CUSTOM</td>
-</tr>
-<tr>
-<td>Tier B: INFERNO</td>
-<td>Ultra-Heavy Attacker</td>
-<td>Several nerfs across seasons but energy/reload buffs helped; strong but inconsistent</td>
-</tr>
-<tr>
-<td>Tier B: LUMINAE</td>
-<td>Light Support</td>
-<td>Buffed in S3 with lock-on and cooldown improvements; got CUSTOM, filling a distinct support role</td>
-</tr>
-<tr>
-<td>Tier B: HEL</td>
-<td>Medium Attacker</td>
-<td>Low pick rate early on, received multiple buffs; versatile but skill-dependent</td>
-</tr>
-
-<tr>
-<td>Tier C: ALYSNES</td>
-<td>Medium Attacker</td>
-<td>Balanced across patches, not flagged as over/undertuned; solid but unremarkable</td>
-</tr>
-<tr>
-<td>Tier C: SKYRAIDER</td>
-<td>Medium Attacker</td>
-<td>Hit with nerfs in S1, then given reload buff in S2; described as struggling with ammo</td>
-</tr>
-<tr>
-<td>Tier C: HURRICANE</td>
-<td>Ultra-Heavy Defender</td>
-<td>Consistently underperforming its defender role, reactive playstyle; multiple reworks still ongoing</td>
-</tr>
-<tr>
-<td>Tier C: TRICERA</td>
-<td>Ultra-Heavy Defender</td>
-<td>Buffed in S3 (elevation angle, overhead defense) but previously considered slow/exploitable</td>
-</tr>
-<tr>
-<td>Tier C: STEGO</td>
-<td>Ultra-Heavy Attacker</td>
-<td>Buffed in S3 (fire rate/reload parity), but consistently struggled in fast-paced battles</td>
-</tr>
-<tr>
-<td>Tier C: AQUILA</td>
-<td>Heavy Sniper</td>
-<td>Low play rates, modest buffs; energy regen nerfs hurt sustain</td>
-</tr>
-<tr>
-<td>Tier C: FALCON</td>
-<td>Light Attacker</td>
-<td>High skill ceiling but low impact; devs explicitly acknowledged it "not making much impact" in S2</td>
-</tr>
-<tr>
-<td>Tier C: FREYR</td>
-<td>Heavy Attacker</td>
-<td>Brand new in S3 — too early to place higher; bug-heavy launch, devs monitoring</td>
-</tr>
-
-      </tbody>
-    </table>
-  </div>
-</div>
-
-<footer class="jarvis-footer">
-
-  <div class="footer-line left"></div>
-
-  <div class="footer-content">
-    <span class="system">STARK SYSTEM ONLINE</span>
-    <span class="separator">|</span>
-    <span class="module">Turbo Jet: Covert-OPS Mashmak</span>
-    <span class="separator">|</span>
-    <span class="version">Build v2.3</span>
-  </div>
-
-  <div class="footer-line right"></div>
-
-<div class="audio-controls">
-  <button id="muteBtn">Mute</button>
-  <audio id="myAudio" loop>
-    <source src="mp3/theme.mp3" type="audio/mpeg">
-  </audio>
-</div>
-
-</footer>
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
-<script src="js/script.js"></script>
+
+<!-- Lightbox -->
+<div id="img-lightbox">
+  <img id="lightbox-img" src="" alt="">
+</div>
+
+<script>
+// === Copyright protection ===
+document.addEventListener('contextmenu', e => { e.preventDefault(); alert("Copyright Kusanagi 2026 Philippines!"); });
+document.addEventListener('keydown', e => {
+  if (e.key === 'F12') { e.preventDefault(); alert("Copyright Kusanagi 2026 Philippines!"); }
+  if (e.ctrlKey && e.shiftKey && ['I','J','C'].includes(e.key.toUpperCase())) { e.preventDefault(); alert("Copyright Kusanagi 2026 Philippines!"); }
+  if (e.ctrlKey && e.key.toUpperCase() === 'U') { e.preventDefault(); alert("Copyright Kusanagi 2026 Philippines!"); }
+  if (e.key === 'PrintScreen') e.preventDefault();
+  if (e.ctrlKey && e.shiftKey && e.key === 'S') e.preventDefault();
+  if (e.ctrlKey && e.key === 'p') e.preventDefault();
+});
+document.addEventListener('keyup', e => { if (e.key === 'PrintScreen') { navigator.clipboard.writeText(''); alert("Copyright Kusanagi 2026 Philippines!"); } });
+document.addEventListener('dragstart', e => { if (e.target.tagName === 'IMG') e.preventDefault(); });
+setInterval(() => {
+  if (window.outerWidth - window.innerWidth > 160 || window.outerHeight - window.innerHeight > 160) {
+    document.body.innerHTML = "<h1 style='color:red;text-align:center;margin-top:20%;font-family:Orbitron;'>Copyright Kusanagi 2026 Philippines!</h1>";
+  }
+}, 1000);
+window.addEventListener('blur', () => document.body.style.filter = 'blur(20px)');
+window.addEventListener('focus', () => document.body.style.filter = 'none');
+
+// === Three.js Background ===
+const canvas = document.getElementById('bg-canvas');
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(window.devicePixelRatio);
+camera.position.z = 60;
+
+const grid = new THREE.GridHelper(200, 50, 0x00ffff, 0x003333);
+grid.rotation.x = Math.PI / 2;
+grid.material.opacity = 0.15;
+grid.material.transparent = true;
+scene.add(grid);
+
+const particles = new THREE.BufferGeometry();
+const positions = [];
+for (let i = 0; i < 600; i++) {
+  positions.push((Math.random()-.5)*200, (Math.random()-.5)*200, (Math.random()-.5)*200);
+}
+particles.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+const particleSystem = new THREE.Points(particles, new THREE.PointsMaterial({ color: 0x00ffff, size: 0.5, transparent: true, opacity: 0.5 }));
+scene.add(particleSystem);
+
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+(function animate() {
+  requestAnimationFrame(animate);
+  grid.rotation.z += 0.0005;
+  particleSystem.rotation.y += 0.001;
+  renderer.render(scene, camera);
+})();
+
+// === HUD Tech Canvas (map surround) ===
+(function() {
+  const hc = document.getElementById('hud-canvas');
+  const ctx = hc.getContext('2d');
+  let W, H, mapRect;
+  let t = 0;
+
+  const G = '#FFD700', GD = 'rgba(255,215,0,', GB = '#c8a000';
+
+  // ── STARS ──
+  const stars = [];
+  function buildStars() {
+    stars.length = 0;
+    for (let i = 0; i < 280; i++) {
+      let x, y, tries = 0;
+      do { x = Math.random() * W; y = Math.random() * H; tries++; }
+      while (isInMap(x, y, 6) && tries < 20);
+      if (isInMap(x, y, 4)) continue;
+      stars.push({
+        x, y,
+        r: Math.random() * 1.3 + 0.2,
+        phase: Math.random() * Math.PI * 2,
+        speed: 0.3 + Math.random() * 1.0,
+        warm: Math.random() < 0.2
+      });
+    }
+  }
+
+  // ── NEBULA CLOUDS ──
+  const nebulas = [];
+  function buildNebulas() {
+    nebulas.length = 0;
+    [
+      { fx: 0.08, fy: 0.25 }, { fx: 0.08, fy: 0.75 },
+      { fx: 0.92, fy: 0.35 }, { fx: 0.92, fy: 0.65 },
+      { fx: 0.5,  fy: 0.07 }, { fx: 0.5,  fy: 0.93 },
+    ].forEach(s => {
+      const x = s.fx * W, y = s.fy * H;
+      if (!isInMap(x, y, 10)) nebulas.push({
+        x, y,
+        r: 40 + Math.random() * 35,
+        phase: Math.random() * Math.PI * 2,
+        hue: Math.random() < 0.5 ? [0, 160, 255] : [80, 0, 200]
+      });
+    });
+  }
+
+  // ── CONSTELLATION NETWORK ──
+  const cnodes = [], cconns = [];
+  function buildConstellations() {
+    cnodes.length = 0; cconns.length = 0;
+    for (let attempt = 0; attempt < 200 && cnodes.length < 30; attempt++) {
+      const x = Math.random() * W, y = Math.random() * H;
+      if (!isInMap(x, y, 12)) cnodes.push({
+        x, y,
+        r: 1 + Math.random() * 1.5,
+        phase: Math.random() * Math.PI * 2,
+        speed: 0.2 + Math.random() * 0.5
+      });
+    }
+    for (let i = 0; i < cnodes.length; i++)
+      for (let j = i + 1; j < cnodes.length; j++) {
+        const dx = cnodes[i].x - cnodes[j].x, dy = cnodes[i].y - cnodes[j].y;
+        const d = Math.sqrt(dx*dx + dy*dy);
+        if (d < 110) cconns.push({ a: i, b: j, d });
+      }
+  }
+
+  // ── WARP LINES ──
+  const warps = [];
+  function spawnWarp() {
+    if (!mapRect) return;
+    const side = Math.floor(Math.random() * 4);
+    let x, y, angle;
+    if (side === 0) { x = Math.random() * mapRect.x; y = Math.random() * H; angle = Math.random() * 0.4 - 0.2; }
+    else if (side === 1) { x = mapRect.x + mapRect.w + Math.random() * (W - mapRect.x - mapRect.w); y = Math.random() * H; angle = Math.PI + Math.random() * 0.4 - 0.2; }
+    else if (side === 2) { x = Math.random() * W; y = Math.random() * mapRect.y; angle = Math.PI * 0.5 + Math.random() * 0.4 - 0.2; }
+    else { x = Math.random() * W; y = mapRect.y + mapRect.h + Math.random() * (H - mapRect.y - mapRect.h); angle = -Math.PI * 0.5 + Math.random() * 0.4 - 0.2; }
+    warps.push({ x, y, angle, speed: 1.8 + Math.random() * 3, len: 18 + Math.random() * 45, life: 1, decay: 0.007 + Math.random() * 0.01 });
+  }
+  function initWarps() { warps.length = 0; for (let i = 0; i < 35; i++) spawnWarp(); }
+
+  function drawSpace() {
+    // 1. Nebula glows
+    nebulas.forEach(n => {
+      const p = 0.035 + 0.02 * Math.sin(t * 0.4 + n.phase);
+      const gr = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, n.r * 1.6);
+      gr.addColorStop(0,   `rgba(${n.hue[0]},${n.hue[1]},${n.hue[2]},${p * 2.8})`);
+      gr.addColorStop(0.5, `rgba(${n.hue[0]},${n.hue[1]},${n.hue[2]},${p})`);
+      gr.addColorStop(1,   `rgba(${n.hue[0]},${n.hue[1]},${n.hue[2]},0)`);
+      ctx.fillStyle = gr;
+      ctx.beginPath(); ctx.arc(n.x, n.y, n.r * 1.6, 0, Math.PI * 2); ctx.fill();
+    });
+
+    // 2. Stars
+    stars.forEach(s => {
+      const bright = 0.25 + 0.75 * ((Math.sin(t * s.speed + s.phase) + 1) * 0.5);
+      ctx.save();
+      ctx.globalAlpha = bright;
+      ctx.fillStyle = s.warm ? '#ffeebb' : '#cce8ff';
+      ctx.shadowBlur = s.r > 1 ? 5 : 0;
+      ctx.shadowColor = s.warm ? '#ffcc44' : '#88ccff';
+      ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2); ctx.fill();
+      if (s.r > 1 && bright > 0.75) {
+        ctx.strokeStyle = s.warm ? '#ffcc44' : '#88ccff';
+        ctx.lineWidth = 0.4;
+        ctx.globalAlpha = bright * 0.35;
+        ctx.beginPath(); ctx.moveTo(s.x - s.r*3, s.y); ctx.lineTo(s.x + s.r*3, s.y); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(s.x, s.y - s.r*3); ctx.lineTo(s.x, s.y + s.r*3); ctx.stroke();
+      }
+      ctx.restore();
+    });
+
+    // 3. Constellation lines + nodes
+    cconns.forEach(c => {
+      const a = cnodes[c.a], b = cnodes[c.b];
+      const alpha = (0.04 + 0.05 * Math.sin(t * 0.3 + a.phase)) * (1 - c.d / 110);
+      ctx.save();
+      ctx.strokeStyle = `rgba(120,190,255,${alpha})`;
+      ctx.lineWidth = 0.5;
+      ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+      ctx.restore();
+    });
+    cnodes.forEach(n => {
+      const p = 0.35 + 0.65 * ((Math.sin(t * n.speed + n.phase) + 1) * 0.5);
+      ctx.save();
+      ctx.fillStyle = `rgba(140,210,255,${p * 0.85})`;
+      ctx.shadowBlur = 5; ctx.shadowColor = '#88ccff';
+      ctx.beginPath(); ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2); ctx.fill();
+      ctx.restore();
+    });
+
+    // 4. Warp lines
+    for (let i = warps.length - 1; i >= 0; i--) {
+      const w = warps[i];
+      w.x += Math.cos(w.angle) * w.speed;
+      w.y += Math.sin(w.angle) * w.speed;
+      w.life -= w.decay;
+      if (w.life <= 0 || isInMap(w.x, w.y, 2)) { warps.splice(i, 1); spawnWarp(); continue; }
+      ctx.save();
+      ctx.strokeStyle = `rgba(200,230,255,${w.life * 0.55})`;
+      ctx.lineWidth = 0.7;
+      ctx.shadowBlur = 3; ctx.shadowColor = '#aaddff';
+      ctx.beginPath();
+      ctx.moveTo(w.x, w.y);
+      ctx.lineTo(w.x - Math.cos(w.angle) * w.len * w.life, w.y - Math.sin(w.angle) * w.len * w.life);
+      ctx.stroke();
+      ctx.restore();
+    }
+  }
+
+  function resize() {
+    const area = document.querySelector('.map-area');
+    const r = area.getBoundingClientRect();
+    W = hc.width  = r.width;
+    H = hc.height = r.height;
+    const mc = document.getElementById('map-container');
+    const mr = mc.getBoundingClientRect();
+    const ar = area.getBoundingClientRect();
+    mapRect = { x: mr.left - ar.left, y: mr.top - ar.top, w: mr.width, h: mr.height };
+    buildCircuitTraces();
+    buildFloatRects();
+    buildStars();
+    buildNebulas();
+    buildConstellations();
+    initWarps();
+  }
+  window.addEventListener('resize', () => setTimeout(resize, 100));
+  setTimeout(resize, 200);
+
+  function isInMap(x, y, pad) {
+    pad = pad || 0;
+    if (!mapRect) return false;
+    return x > mapRect.x - pad && x < mapRect.x + mapRect.w + pad &&
+           y > mapRect.y - pad && y < mapRect.y + mapRect.h + pad;
+  }
+
+  // ── CIRCUIT TRACES along the outer edges ──
+  const traces = [];
+  function buildCircuitTraces() {
+    traces.length = 0;
+    // Generate L-shaped circuit paths confined to border strips
+    const strips = [
+      { axis:'h', band:{ x:0, y:0, w:W, h: mapRect ? mapRect.y : 30 } },
+      { axis:'h', band:{ x:0, y: mapRect ? mapRect.y+mapRect.h : H-30, w:W, h:H } },
+      { axis:'v', band:{ x:0, y:0, w: mapRect ? mapRect.x : 30, h:H } },
+      { axis:'v', band:{ x: mapRect ? mapRect.x+mapRect.w : W-30, y:0, w:W, h:H } },
+    ];
+    strips.forEach(strip => {
+      for (let i = 0; i < 8; i++) {
+        const segs = [];
+        let cx, cy;
+        if (strip.axis === 'h') {
+          cx = Math.random() * strip.band.w;
+          cy = strip.band.y + Math.random() * Math.max(4, strip.band.h - strip.band.y);
+        } else {
+          cx = strip.band.x + Math.random() * Math.max(4, strip.band.w - strip.band.x);
+          cy = Math.random() * H;
+        }
+        for (let s = 0; s < 5; s++) {
+          const horiz = (s % 2 === 0);
+          const len = 12 + Math.random() * 40;
+          const dir = Math.random() < 0.5 ? 1 : -1;
+          const nx = horiz ? cx + len * dir : cx;
+          const ny = horiz ? cy : cy + len * dir;
+          segs.push({ x1: cx, y1: cy, x2: nx, y2: ny });
+          cx = nx; cy = ny;
+        }
+        traces.push({
+          segs,
+          phase: Math.random() * Math.PI * 2,
+          speed: 0.3 + Math.random() * 0.6,
+          bright: 0.3 + Math.random() * 0.4
+        });
+      }
+    });
+  }
+
+  // ── FLOATING GRID RECTANGLES (center background feel) ──
+  const floatRects = [];
+  function buildFloatRects() {
+    floatRects.length = 0;
+    // Scattered small boxes only in border areas
+    for (let i = 0; i < 60; i++) {
+      let x, y, tries = 0;
+      do {
+        x = Math.random() * W;
+        y = Math.random() * H;
+        tries++;
+      } while (isInMap(x, y, 8) && tries < 30);
+      if (isInMap(x, y, 4)) continue;
+      floatRects.push({
+        x, y,
+        w: 4 + Math.random() * 16,
+        h: 4 + Math.random() * 16,
+        phase: Math.random() * Math.PI * 2,
+        speed: 0.2 + Math.random() * 0.5
+      });
+    }
+  }
+
+  // ── CONCENTRIC ARCS — left side ──
+  const arcRings = [
+    { r: 30, dash: [6,4],  speed:  0.008, startA: -Math.PI*0.7, endA: Math.PI*0.7 },
+    { r: 48, dash: [4,6],  speed: -0.006, startA: -Math.PI*0.6, endA: Math.PI*0.6 },
+    { r: 65, dash: [8,5],  speed:  0.005, startA: -Math.PI*0.5, endA: Math.PI*0.5 },
+    { r: 82, dash: [3,7],  speed: -0.004, startA: -Math.PI*0.4, endA: Math.PI*0.4 },
+    { r: 98, dash: [6,8],  speed:  0.003, startA: -Math.PI*0.35,endA: Math.PI*0.35 },
+  ];
+  const arcAngles = arcRings.map(() => 0);
+
+  // ── PERCENTAGE CIRCLES — top right area ──
+  const pctCircles = [
+    { pct: 0.86, label: '86%', offset: 0 },
+    { pct: 0.60, label: '60%', offset: 1 },
+    { pct: 0.40, label: '40%', offset: 2 },
+  ];
+
+  // ── SMALL CORNER SQUARES ──
+  function drawCornerSquare(x, y, size, alpha) {
+    ctx.save();
+    ctx.strokeStyle = GD + alpha + ')';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(x, y, size, size);
+    ctx.restore();
+  }
+
+  // ── SCAN LINE ──
+  let scanY = 0;
+
+  function drawCircuitTraces() {
+    traces.forEach(tr => {
+      const a = tr.bright * (0.5 + 0.5 * Math.sin(t * tr.speed + tr.phase));
+      ctx.save();
+      ctx.strokeStyle = GD + a + ')';
+      ctx.lineWidth = 1;
+      ctx.shadowBlur = 4;
+      ctx.shadowColor = G;
+      tr.segs.forEach(seg => {
+        ctx.beginPath();
+        ctx.moveTo(seg.x1, seg.y1);
+        ctx.lineTo(seg.x2, seg.y2);
+        ctx.stroke();
+      });
+      // dot at end
+      const last = tr.segs[tr.segs.length - 1];
+      ctx.fillStyle = GD + (a * 2) + ')';
+      ctx.beginPath();
+      ctx.arc(last.x2, last.y2, 1.5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    });
+  }
+
+  function drawFloatRects() {
+    floatRects.forEach(r => {
+      const a = 0.04 + 0.06 * Math.sin(t * r.speed + r.phase);
+      ctx.save();
+      ctx.strokeStyle = GD + a + ')';
+      ctx.lineWidth = 0.8;
+      ctx.strokeRect(r.x, r.y, r.w, r.h);
+      ctx.fillStyle = GD + (a * 0.4) + ')';
+      ctx.fillRect(r.x, r.y, r.w, r.h);
+      ctx.restore();
+    });
+  }
+
+  function drawConcentrieArcs() {
+    if (!mapRect) return;
+    // Position: vertically centered on left black strip
+    const cx = mapRect.x * 0.5;
+    const cy = H * 0.5;
+    if (mapRect.x < 60) return;
+
+    arcRings.forEach((ring, i) => {
+      arcAngles[i] += ring.speed;
+      const pulse = 0.5 + 0.3 * Math.sin(t * 1.2 + i * 0.8);
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.rotate(arcAngles[i]);
+      ctx.setLineDash(ring.dash);
+      ctx.strokeStyle = GD + (pulse * 0.7) + ')';
+      ctx.shadowBlur = 8;
+      ctx.shadowColor = G;
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.arc(0, 0, ring.r, ring.startA, ring.endA);
+      ctx.stroke();
+      ctx.restore();
+    });
+
+    // Center dot + inner solid ring
+    const cp = 0.6 + 0.4 * Math.sin(t * 2);
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.strokeStyle = GD + (cp * 0.9) + ')';
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([]);
+    ctx.shadowBlur = 12; ctx.shadowColor = G;
+    ctx.beginPath(); ctx.arc(0, 0, 14, 0, Math.PI * 2); ctx.stroke();
+    // dot
+    const g = ctx.createRadialGradient(0,0,0, 0,0,10);
+    g.addColorStop(0, GD + cp + ')');
+    g.addColorStop(1, GD + '0)');
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.arc(0, 0, 10, 0, Math.PI * 2); ctx.fill();
+    ctx.restore();
+  }
+
+  function drawPercentageCircles() {
+    if (!mapRect) return;
+    // Top-right area, above the map
+    const topH = mapRect.y;
+    if (topH < 30) return;
+    const rightX = mapRect.x + mapRect.w;
+    const r = Math.min(22, topH * 0.38);
+    const spacing = r * 2.8;
+    const cy = mapRect.y * 0.52;
+
+    pctCircles.forEach((pc, i) => {
+      const cx = rightX - spacing * (pctCircles.length - i - 0.5);
+      if (cx < mapRect.x + 10) return;
+      const pulse = 0.7 + 0.3 * Math.sin(t * 1.5 + i * 1.2);
+
+      // Background ring
+      ctx.save();
+      ctx.strokeStyle = GD + '0.15)';
+      ctx.lineWidth = 3;
+      ctx.setLineDash([]);
+      ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.stroke();
+
+      // Progress arc
+      ctx.strokeStyle = GD + (pulse * 0.9) + ')';
+      ctx.lineWidth = 3;
+      ctx.shadowBlur = 8; ctx.shadowColor = G;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, -Math.PI * 0.5, -Math.PI * 0.5 + Math.PI * 2 * pc.pct);
+      ctx.stroke();
+
+      // Label
+      ctx.fillStyle = GD + pulse + ')';
+      ctx.font = `bold ${Math.max(8, r * 0.45)}px Orbitron, sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.shadowBlur = 6; ctx.shadowColor = G;
+      ctx.fillText(pc.label, cx, cy);
+      ctx.restore();
+    });
+  }
+
+  function drawEdgeUI() {
+    if (!mapRect) return;
+
+    // ── Top edge: thin line with notches ──
+    const topY = mapRect.y - 8;
+    if (topY > 4) {
+      ctx.save();
+      ctx.strokeStyle = GD + '0.3)';
+      ctx.lineWidth = 1;
+      ctx.shadowBlur = 4; ctx.shadowColor = G;
+      // full top line
+      ctx.beginPath();
+      ctx.moveTo(mapRect.x, topY);
+      ctx.lineTo(mapRect.x + mapRect.w, topY);
+      ctx.stroke();
+      // tick marks every ~60px
+      ctx.strokeStyle = GD + '0.5)';
+      ctx.lineWidth = 1;
+      for (let tx = mapRect.x + 30; tx < mapRect.x + mapRect.w - 30; tx += 60) {
+        ctx.beginPath();
+        ctx.moveTo(tx, topY - 4);
+        ctx.lineTo(tx, topY + 4);
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+
+    // ── Bottom edge: thin line ──
+    const botY = mapRect.y + mapRect.h + 8;
+    if (botY < H - 4) {
+      ctx.save();
+      ctx.strokeStyle = GD + '0.3)';
+      ctx.lineWidth = 1;
+      ctx.shadowBlur = 4; ctx.shadowColor = G;
+      ctx.beginPath();
+      ctx.moveTo(mapRect.x, botY);
+      ctx.lineTo(mapRect.x + mapRect.w, botY);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    // ── Left edge vertical line ──
+    const leftX = mapRect.x - 8;
+    if (leftX > 4) {
+      ctx.save();
+      ctx.strokeStyle = GD + '0.3)';
+      ctx.lineWidth = 1;
+      ctx.shadowBlur = 4; ctx.shadowColor = G;
+      ctx.beginPath();
+      ctx.moveTo(leftX, mapRect.y);
+      ctx.lineTo(leftX, mapRect.y + mapRect.h);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    // ── Right edge vertical line ──
+    const rightX2 = mapRect.x + mapRect.w + 8;
+    if (rightX2 < W - 4) {
+      ctx.save();
+      ctx.strokeStyle = GD + '0.3)';
+      ctx.lineWidth = 1;
+      ctx.shadowBlur = 4; ctx.shadowColor = G;
+      ctx.beginPath();
+      ctx.moveTo(rightX2, mapRect.y);
+      ctx.lineTo(rightX2, mapRect.y + mapRect.h);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    // ── Corner small brackets (outer) ──
+    const bsz = 10, boff = 12;
+    const corners = [
+      { x: mapRect.x - boff - bsz, y: mapRect.y - boff - bsz },
+      { x: mapRect.x + mapRect.w + boff, y: mapRect.y - boff - bsz },
+      { x: mapRect.x - boff - bsz, y: mapRect.y + mapRect.h + boff },
+      { x: mapRect.x + mapRect.w + boff, y: mapRect.y + mapRect.h + boff },
+    ];
+    const ca = 0.35 + 0.2 * Math.sin(t * 1.5);
+    corners.forEach(c => drawCornerSquare(c.x, c.y, bsz, ca));
+
+    // ── Top-left text label ──
+    if (mapRect.y > 14) {
+      ctx.save();
+      ctx.fillStyle = GD + '0.35)';
+      ctx.font = '9px Share Tech Mono, monospace';
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('TACTICAL MAP // MASHMAK', mapRect.x, mapRect.y * 0.4);
+      ctx.restore();
+    }
+
+    // ── Bottom-right coordinates ──
+    if (H - mapRect.y - mapRect.h > 10) {
+      ctx.save();
+      ctx.fillStyle = GD + '0.3)';
+      ctx.font = '9px Share Tech Mono, monospace';
+      ctx.textAlign = 'right';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('SYS:ONLINE // v2.3', mapRect.x + mapRect.w, mapRect.y + mapRect.h + (H - mapRect.y - mapRect.h) * 0.5);
+      ctx.restore();
+    }
+
+    // ── Right side: small dashes/rows ──
+    const rStrip = W - (mapRect.x + mapRect.w);
+    if (rStrip > 20) {
+      ctx.save();
+      ctx.fillStyle = GD + '0.25)';
+      ctx.font = '8px Share Tech Mono, monospace';
+      ctx.textAlign = 'center';
+      const rx = mapRect.x + mapRect.w + rStrip * 0.5;
+      for (let row = 0; row < 6; row++) {
+        const ry = mapRect.y + mapRect.h * 0.25 + row * 18;
+        ctx.globalAlpha = 0.3 + 0.15 * Math.sin(t * 0.8 + row);
+        ctx.fillText('——', rx, ry);
+      }
+      ctx.restore();
+    }
+  }
+
+  function drawScanLine() {
+    scanY += 0.6;
+    if (scanY > H) scanY = 0;
+    ctx.save();
+    ctx.strokeStyle = GD + '0.15)';
+    ctx.lineWidth = 1;
+    ctx.shadowBlur = 5; ctx.shadowColor = G;
+    if (mapRect.x > 2 && !isInMap(4, scanY)) {
+      ctx.beginPath(); ctx.moveTo(0, scanY); ctx.lineTo(mapRect.x, scanY); ctx.stroke();
+    }
+    if (mapRect.x + mapRect.w < W - 2 && !isInMap(W - 4, scanY)) {
+      ctx.beginPath(); ctx.moveTo(mapRect.x + mapRect.w, scanY); ctx.lineTo(W, scanY); ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  function draw() {
+    if (!mapRect) { t += 0.016; requestAnimationFrame(draw); return; }
+    ctx.clearRect(0, 0, W, H);
+    t += 0.016;
+
+    drawSpace();
+    drawFloatRects();
+    drawCircuitTraces();
+    drawConcentrieArcs();
+    drawPercentageCircles();
+    drawEdgeUI();
+    drawScanLine();
+
+    requestAnimationFrame(draw);
+  }
+
+  draw();
+})();
+document.querySelectorAll('.radio-list input[type="radio"]').forEach(radio => {
+  radio.addEventListener('change', () => {
+    document.querySelectorAll('.marker').forEach(m => m.style.display = 'none');
+    if (radio.value) {
+      const el = document.getElementById(radio.value);
+      if (el) el.style.display = 'block';
+    }
+  });
+});
+
+// === View counter ===
+let count = parseInt(localStorage.getItem('visitCount') || '0') + 1;
+document.getElementById('counter').innerText = count;
+localStorage.setItem('visitCount', count);
+
+// === Image lightbox ===
+const lightbox = document.getElementById('img-lightbox');
+const lightboxImg = document.getElementById('lightbox-img');
+
+document.getElementById('table-popup').addEventListener('click', e => {
+  if (e.target.tagName === 'IMG') {
+    lightboxImg.src = e.target.src;
+    lightbox.classList.add('open');
+    e.stopPropagation();
+  }
+});
+
+lightbox.addEventListener('click', () => lightbox.classList.remove('open'));
+document.addEventListener('keydown', e => { if (e.key === 'Escape') lightbox.classList.remove('open'); });
+const backdrop = document.getElementById('modal-backdrop');
+document.getElementById('open-table-btn').addEventListener('click', () => backdrop.classList.add('open'));
+document.getElementById('close-table-btn').addEventListener('click', () => backdrop.classList.remove('open'));
+backdrop.addEventListener('click', e => { if (e.target === backdrop) backdrop.classList.remove('open'); });
+
+// === Audio ===
+const audio = document.getElementById('myAudio');
+const muteBtn = document.getElementById('muteBtn');
+function startMusic() {
+  audio.volume = 0.1;
+  audio.play().catch(() => {});
+  window.removeEventListener('click', startMusic);
+  window.removeEventListener('keydown', startMusic);
+}
+window.addEventListener('click', startMusic);
+window.addEventListener('keydown', startMusic);
+muteBtn.addEventListener('click', () => {
+  audio.muted = !audio.muted;
+  muteBtn.textContent = audio.muted ? '▶ Unmute' : '⏸ Mute';
+});
+</script>
 
 </body>
 </html>
-
-
-
-
