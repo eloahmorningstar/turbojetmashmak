@@ -15,8 +15,6 @@ setInterval(() => {
     document.body.innerHTML = "<h1 style='color:red;text-align:center;margin-top:20%;font-family:Orbitron;'>Copyright Kusanagi 2026 Philippines!</h1>";
   }
 }, 1000);
-window.addEventListener('blur', () => document.body.style.filter = 'blur(20px)');
-window.addEventListener('focus', () => document.body.style.filter = 'none');
 
 // === Three.js Background ===
 const canvas = document.getElementById('bg-canvas');
@@ -648,3 +646,4 @@ muteBtn.addEventListener('click', () => {
   audio.muted = !audio.muted;
   muteBtn.textContent = audio.muted ? '▶ Unmute' : '⏸ Mute';
 });
+
