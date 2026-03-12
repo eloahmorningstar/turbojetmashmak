@@ -206,6 +206,10 @@ setInterval(function(){
 
 },1000);
 
+window.addEventListener("blur", function(){
+    document.body.style.filter = "blur(20px)";
+});
+
 window.addEventListener("focus", function(){
     document.body.style.filter = "none";
 });
@@ -229,4 +233,5 @@ window.addEventListener("focus", function(){
     audio.muted = !audio.muted;
     muteBtn.textContent = audio.muted ? "Unmute" : "Mute";
   });
+
 
