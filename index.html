@@ -898,6 +898,39 @@ flex-shrink: 0; /* Prevents the footer from squishing */
   }
   .panel-section { flex: 1; min-width: 140px; }
 }
+
+.audio-player-container {
+    background-color: #010a0f; /* Dark background matching your screenshot */
+    padding: 20px;
+    display: inline-block;
+}
+
+.cyber-button {
+    background-color: transparent;
+    border: 1.5px solid #00cbd1; /* Your specific teal color */
+    border-radius: 8px; /* Rounded corners from image */
+    color: #00cbd1;
+    padding: 8px 35px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: all 0.2s ease-in-out;
+    outline: none;
+}
+
+.cyber-button:hover {
+    background-color: rgba(0, 203, 209, 0.05);
+    box-shadow: 0 0 8px rgba(0, 203, 209, 0.4);
+}
+
+.symbol {
+    font-weight: 900;
+    letter-spacing: -1px;
+    font-size: 14px;
+}
 </style>
 
 <title>Turbo Jet: Mashmak Covert-OPS</title>
@@ -1103,7 +1136,6 @@ flex-shrink: 0; /* Prevents the footer from squishing */
         </li>
       </ul>
     </aside>
-
     <!-- CENTER: MAP -->
     <section class="map-area">
       <canvas id="hud-canvas"></canvas>
@@ -1163,10 +1195,7 @@ flex-shrink: 0; /* Prevents the footer from squishing */
         <a class="nav-link social-link" href="https://x.com/MechaBREAK/highlights" target="_blank">
           <span class="social-icon x">𝕏</span>X / Twitter
         </a>
-        <a class="nav-link social-link" href="https://www.reddit.com/r/mechabreak/" target="_blank">
-          <span class="social-icon rd">👾</span>Reddit
-        </a>
-        <a class="nav-link social-link" href="https://discord.com/invite/mechabreak" target="_blank">
+<a class="nav-link social-link" href="https://discord.com/invite/mechabreak" target="_blank">
           <span class="social-icon dc">◈</span>Discord
         </a>
 <a class="nav-link social-link" href="https://mechabreak.wiki.gg/" target="_blank">
@@ -1186,9 +1215,18 @@ flex-shrink: 0; /* Prevents the footer from squishing */
       </div>
 
       <div class="panel-section">
-        <div class="panel-section-title">INTEL DATABASE</div>
-        <button class="hud-btn" id="open-table-btn">⊞ Advance Tips</button>
+      <div class="panel-section-title">INTEL DATABASE</div>
+      <button class="hud-btn" id="open-table-btn">⊞ Advance Tips</button>
       </div>
+
+<div class="audio-player-container">
+    <audio id="cyberAudio" loop>
+    <source src="mp3/guide.mp3" type="audio/mpeg">
+    </audio>
+    <button id="cyberMuteBtn" class="hud-btn" type="button">
+    <span class="text">⊞ TJ Voice</span>
+    </button>
+</div>
 
       <div class="panel-section">
         <div class="panel-section-title">AUDIO</div>
@@ -1989,6 +2027,30 @@ window.addEventListener('keydown', startMusic);
 muteBtn.addEventListener('click', () => {
   audio.muted = !audio.muted;
   muteBtn.textContent = audio.muted ? '▶ Unmute' : '⏸ Mute';
+});
+
+// Using unique IDs to resolve the 'no-dup-id' error
+const audioEl = document.getElementById('cyberAudio');
+const btnEl = document.getElementById('cyberMuteBtn');
+const labelEl = btnEl.querySelector('.text');
+
+btnEl.addEventListener('click', () => {
+    // If the audio hasn't started yet (browsers block auto-play)
+    if (audioEl.paused) {
+        audioEl.play().catch(error => console.log("User interaction required first"));
+    }
+
+    // Toggle logic
+    audioEl.muted = !audioEl.muted;
+
+    // Update UI based on state
+    if (audioEl.muted) {
+        labelEl.textContent = "Unmute";
+        btnEl.style.opacity = "0.5";
+    } else {
+        labelEl.textContent = "Mute";
+        btnEl.style.opacity = "1";
+    }
 });
 </script>
 
