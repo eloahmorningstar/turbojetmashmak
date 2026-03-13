@@ -1080,7 +1080,7 @@ footer.hud-footer {
       </div>
       <div class="stat-chip">
         <span class="label">BUILD</span>
-        <span class="value">v2.5</span>
+        <span class="value">v2.3</span>
       </div>
     </div>
 
@@ -1372,7 +1372,7 @@ footer.hud-footer {
   <footer class="hud-footer">
     <div class="footer-left">STARK SYSTEM ONLINE · PH-2026</div>
     <div class="footer-center">TURBO JET · COVERT-OPS MASHMAK</div>
-    <div class="footer-right">BUILD v2.5 · KUSANAGI</div>
+    <div class="footer-right">BUILD v2.3 · KUSANAGI</div>
   </footer>
 
 </div><!-- /#app -->
@@ -1859,13 +1859,6 @@ for(let i=0;i<1200;i++){
 _partGeo.setAttribute('position',new THREE.Float32BufferAttribute(_partPos,3));
 _scene.add(new THREE.Points(_partGeo,new THREE.PointsMaterial({color:0x00ffff,size:0.06,transparent:true,opacity:0.4})));
 
-// ─── 7. VANISHING POINT GLOW HAZE ───
-// Layered halos at different depths
-[{z:-60,r:3,c:0x00ffff},{z:-120,r:5,c:0xFFD700},{z:-200,r:8,c:0x000000}].forEach(h=>{
-  const g=new THREE.Mesh(new THREE.SphereGeometry(h.r,16,16),
-    new THREE.MeshBasicMaterial({color:h.c,transparent:true,opacity:0.5}));
-  g.position.z=h.z; _scene.add(g);
-});
 
 // ─── 8. DENSE HORIZONTAL DATA BARS (reference has many thin bright bars) ───
 for(let i=0;i<60;i++){
@@ -2207,23 +2200,6 @@ window.addEventListener('resize',()=>{
     }
   }
 
-  // ── CONCENTRIC ARCS — left side ──
-  const arcRings = [
-    { r: 30, dash: [6,4],  speed:  0.008, startA: -Math.PI*0.7, endA: Math.PI*0.7 },
-    { r: 48, dash: [4,6],  speed: -0.006, startA: -Math.PI*0.6, endA: Math.PI*0.6 },
-    { r: 65, dash: [8,5],  speed:  0.005, startA: -Math.PI*0.5, endA: Math.PI*0.5 },
-    { r: 82, dash: [3,7],  speed: -0.004, startA: -Math.PI*0.4, endA: Math.PI*0.4 },
-    { r: 98, dash: [6,8],  speed:  0.003, startA: -Math.PI*0.35,endA: Math.PI*0.35 },
-  ];
-  const arcAngles = arcRings.map(() => 0);
-
-  // ── PERCENTAGE CIRCLES — top right area ──
-  const pctCircles = [
-    { pct: 0.86, label: '86%', offset: 0 },
-    { pct: 0.60, label: '60%', offset: 1 },
-    { pct: 0.40, label: '40%', offset: 2 },
-  ];
-
   // ── SMALL CORNER SQUARES ──
   function drawCornerSquare(x, y, size, alpha) {
     ctx.save();
@@ -2273,89 +2249,7 @@ window.addEventListener('resize',()=>{
     });
   }
 
-  function drawConcentrieArcs() {
-    if (!mapRect) return;
-    // Position: vertically centered on left black strip
-    const cx = mapRect.x * 0.5;
-    const cy = H * 0.5;
-    if (mapRect.x < 60) return;
 
-    arcRings.forEach((ring, i) => {
-      arcAngles[i] += ring.speed;
-      const pulse = 0.5 + 0.3 * Math.sin(t * 1.2 + i * 0.8);
-      ctx.save();
-      ctx.translate(cx, cy);
-      ctx.rotate(arcAngles[i]);
-      ctx.setLineDash(ring.dash);
-      ctx.strokeStyle = GD + (pulse * 0.7) + ')';
-      ctx.shadowBlur = 8;
-      ctx.shadowColor = G;
-      ctx.lineWidth = 1.2;
-      ctx.beginPath();
-      ctx.arc(0, 0, ring.r, ring.startA, ring.endA);
-      ctx.stroke();
-      ctx.restore();
-    });
-
-    // Center dot + inner solid ring
-    const cp = 0.6 + 0.4 * Math.sin(t * 2);
-    ctx.save();
-    ctx.translate(cx, cy);
-    ctx.strokeStyle = GD + (cp * 0.9) + ')';
-    ctx.lineWidth = 1.5;
-    ctx.setLineDash([]);
-    ctx.shadowBlur = 12; ctx.shadowColor = G;
-    ctx.beginPath(); ctx.arc(0, 0, 14, 0, Math.PI * 2); ctx.stroke();
-    // dot
-    const g = ctx.createRadialGradient(0,0,0, 0,0,10);
-    g.addColorStop(0, GD + cp + ')');
-    g.addColorStop(1, GD + '0)');
-    ctx.fillStyle = g;
-    ctx.beginPath(); ctx.arc(0, 0, 10, 0, Math.PI * 2); ctx.fill();
-    ctx.restore();
-  }
-
-  function drawPercentageCircles() {
-    if (!mapRect) return;
-    // Top-right area, above the map
-    const topH = mapRect.y;
-    if (topH < 30) return;
-    const rightX = mapRect.x + mapRect.w;
-    const r = Math.min(22, topH * 0.38);
-    const spacing = r * 2.8;
-    const cy = mapRect.y * 0.52;
-
-    pctCircles.forEach((pc, i) => {
-      const cx = rightX - spacing * (pctCircles.length - i - 0.5);
-      if (cx < mapRect.x + 10) return;
-      const pulse = 0.7 + 0.3 * Math.sin(t * 1.5 + i * 1.2);
-
-      // Background ring
-      ctx.save();
-      ctx.strokeStyle = GD + '0.15)';
-      ctx.lineWidth = 3;
-      ctx.setLineDash([]);
-      ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.stroke();
-
-      // Progress arc
-      ctx.strokeStyle = GD + (pulse * 0.9) + ')';
-      ctx.lineWidth = 3;
-      ctx.shadowBlur = 8; ctx.shadowColor = G;
-      ctx.lineCap = 'round';
-      ctx.beginPath();
-      ctx.arc(cx, cy, r, -Math.PI * 0.5, -Math.PI * 0.5 + Math.PI * 2 * pc.pct);
-      ctx.stroke();
-
-      // Label
-      ctx.fillStyle = GD + pulse + ')';
-      ctx.font = `bold ${Math.max(8, r * 0.45)}px Orbitron, sans-serif`;
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.shadowBlur = 6; ctx.shadowColor = G;
-      ctx.fillText(pc.label, cx, cy);
-      ctx.restore();
-    });
-  }
 
   function drawEdgeUI() {
     if (!mapRect) return;
@@ -2455,7 +2349,7 @@ window.addEventListener('resize',()=>{
       ctx.font = '9px Share Tech Mono, monospace';
       ctx.textAlign = 'right';
       ctx.textBaseline = 'middle';
-      ctx.fillText('SYS:ONLINE // v2.5', mapRect.x + mapRect.w, mapRect.y + mapRect.h + (H - mapRect.y - mapRect.h) * 0.5);
+      ctx.fillText('SYS:ONLINE // v2.3', mapRect.x + mapRect.w, mapRect.y + mapRect.h + (H - mapRect.y - mapRect.h) * 0.5);
       ctx.restore();
     }
 
@@ -2917,8 +2811,6 @@ window.addEventListener('resize',()=>{
     drawAltRings();
     drawDroneCamera();
     drawPOIMarkers();
-    drawConcentrieArcs();
-    drawPercentageCircles();
     drawEdgeUI();
     drawScanLine();
 
