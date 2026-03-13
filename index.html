@@ -39,9 +39,9 @@
   --cyan:    #00ffff;
   --magenta: #ff00ff;
   --gold:    #FFD700;
-  --bg:      #060810;
-  --panel:   rgba(0, 20, 30, 0.75);
-  --border:  rgba(0, 255, 255, 0.3);
+  --bg:      #FFD700;
+  --panel:   rgba(0,0,0,0.75);
+  --border:  rgba(0,255,255,0.3);
   --glow-c:  0 0 8px #00ffff, 0 0 20px rgba(0,255,255,0.4);
   --glow-m:  0 0 8px #ff00ff, 0 0 20px rgba(255,0,255,0.4);
   --glow-g:  0 0 8px #FFD700, 0 0 20px rgba(255,215,0,0.4);
@@ -72,7 +72,7 @@ canvas#bg-canvas {
   position: fixed;
   inset: 0;
   z-index: 1;
-  background: radial-gradient(ellipse at 50% 0%, rgba(0,20,40,0.15) 0%, rgba(0,2,10,0.35) 100%);
+  background: radial-gradient(ellipse at 50% 0%, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.35) 100%);
   pointer-events: none;
 }
 
@@ -96,7 +96,7 @@ header.hud-header {
   align-items: center;
   padding: 14px 28px;
   border-bottom: 1px solid var(--border);
-  background: rgba(0,10,18,0.9);
+  background: rgba(0,0,0,0.9);
   backdrop-filter: blur(12px);
   gap: 20px;
   animation: headerGlow 4s ease-in-out infinite;
@@ -194,7 +194,7 @@ display: grid;
   display: flex;
   flex-direction: column;
   border-right: 1px solid var(--border);
-  background: rgba(0,8,16,0.8);
+  background: rgba(0,0,0,0.8);
   backdrop-filter: blur(8px);
   overflow-y: auto;
 }
@@ -329,6 +329,15 @@ display: grid;
   filter: brightness(1.05) saturate(1.1);
 }
 
+#scan-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 4;
+  pointer-events: none;
+}
+
 .marker {
   position: absolute;
   top: 0; left: 0;
@@ -350,23 +359,23 @@ display: grid;
   inset: -5px;
   z-index: 5;
   pointer-events: none;
-  border: 2px solid rgba(200,160,0,0.9);
+  border: 2px solid rgba(255,215,0,0.9);
   box-shadow:
-    0 0 0 1px rgba(255,210,0,0.25),
-    inset 0 0 0 1px rgba(255,200,0,0.1),
-    0 0 20px rgba(200,150,0,0.55),
-    inset 0 0 14px rgba(180,130,0,0.12);
+    0 0 0 1px rgba(255,215,0,0.25),
+    inset 0 0 0 1px rgba(255,215,0,0.1),
+    0 0 20px rgba(255,215,0,0.55),
+    inset 0 0 14px rgba(255,215,0,0.12);
   animation: ra3FramePulse 2.8s ease-in-out infinite;
 }
 
 @keyframes ra3FramePulse {
   0%,100% {
-    box-shadow: 0 0 0 1px rgba(255,210,0,0.25), inset 0 0 0 1px rgba(255,200,0,0.1),
-                0 0 20px rgba(200,150,0,0.55), inset 0 0 14px rgba(180,130,0,0.12);
+    box-shadow: 0 0 0 1px rgba(255,215,0,0.25), inset 0 0 0 1px rgba(255,215,0,0.1),
+                0 0 20px rgba(255,215,0,0.55), inset 0 0 14px rgba(255,215,0,0.12);
   }
   50% {
-    box-shadow: 0 0 0 1px rgba(255,220,0,0.45), inset 0 0 0 1px rgba(255,210,0,0.2),
-                0 0 32px rgba(220,170,0,0.75), inset 0 0 22px rgba(200,150,0,0.2);
+    box-shadow: 0 0 0 1px rgba(255,215,0,0.45), inset 0 0 0 1px rgba(255,215,0,0.2),
+                0 0 32px rgba(255,215,0,0.75), inset 0 0 22px rgba(255,215,0,0.2);
   }
 }
 
@@ -393,21 +402,21 @@ display: grid;
 #map-container .corner-br::after {
   content: '';
   position: absolute;
-  background: linear-gradient(90deg, #c8a000, #ffe040, #c8a000);
-  box-shadow: 0 0 10px rgba(255,210,0,0.9), 0 0 3px #ffe040;
+  background: linear-gradient(90deg, #FFD700, #FFD700, #FFD700);
+  box-shadow: 0 0 10px rgba(255,215,0,0.9), 0 0 3px #FFD700;
 }
 
 /* Horizontal bars */
-#map-container .corner-tl::before { top: 0;    left: 0;  width: 48px; height: 4px; background: linear-gradient(90deg, #ffe040, #c8a000); }
-#map-container .corner-tr::before { top: 0;    right: 0; width: 48px; height: 4px; background: linear-gradient(270deg, #ffe040, #c8a000); }
-#map-container .corner-bl::before { bottom: 0; left: 0;  width: 48px; height: 4px; background: linear-gradient(90deg, #ffe040, #c8a000); }
-#map-container .corner-br::before { bottom: 0; right: 0; width: 48px; height: 4px; background: linear-gradient(270deg, #ffe040, #c8a000); }
+#map-container .corner-tl::before { top: 0;    left: 0;  width: 48px; height: 4px; background: linear-gradient(90deg, #FFD700, #FFD700); }
+#map-container .corner-tr::before { top: 0;    right: 0; width: 48px; height: 4px; background: linear-gradient(270deg, #FFD700, #FFD700); }
+#map-container .corner-bl::before { bottom: 0; left: 0;  width: 48px; height: 4px; background: linear-gradient(90deg, #FFD700, #FFD700); }
+#map-container .corner-br::before { bottom: 0; right: 0; width: 48px; height: 4px; background: linear-gradient(270deg, #FFD700, #FFD700); }
 
 /* Vertical bars */
-#map-container .corner-tl::after { top: 0;    left: 0;  width: 4px; height: 48px; background: linear-gradient(180deg, #ffe040, #c8a000); }
-#map-container .corner-tr::after { top: 0;    right: 0; width: 4px; height: 48px; background: linear-gradient(180deg, #ffe040, #c8a000); }
-#map-container .corner-bl::after { bottom: 0; left: 0;  width: 4px; height: 48px; background: linear-gradient(0deg, #ffe040, #c8a000); }
-#map-container .corner-br::after { bottom: 0; right: 0; width: 4px; height: 48px; background: linear-gradient(0deg, #ffe040, #c8a000); }
+#map-container .corner-tl::after { top: 0;    left: 0;  width: 4px; height: 48px; background: linear-gradient(180deg, #FFD700, #FFD700); }
+#map-container .corner-tr::after { top: 0;    right: 0; width: 4px; height: 48px; background: linear-gradient(180deg, #FFD700, #FFD700); }
+#map-container .corner-bl::after { bottom: 0; left: 0;  width: 4px; height: 48px; background: linear-gradient(0deg, #FFD700, #FFD700); }
+#map-container .corner-br::after { bottom: 0; right: 0; width: 4px; height: 48px; background: linear-gradient(0deg, #FFD700, #FFD700); }
 
 /* Corner positions */
 #map-container .corner-tl { top: -5px;    left: -5px;  }
@@ -422,16 +431,16 @@ display: grid;
 #map-container .corner-br .diamond {
   position: absolute;
   width: 9px; height: 9px;
-  background: #ffe040;
+  background: #FFD700;
   transform: rotate(45deg);
-  box-shadow: 0 0 12px #ffd700, 0 0 24px rgba(255,210,0,0.7);
+  box-shadow: 0 0 12px #FFD700, 0 0 24px rgba(255,215,0,0.7);
   animation: ra3DiamondPulse 1.6s ease-in-out infinite;
   z-index: 7;
 }
 
 @keyframes ra3DiamondPulse {
-  0%,100% { background: #c8a000; box-shadow: 0 0 8px #ffd700,  0 0 18px rgba(255,200,0,0.4); }
-  50%     { background: #ffe040; box-shadow: 0 0 16px #ffe878, 0 0 32px rgba(255,230,0,0.8); }
+  0%,100% { background: #FFD700; box-shadow: 0 0 8px #FFD700,  0 0 18px rgba(255,215,0,0.4); }
+  50%     { background: #FFD700; box-shadow: 0 0 16px #FFD700, 0 0 32px rgba(255,215,0,0.8); }
 }
 
 #map-container .corner-tl .diamond { top: -4px;    left: -4px;  }
@@ -452,34 +461,34 @@ display: grid;
 #map-container .edge-top {
   top: -5px; left: 52px; right: 52px; height: 4px;
   background: linear-gradient(90deg,
-    transparent 0%, rgba(200,160,0,0.5) 10%,
+    transparent 0%, rgba(255,215,0,0.5) 10%,
     rgba(255,215,0,0.25) 30%, rgba(255,215,0,0.6) 50%,
-    rgba(255,215,0,0.25) 70%, rgba(200,160,0,0.5) 90%, transparent 100%);
-  box-shadow: 0 0 8px rgba(255,200,0,0.5);
+    rgba(255,215,0,0.25) 70%, rgba(255,215,0,0.5) 90%, transparent 100%);
+  box-shadow: 0 0 8px rgba(255,215,0,0.5);
 }
 #map-container .edge-bottom {
   bottom: -5px; left: 52px; right: 52px; height: 4px;
   background: linear-gradient(90deg,
-    transparent 0%, rgba(200,160,0,0.5) 10%,
+    transparent 0%, rgba(255,215,0,0.5) 10%,
     rgba(255,215,0,0.25) 30%, rgba(255,215,0,0.6) 50%,
-    rgba(255,215,0,0.25) 70%, rgba(200,160,0,0.5) 90%, transparent 100%);
-  box-shadow: 0 0 8px rgba(255,200,0,0.5);
+    rgba(255,215,0,0.25) 70%, rgba(255,215,0,0.5) 90%, transparent 100%);
+  box-shadow: 0 0 8px rgba(255,215,0,0.5);
 }
 #map-container .edge-left {
   left: -5px; top: 52px; bottom: 52px; width: 4px;
   background: linear-gradient(180deg,
-    transparent 0%, rgba(200,160,0,0.5) 10%,
+    transparent 0%, rgba(255,215,0,0.5) 10%,
     rgba(255,215,0,0.25) 30%, rgba(255,215,0,0.6) 50%,
-    rgba(255,215,0,0.25) 70%, rgba(200,160,0,0.5) 90%, transparent 100%);
-  box-shadow: 0 0 8px rgba(255,200,0,0.5);
+    rgba(255,215,0,0.25) 70%, rgba(255,215,0,0.5) 90%, transparent 100%);
+  box-shadow: 0 0 8px rgba(255,215,0,0.5);
 }
 #map-container .edge-right {
   right: -5px; top: 52px; bottom: 52px; width: 4px;
   background: linear-gradient(180deg,
-    transparent 0%, rgba(200,160,0,0.5) 10%,
+    transparent 0%, rgba(255,215,0,0.5) 10%,
     rgba(255,215,0,0.25) 30%, rgba(255,215,0,0.6) 50%,
-    rgba(255,215,0,0.25) 70%, rgba(200,160,0,0.5) 90%, transparent 100%);
-  box-shadow: 0 0 8px rgba(255,200,0,0.5);
+    rgba(255,215,0,0.25) 70%, rgba(255,215,0,0.5) 90%, transparent 100%);
+  box-shadow: 0 0 8px rgba(255,215,0,0.5);
 }
 
 /* Center notches */
@@ -492,12 +501,12 @@ display: grid;
   transform: translateX(-50%);
   width: 70px; height: 10px;
   background: transparent;
-  border-left: 3px solid #c8a000;
-  border-right: 3px solid #c8a000;
-  box-shadow: -2px 0 10px rgba(255,200,0,0.5), 2px 0 10px rgba(255,200,0,0.5);
+  border-left: 3px solid #FFD700;
+  border-right: 3px solid #FFD700;
+  box-shadow: -2px 0 10px rgba(255,215,0,0.5), 2px 0 10px rgba(255,215,0,0.5);
 }
-#map-container .notch-top    { top: -5px;    border-top: 3px solid #c8a000; }
-#map-container .notch-bottom { bottom: -5px; border-bottom: 3px solid #c8a000; }
+#map-container .notch-top    { top: -5px;    border-top: 3px solid #FFD700; }
+#map-container .notch-bottom { bottom: -5px; border-bottom: 3px solid #FFD700; }
 
 /* Side mid-notches (left & right center ticks) */
 #map-container .notch-left,
@@ -509,12 +518,12 @@ display: grid;
   transform: translateY(-50%);
   width: 10px; height: 50px;
   background: transparent;
-  border-top: 3px solid #c8a000;
-  border-bottom: 3px solid #c8a000;
-  box-shadow: 0 -2px 10px rgba(255,200,0,0.5), 0 2px 10px rgba(255,200,0,0.5);
+  border-top: 3px solid #FFD700;
+  border-bottom: 3px solid #FFD700;
+  box-shadow: 0 -2px 10px rgba(255,215,0,0.5), 0 2px 10px rgba(255,215,0,0.5);
 }
-#map-container .notch-left  { left: -5px;  border-left: 3px solid #c8a000; }
-#map-container .notch-right { right: -5px; border-right: 3px solid #c8a000; }
+#map-container .notch-left  { left: -5px;  border-left: 3px solid #FFD700; }
+#map-container .notch-right { right: -5px; border-right: 3px solid #FFD700; }
 
 /* Scan line overlay */
 #map-container .scan-overlay {
@@ -524,23 +533,7 @@ display: grid;
   pointer-events: none;
   overflow: hidden;
 }
-#map-container .scan-overlay::after {
-  content: '';
-  position: absolute;
-  left: 0; right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, rgba(255,210,0,0.3), rgba(255,230,80,0.5), rgba(255,210,0,0.3), transparent);
-  box-shadow: 0 0 8px rgba(255,200,0,0.4);
-  animation: ra3Scan 5s linear infinite;
-  top: 0;
-}
 
-@keyframes ra3Scan {
-  0%   { top: 0%;   opacity: 0; }
-  5%   { opacity: 1; }
-  95%  { opacity: 1; }
-  100% { top: 100%; opacity: 0; }
-}
 
 /* =============================================
    RIGHT PANEL — LINKS & CONTROLS
@@ -549,7 +542,7 @@ display: grid;
   display: flex;
   flex-direction: column;
   border-left: 1px solid var(--border);
-  background: rgba(0,8,16,0.8);
+  background: rgba(0,0,0,0.8);
   backdrop-filter: blur(8px);
   overflow-y: auto;
 }
@@ -595,26 +588,8 @@ display: grid;
   text-shadow: var(--glow-c);
 }
 
-.social-link { gap: 6px; }
 
-.social-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 18px;
-  height: 18px;
-  border-radius: 3px;
-  font-size: 10px;
-  font-weight: 900;
-  flex-shrink: 0;
-  font-family: var(--font-mono);
-}
 
-.social-icon.fb { background: #1877f2; color: #fff; }
-.social-icon.yt { background: #ff0000; color: #fff; font-size: 8px; }
-.social-icon.x  { background: #000;    color: #fff; border: 1px solid #333; font-size: 9px; }
-.social-icon.rd { background: #ff4500; color: #fff; font-size: 9px; }
-.social-icon.dc { background: #5865f2; color: #fff; font-size: 11px; }
 
 .counter-box {
   background: rgba(0,255,255,0.04);
@@ -696,7 +671,7 @@ footer.hud-footer {
   align-items: center;
   padding: 10px 28px;
   border-top: 1px solid var(--border);
-  background: rgba(0,6,12,0.95);
+  background: rgba(0,0,0,0.95);
   font-family: var(--font-mono);
   font-size: 10px;
   color: rgba(0,255,255,0.35);
@@ -732,7 +707,7 @@ footer.hud-footer {
   max-width: 1200px;
   max-height: 88vh;
   overflow: auto;
-  background: rgba(4,12,22,0.98);
+  background: rgba(0,0,0,0.98);
   border: 1px solid var(--cyan);
   border-radius: 12px;
   box-shadow: 0 0 40px rgba(0,255,255,0.25), inset 0 0 60px rgba(0,0,0,0.5);
@@ -756,9 +731,9 @@ footer.hud-footer {
 }
 
 #close-table-btn {
-  background: rgba(255,0,0,0.08);
-  color: rgba(255,80,80,0.8);
-  border: 1px solid rgba(255,0,0,0.3);
+  background: rgba(255,215,0,0.08);
+  color: rgba(255,215,0,0.8);
+  border: 1px solid rgba(255,215,0,0.3);
   border-radius: 6px;
   padding: 6px 14px;
   cursor: pointer;
@@ -768,8 +743,8 @@ footer.hud-footer {
 }
 
 #close-table-btn:hover {
-  background: rgba(255,0,0,0.15);
-  color: #ff4444;
+  background: rgba(255,215,0,0.15);
+  color: #FFD700;
 }
 
 #table-popup table {
@@ -903,16 +878,16 @@ footer.hud-footer {
   max-width: 1200px;
   max-height: 88vh;
   overflow: auto;
-  background: rgba(4,12,22,0.98);
+  background: rgba(0,0,0,0.98);
   border: 1px solid var(--cyan);
   border-radius: 12px;
   box-shadow: 0 0 40px rgba(0,255,255,0.25), inset 0 0 60px rgba(0,0,0,0.5);
   padding: 24px;
 }
 #close-verge-btn {
-  background: rgba(255,0,0,0.08);
-  color: rgba(255,80,80,0.8);
-  border: 1px solid rgba(255,0,0,0.3);
+  background: rgba(255,215,0,0.08);
+  color: rgba(255,215,0,0.8);
+  border: 1px solid rgba(255,215,0,0.3);
   border-radius: 6px;
   padding: 6px 14px;
   cursor: pointer;
@@ -920,7 +895,7 @@ footer.hud-footer {
   font-size: 11px;
   transition: all 0.2s;
 }
-#close-verge-btn:hover { background: rgba(255,0,0,0.15); color: #ff4444; }
+#close-verge-btn:hover { background: rgba(255,215,0,0.15); color: #FFD700; }
 
 #verge-table-popup table {
   width: 100%;
@@ -1051,16 +1026,16 @@ footer.hud-footer {
 }
 
 .audio-player-container {
-    background-color: #010a0f; /* Dark background matching your screenshot */
+    background-color: #000000; /* Dark background matching your screenshot */
     padding: 20px;
     display: inline-block;
 }
 
 .cyber-button {
     background-color: transparent;
-    border: 1.5px solid #00cbd1; /* Your specific teal color */
+    border: 1.5px solid #00ffff; /* Your specific teal color */
     border-radius: 8px; /* Rounded corners from image */
-    color: #00cbd1;
+    color: #00ffff;
     padding: 8px 35px;
     font-family: 'Courier New', Courier, monospace;
     font-size: 16px;
@@ -1073,8 +1048,8 @@ footer.hud-footer {
 }
 
 .cyber-button:hover {
-    background-color: rgba(0, 203, 209, 0.05);
-    box-shadow: 0 0 8px rgba(0, 203, 209, 0.4);
+    background-color: rgba(0,255,255,0.05);
+    box-shadow: 0 0 8px rgba(0,255,255,0.4);
 }
 
 .symbol {
@@ -1105,7 +1080,7 @@ footer.hud-footer {
       </div>
       <div class="stat-chip">
         <span class="label">BUILD</span>
-        <span class="value">v2.3</span>
+        <span class="value">v2.5</span>
       </div>
     </div>
 
@@ -1121,7 +1096,7 @@ footer.hud-footer {
       </div>
       <div class="stat-chip">
         <span class="label">STATUS</span>
-        <span class="value" style="color:#00ff88;text-shadow:0 0 8px #00ff88">ONLINE</span>
+        <span class="value" style="color:#00ffff;text-shadow:0 0 8px #00ffff">ONLINE</span>
       </div>
     </div>
   </header>
@@ -1285,7 +1260,7 @@ footer.hud-footer {
             <span>None</span>
           </label>
           <div style="padding: 8px 16px;">
-            <img src="img/Codered.webp" alt="Code Red" style="width:100%; max-width:180px; display:block; border-radius:6px; filter:drop-shadow(0 0 8px rgba(255,0,0,0.8)) drop-shadow(0 0 20px rgba(255,0,0,0.5));">
+            <img src="img/Codered.webp" alt="Code Red" style="width:100%; max-width:180px; display:block; border-radius:6px; filter:drop-shadow(0 0 8px rgba(255,215,0,0.8)) drop-shadow(0 0 20px rgba(255,215,0,0.5));">
           </div>
         </li>
       </ul>
@@ -1308,6 +1283,7 @@ footer.hud-footer {
         <div class="notch-right"></div>
         <div class="scan-overlay"></div>
         <img src="img/map.webp" alt="Map" id="map">
+        <canvas id="scan-canvas"></canvas>
         <img src="img/ultimate.webp"           id="marker0"  class="marker">
         <img src="img/bluerz.webp"             id="marker1"  class="marker">
         <img src="img/purplerz.webp"           id="marker2"  class="marker">
@@ -1337,27 +1313,16 @@ footer.hud-footer {
 
       <div class="panel-section">
         <div class="panel-section-title">SOCIAL MEDIA</div>
-        <a class="nav-link social-link" href="https://www.facebook.com/groups/mechabreakglobal" target="_blank">
-          <span class="social-icon fb">f</span>FB Group
-        </a>
-        <a class="nav-link social-link" href="https://www.facebook.com/MechaBREAK" target="_blank">
-          <span class="social-icon fb">f</span>Facebook
-        </a>
-        <a class="nav-link social-link" href="https://www.youtube.com/@MechaBREAK" target="_blank">
-          <span class="social-icon yt">▶</span>YouTube
-        </a>
-        <a class="nav-link social-link" href="https://x.com/MechaBREAK/highlights" target="_blank">
-          <span class="social-icon x">𝕏</span>X / Twitter
-        </a>
-<a class="nav-link social-link" href="https://discord.com/invite/mechabreak" target="_blank">
-          <span class="social-icon dc">◈</span>Discord
-        </a>
-<a class="nav-link social-link" href="https://mechabreak.wiki.gg/" target="_blank">
-          <span class="social-icon dc">Ω</span>Wiki Mechabreak
-        </a>
-<a class="nav-link social-link" href="https://www.instagram.com/mechabreak/" target="_blank">
-          <span class="social-icon dc">📸</span>Instagram
-        </a>
+      </div>
+
+      <div class="panel-section">
+        <a class="nav-link" href="https://www.facebook.com/groups/mechabreakglobal" target="_blank">FB Group</a>
+        <a class="nav-link" href="https://www.facebook.com/MechaBREAK" target="_blank">Facebook</a>
+        <a class="nav-link" href="https://www.youtube.com/@MechaBREAK" target="_blank">YouTube</a>
+        <a class="nav-link" href="https://x.com/MechaBREAK/highlights" target="_blank">X / Twitter</a>
+        <a class="nav-link" href="https://discord.com/invite/mechabreak" target="_blank">Discord</a>
+        <a class="nav-link" href="https://mechabreak.wiki.gg/" target="_blank">Wiki Mechabreak</a>
+        <a class="nav-link" href="https://www.instagram.com/mechabreak/" target="_blank">Instagram</a>
       </div>
 
       <div class="panel-section">
@@ -1407,7 +1372,7 @@ footer.hud-footer {
   <footer class="hud-footer">
     <div class="footer-left">STARK SYSTEM ONLINE · PH-2026</div>
     <div class="footer-center">TURBO JET · COVERT-OPS MASHMAK</div>
-    <div class="footer-right">BUILD v2.3 · KUSANAGI</div>
+    <div class="footer-right">BUILD v2.5 · KUSANAGI</div>
   </footer>
 
 </div><!-- /#app -->
@@ -1639,17 +1604,17 @@ footer.hud-footer {
           </tr>
 
           <tr>
-            <td style="color:#ff6ec7;text-shadow:0 0 8px #ff6ec7,0 0 20px rgba(255,110,199,0.5);font-weight:900;font-size:15px;letter-spacing:2px;">A</td>
+            <td style="color:#ff00ff;text-shadow:0 0 8px #ff00ff,0 0 20px rgba(255,0,255,0.5);font-weight:900;font-size:15px;letter-spacing:2px;">A</td>
             <td style="display:flex;flex-wrap:wrap;align-items:center;gap:6px;">
               <span style="display:inline-flex;align-items:center;gap:4px;white-space:nowrap;"><img class="striker-inline" src="striker/AQUILLA.webp"> <span style="font-size:10px;color:rgba(0,255,255,0.8);">Aquila</span></span>
               <span style="display:inline-flex;align-items:center;gap:4px;white-space:nowrap;"><img class="striker-inline" src="striker/STEGO.webp"> <span style="font-size:10px;color:rgba(0,255,255,0.8);">Stego</span></span>
               <span style="display:inline-flex;align-items:center;gap:4px;white-space:nowrap;"><img class="striker-inline" src="striker/FALCON.webp"> <span style="font-size:10px;color:rgba(0,255,255,0.8);">Falcon</span></span>
             </td>
-            <td style="font-size:11px;color:rgba(255,110,199,0.8);">Strong performers — reliable in most ranked scenarios with good map coverage.</td>
+            <td style="font-size:11px;color:rgba(255,0,255,0.8);">Strong performers — reliable in most ranked scenarios with good map coverage.</td>
           </tr>
 
           <tr>
-            <td style="color:#00cfff;text-shadow:0 0 8px #00cfff,0 0 20px rgba(0,207,255,0.5);font-weight:900;font-size:15px;letter-spacing:2px;">B</td>
+            <td style="color:#00ffff;text-shadow:0 0 8px #00ffff,0 0 20px rgba(0,255,255,0.5);font-weight:900;font-size:15px;letter-spacing:2px;">B</td>
             <td style="display:flex;flex-wrap:wrap;align-items:center;gap:6px;">
               <span style="display:inline-flex;align-items:center;gap:4px;white-space:nowrap;"><img class="striker-inline" src="striker/PINAKA.webp"> <span style="font-size:10px;color:rgba(0,255,255,0.8);">Pinaka</span></span>
               <span style="display:inline-flex;align-items:center;gap:4px;white-space:nowrap;"><img class="striker-inline" src="striker/HELL.webp"> <span style="font-size:10px;color:rgba(0,255,255,0.8);">Hel</span></span>
@@ -1659,17 +1624,17 @@ footer.hud-footer {
               <span style="display:inline-flex;align-items:center;gap:4px;white-space:nowrap;"><img class="striker-inline" src="striker/HURRICANE.webp"> <span style="font-size:10px;color:rgba(0,255,255,0.8);">Hurricane</span></span>
               <span style="display:inline-flex;align-items:center;gap:4px;white-space:nowrap;"><img class="striker-inline" src="striker/SKYRAIDER.webp"> <span style="font-size:10px;color:rgba(0,255,255,0.8);">Skyraider</span></span>
             </td>
-            <td style="font-size:11px;color:rgba(0,207,255,0.8);">Viable picks — situationally strong. Good in the right team comp or map.</td>
+            <td style="font-size:11px;color:rgba(0,255,255,0.8);">Viable picks — situationally strong. Good in the right team comp or map.</td>
           </tr>
 
           <tr>
-            <td style="color:#aaaaaa;text-shadow:0 0 6px #aaaaaa;font-weight:900;font-size:15px;letter-spacing:2px;">C</td>
+            <td style="color:#FFD700;text-shadow:0 0 6px #FFD700;font-weight:900;font-size:15px;letter-spacing:2px;">C</td>
             <td style="display:flex;flex-wrap:wrap;align-items:center;gap:6px;">
               <span style="display:inline-flex;align-items:center;gap:4px;white-space:nowrap;"><img class="striker-inline" src="striker/ALYSSNES.webp"> <span style="font-size:10px;color:rgba(0,255,255,0.8);">Alysnes</span></span>
               <span style="display:inline-flex;align-items:center;gap:4px;white-space:nowrap;"><img class="striker-inline" src="striker/TRICERA.webp"> <span style="font-size:10px;color:rgba(0,255,255,0.8);">Tricera</span></span>
               <span style="display:inline-flex;align-items:center;gap:4px;white-space:nowrap;"><img class="striker-inline" src="striker/STELLARUS.webp"> <span style="font-size:10px;color:rgba(0,255,255,0.8);">Stellarus</span></span>
             </td>
-            <td style="font-size:11px;color:rgba(170,170,170,0.8);">Below average — outclassed by higher tiers in most ranked scenarios. Use only if mastered.</td>
+            <td style="font-size:11px;color:rgba(255,215,0,0.8);">Below average — outclassed by higher tiers in most ranked scenarios. Use only if mastered.</td>
           </tr>
         </tbody>
       </table>
@@ -1708,7 +1673,7 @@ setInterval(() => {
 {
 const _canvas = document.getElementById('bg-canvas');
 const _scene = new THREE.Scene();
-_scene.fog = new THREE.FogExp2(0x00020a, 0.012);
+_scene.fog = new THREE.FogExp2(0x000000, 0.012);
 
 const _cam = new THREE.PerspectiveCamera(72, window.innerWidth/window.innerHeight, 0.1, 500);
 _cam.position.set(0,0,0);
@@ -1716,7 +1681,7 @@ _cam.position.set(0,0,0);
 const _renderer = new THREE.WebGLRenderer({ canvas: _canvas, antialias: true });
 _renderer.setSize(window.innerWidth, window.innerHeight);
 _renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-_renderer.setClearColor(0x00020a, 1);
+_renderer.setClearColor(0x000000, 1);
 
 const D  = 280;   // tunnel depth
 const TW = 34;    // tunnel width
@@ -1743,22 +1708,22 @@ function makeGrid(axis, coord, w, d, stepsW, stepsD, col, opa) {
 }
 
 // Floor
-const floor = makeGrid('y', -TH/2, TW, D, 17, 70, 0x0d3a5a, 0.55);
+const floor = makeGrid('y', -TH/2, TW, D, 17, 70, 0x00ffff, 0.55);
 _scene.add(floor);
 // Ceiling
-const ceil = makeGrid('y',  TH/2, TW, D, 17, 70, 0x0d3a5a, 0.35);
+const ceil = makeGrid('y',  TH/2, TW, D, 17, 70, 0x00ffff, 0.35);
 _scene.add(ceil);
 // Left wall
-const wallL = makeGrid('x', -TW/2, TH, D, 9, 70, 0x081e30, 0.3);
+const wallL = makeGrid('x', -TW/2, TH, D, 9, 70, 0x00ffff, 0.3);
 _scene.add(wallL);
 // Right wall
-const wallR = makeGrid('x',  TW/2, TH, D, 9, 70, 0x081e30, 0.3);
+const wallR = makeGrid('x',  TW/2, TH, D, 9, 70, 0x00ffff, 0.3);
 _scene.add(wallR);
 
 // ─── 2. CITY BUILDING BLOCKS — sides & top/bottom along the tunnel ───
 function addBuilding(x,y,z,w,h,d,isOrange){
-  const col  = isOrange ? 0x1a0500 : 0x001020;
-  const edge = isOrange ? (Math.random()<0.5?0xff4400:0xff7700) : (Math.random()<0.5?0x0077cc:0x00aaff);
+  const col  = isOrange ? 0x000000 : 0xFFD700;
+  const edge = isOrange ? (Math.random()<0.5?0xFFD700:0xFFD700) : (Math.random()<0.5?0x00ffff:0x00ffff);
   const geo  = new THREE.BoxGeometry(w,h,d);
   const mesh = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({color:col,transparent:true,opacity:0.8}));
   mesh.position.set(x,y,z);
@@ -1797,13 +1762,13 @@ for(let i=0;i<120;i++){
 // ─── 3. FLOATING HUD PANELS ───
 const _panels=[];
 const panelDefs=[
-  {x:-14,y:4,z:-28,w:9,h:5.5,ec:0x00aaff},{x:13,y:-3,z:-38,w:11,h:4,ec:0xff5500},
-  {x:-11,y:-5,z:-55,w:7,h:5,ec:0x0088cc},{x:9,y:5,z:-48,w:8,h:3.5,ec:0xff6600},
-  {x:0,y:7,z:-42,w:14,h:2,ec:0x00ccff},{x:-13,y:2,z:-75,w:10,h:6,ec:0x0055ff},
-  {x:12,y:-6,z:-65,w:8,h:5,ec:0xff4400},{x:-7,y:-3,z:-90,w:12,h:3,ec:0x00ffaa},
-  {x:7,y:3,z:-110,w:9,h:6,ec:0x0077dd},{x:-5,y:6,z:-130,w:7,h:4,ec:0xff7700},
-  {x:14,y:0,z:-145,w:6,h:8,ec:0x0099ff},{x:-12,y:-4,z:-160,w:10,h:5,ec:0xff3300},
-  {x:3,y:-7,z:-70,w:5,h:3,ec:0x00ddff},{x:-9,y:6,z:-85,w:8,h:2,ec:0xff8800},
+  {x:-14,y:4,z:-28,w:9,h:5.5,ec:0x00ffff},{x:13,y:-3,z:-38,w:11,h:4,ec:0xFFD700},
+  {x:-11,y:-5,z:-55,w:7,h:5,ec:0x00ffff},{x:9,y:5,z:-48,w:8,h:3.5,ec:0xFFD700},
+  {x:0,y:7,z:-42,w:14,h:2,ec:0x00ffff},{x:-13,y:2,z:-75,w:10,h:6,ec:0x00ffff},
+  {x:12,y:-6,z:-65,w:8,h:5,ec:0xFFD700},{x:-7,y:-3,z:-90,w:12,h:3,ec:0x00ffff},
+  {x:7,y:3,z:-110,w:9,h:6,ec:0x00ffff},{x:-5,y:6,z:-130,w:7,h:4,ec:0xFFD700},
+  {x:14,y:0,z:-145,w:6,h:8,ec:0x00ffff},{x:-12,y:-4,z:-160,w:10,h:5,ec:0xFFD700},
+  {x:3,y:-7,z:-70,w:5,h:3,ec:0x00ffff},{x:-9,y:6,z:-85,w:8,h:2,ec:0xFFD700},
 ];
 panelDefs.forEach((pd,i)=>{
   const g=new THREE.Group();
@@ -1848,7 +1813,7 @@ panelDefs.forEach((pd,i)=>{
 const _streaks=[];
 function spawnStreak(){
   const isOrange=Math.random()<0.35;
-  const col=isOrange?0xff4400:(Math.random()<0.55?0x0088ff:0x00eeff);
+  const col=isOrange?0xFFD700:(Math.random()<0.55?0x00ffff:0x00ffff);
   // streaks are HORIZONTAL along X or Y axis — like lateral speed blur in reference
   const axis=Math.random()<0.5?'x':'y';
   const len=1.5+Math.random()*9;
@@ -1869,7 +1834,7 @@ for(let i=0;i<100;i++) _streaks.push(spawnStreak());
 const _vstreaks=[];
 function spawnVStreak(){
   const isOrange=Math.random()<0.3;
-  const col=isOrange?0xff5500:0x0066bb;
+  const col=isOrange?0xFFD700:0x00ffff;
   const len=0.8+Math.random()*5;
   const x=(Math.random()-0.5)*TW*1.4;
   const y=(Math.random()-0.5)*TH*1.4;
@@ -1892,11 +1857,11 @@ for(let i=0;i<1200;i++){
   _partPos.push((Math.random()-.5)*TW*1.6,(Math.random()-.5)*TH*1.6,-(Math.random()*D));
 }
 _partGeo.setAttribute('position',new THREE.Float32BufferAttribute(_partPos,3));
-_scene.add(new THREE.Points(_partGeo,new THREE.PointsMaterial({color:0x336688,size:0.06,transparent:true,opacity:0.4})));
+_scene.add(new THREE.Points(_partGeo,new THREE.PointsMaterial({color:0x00ffff,size:0.06,transparent:true,opacity:0.4})));
 
 // ─── 7. VANISHING POINT GLOW HAZE ───
 // Layered halos at different depths
-[{z:-60,r:3,c:0x002244},{z:-120,r:5,c:0x001122},{z:-200,r:8,c:0x000a18}].forEach(h=>{
+[{z:-60,r:3,c:0x00ffff},{z:-120,r:5,c:0xFFD700},{z:-200,r:8,c:0x000000}].forEach(h=>{
   const g=new THREE.Mesh(new THREE.SphereGeometry(h.r,16,16),
     new THREE.MeshBasicMaterial({color:h.c,transparent:true,opacity:0.5}));
   g.position.z=h.z; _scene.add(g);
@@ -1905,7 +1870,7 @@ _scene.add(new THREE.Points(_partGeo,new THREE.PointsMaterial({color:0x336688,si
 // ─── 8. DENSE HORIZONTAL DATA BARS (reference has many thin bright bars) ───
 for(let i=0;i<60;i++){
   const isOrange=Math.random()<0.3;
-  const col=isOrange?0xff5500:0x0077cc;
+  const col=isOrange?0xFFD700:0x00ffff;
   const w=0.3+Math.random()*5;
   const x=(Math.random()-.5)*TW*1.2;
   const y=(Math.random()-.5)*TH*1.2;
@@ -2008,7 +1973,7 @@ window.addEventListener('resize',()=>{
   let W, H, mapRect;
   let t = 0;
 
-  const G = '#FFD700', GD = 'rgba(255,215,0,', GB = '#c8a000';
+  const G = '#FFD700', GD = 'rgba(255,215,0,', GB = '#FFD700';
 
   // ── STARS ──
   const stars = [];
@@ -2100,12 +2065,12 @@ window.addEventListener('resize',()=>{
       const bright = 0.25 + 0.75 * ((Math.sin(t * s.speed + s.phase) + 1) * 0.5);
       ctx.save();
       ctx.globalAlpha = bright;
-      ctx.fillStyle = s.warm ? '#ffeebb' : '#cce8ff';
+      ctx.fillStyle = s.warm ? '#FFD700' : '#00ffff';
       ctx.shadowBlur = s.r > 1 ? 5 : 0;
-      ctx.shadowColor = s.warm ? '#ffcc44' : '#88ccff';
+      ctx.shadowColor = s.warm ? '#FFD700' : '#00ffff';
       ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2); ctx.fill();
       if (s.r > 1 && bright > 0.75) {
-        ctx.strokeStyle = s.warm ? '#ffcc44' : '#88ccff';
+        ctx.strokeStyle = s.warm ? '#FFD700' : '#00ffff';
         ctx.lineWidth = 0.4;
         ctx.globalAlpha = bright * 0.35;
         ctx.beginPath(); ctx.moveTo(s.x - s.r*3, s.y); ctx.lineTo(s.x + s.r*3, s.y); ctx.stroke();
@@ -2128,7 +2093,7 @@ window.addEventListener('resize',()=>{
       const p = 0.35 + 0.65 * ((Math.sin(t * n.speed + n.phase) + 1) * 0.5);
       ctx.save();
       ctx.fillStyle = `rgba(140,210,255,${p * 0.85})`;
-      ctx.shadowBlur = 5; ctx.shadowColor = '#88ccff';
+      ctx.shadowBlur = 5; ctx.shadowColor = '#00ffff';
       ctx.beginPath(); ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2); ctx.fill();
       ctx.restore();
     });
@@ -2143,7 +2108,7 @@ window.addEventListener('resize',()=>{
       ctx.save();
       ctx.strokeStyle = `rgba(200,230,255,${w.life * 0.55})`;
       ctx.lineWidth = 0.7;
-      ctx.shadowBlur = 3; ctx.shadowColor = '#aaddff';
+      ctx.shadowBlur = 3; ctx.shadowColor = '#00ffff';
       ctx.beginPath();
       ctx.moveTo(w.x, w.y);
       ctx.lineTo(w.x - Math.cos(w.angle) * w.len * w.life, w.y - Math.sin(w.angle) * w.len * w.life);
@@ -2490,7 +2455,7 @@ window.addEventListener('resize',()=>{
       ctx.font = '9px Share Tech Mono, monospace';
       ctx.textAlign = 'right';
       ctx.textBaseline = 'middle';
-      ctx.fillText('SYS:ONLINE // v2.3', mapRect.x + mapRect.w, mapRect.y + mapRect.h + (H - mapRect.y - mapRect.h) * 0.5);
+      ctx.fillText('SYS:ONLINE // v2.5', mapRect.x + mapRect.w, mapRect.y + mapRect.h + (H - mapRect.y - mapRect.h) * 0.5);
       ctx.restore();
     }
 
@@ -2601,7 +2566,7 @@ window.addEventListener('resize',()=>{
       if (b.lit) {
         const litPulse = 0.4 + 0.6 * Math.abs(Math.sin(t * 1.5 + b.litPhase));
         ctx.fillStyle = `rgba(255,100,80,${litPulse * 0.8})`;
-        ctx.shadowBlur = 6; ctx.shadowColor = '#ff6644';
+        ctx.shadowBlur = 6; ctx.shadowColor = '#FFD700';
         ctx.beginPath();
         ctx.arc(b.x + b.w * 0.5, b.y + b.h * 0.5, 1.5, 0, Math.PI * 2);
         ctx.fill();
@@ -2652,7 +2617,7 @@ window.addEventListener('resize',()=>{
           road: r,
           pos: Math.random(),
           speed: (0.0008 + Math.random() * 0.0016) * (fwd ? 1 : -1),
-          color: Math.random() < 0.3 ? '#ff8844' : '#00ffff',
+          color: Math.random() < 0.3 ? '#FFD700' : '#00ffff',
         });
       }
     });
@@ -2674,7 +2639,7 @@ window.addEventListener('resize',()=>{
       }
       if (isInMap(vx, vy, 6)) return;
       ctx.save();
-      ctx.fillStyle = v.color === '#ff8844' ? 'rgba(255,136,68,0.7)' : 'rgba(0,255,255,0.5)';
+      ctx.fillStyle = v.color === '#FFD700' ? 'rgba(255,215,0,0.7)' : 'rgba(0,255,255,0.5)';
       ctx.shadowBlur = 5; ctx.shadowColor = v.color;
       ctx.beginPath(); ctx.arc(vx, vy, 1.8, 0, Math.PI * 2); ctx.fill();
       // Tail light trail
@@ -2683,7 +2648,7 @@ window.addEventListener('resize',()=>{
       const dy = r.axis === 'v' ? -Math.sign(v.speed) * tailLen : 0;
       const trailGrad = ctx.createLinearGradient(vx + dx, vy + dy, vx, vy);
       trailGrad.addColorStop(0, v.color.replace(')', ',0)').replace('rgb', 'rgba'));
-      trailGrad.addColorStop(1, v.color === '#ff8844' ? 'rgba(255,136,68,0.4)' : 'rgba(0,255,255,0.3)');
+      trailGrad.addColorStop(1, v.color === '#FFD700' ? 'rgba(255,215,0,0.4)' : 'rgba(0,255,255,0.3)');
       ctx.strokeStyle = trailGrad;
       ctx.lineWidth = 1;
       ctx.beginPath(); ctx.moveTo(vx + dx, vy + dy); ctx.lineTo(vx, vy); ctx.stroke();
@@ -2785,7 +2750,7 @@ window.addEventListener('resize',()=>{
     ctx.save();
     ctx.strokeStyle = `rgba(0,255,200,${0.6 + pulse * 0.3})`;
     ctx.lineWidth = 1;
-    ctx.shadowBlur = 10; ctx.shadowColor = '#00ffcc';
+    ctx.shadowBlur = 10; ctx.shadowColor = '#00ffff';
 
     // L-bracket corners
     const arms = [[-1,-1],[1,-1],[1,1],[-1,1]];
@@ -2838,7 +2803,7 @@ window.addEventListener('resize',()=>{
       ctx.save();
       ctx.strokeStyle = `rgba(0,255,200,${ar.life * 0.25})`;
       ctx.lineWidth = 0.8;
-      ctx.shadowBlur = 4; ctx.shadowColor = '#00ffcc';
+      ctx.shadowBlur = 4; ctx.shadowColor = '#00ffff';
       ctx.beginPath(); ctx.arc(ar.x, ar.y, ar.r, 0, Math.PI * 2); ctx.stroke();
       ctx.restore();
     }
@@ -2857,7 +2822,7 @@ window.addEventListener('resize',()=>{
         y: b.y - 6,
         label: ['POI', 'TGT', 'OBJ', 'HOT', 'REC', 'SUS', 'MRK'][Math.floor(Math.random() * 7)],
         phase: Math.random() * Math.PI * 2,
-        color: Math.random() < 0.4 ? '#ff4444' : GD.replace('rgba(', '').replace(',', ',') + '1)'
+        color: Math.random() < 0.4 ? '#FFD700' : GD.replace('rgba(', '').replace(',', ',') + '1)'
       });
     });
   }
@@ -2866,13 +2831,13 @@ window.addEventListener('resize',()=>{
     poiMarkers.forEach(p => {
       if (isInMap(p.x, p.y, 8)) return;
       const pulse = 0.5 + 0.5 * Math.sin(t * 1.2 + p.phase);
-      const isRed = p.color === '#ff4444';
+      const isRed = p.color === '#FFD700';
       ctx.save();
       ctx.strokeStyle = isRed ? `rgba(255,68,68,${0.5 + pulse * 0.4})` : GD + (0.4 + pulse * 0.4) + ')';
       ctx.fillStyle   = isRed ? `rgba(255,68,68,${0.15 + pulse * 0.1})` : GD + (0.08 + pulse * 0.06) + ')';
       ctx.lineWidth = 0.8;
       ctx.shadowBlur = isRed ? 8 : 5;
-      ctx.shadowColor = isRed ? '#ff4444' : G;
+      ctx.shadowColor = isRed ? '#FFD700' : G;
       // Diamond
       const d = 4;
       ctx.beginPath();
@@ -2986,6 +2951,135 @@ document.querySelectorAll('.radio-list input[type="radio"]').forEach(radio => {
     }
   });
 });
+
+// === Scan Mesh Effect — draws ON TOP of map image ===
+(function() {
+  const sc = document.getElementById('scan-canvas');
+  const sctx = sc.getContext('2d');
+  const mapImg = document.getElementById('map');
+
+  let W, H, nodes = [], edges = [], beamY = 0, beamDir = 1, st = 0;
+
+  function resize() {
+    W = sc.width  = mapImg.offsetWidth;
+    H = sc.height = mapImg.offsetHeight;
+    buildNet();
+    beamY = 0;
+  }
+
+  function buildNet() {
+    nodes.length = 0; edges.length = 0;
+    const cols = 16, rows = 11;
+    const cw = W / cols, ch = H / rows;
+    for (let r = 0; r <= rows; r++) {
+      for (let c = 0; c <= cols; c++) {
+        nodes.push({
+          x: c * cw + (Math.random()-.5) * cw * 0.6,
+          y: r * ch + (Math.random()-.5) * ch * 0.6,
+          r: 1.3 + Math.random() * 1.2,
+          phase: Math.random() * Math.PI * 2,
+          sp: 0.4 + Math.random() * 0.7
+        });
+      }
+    }
+    const maxDist = cw * 1.7;
+    for (let i = 0; i < nodes.length; i++)
+      for (let j = i+1; j < nodes.length; j++) {
+        const dx = nodes[i].x-nodes[j].x, dy = nodes[i].y-nodes[j].y;
+        const d = Math.sqrt(dx*dx+dy*dy);
+        if (d < maxDist) edges.push({a:i, b:j});
+      }
+  }
+
+  function frame() {
+    if (!W || !H) { requestAnimationFrame(frame); return; }
+    sctx.clearRect(0, 0, W, H);
+    st += 0.016;
+
+    // Advance beam
+    beamY += 1.1 * beamDir;
+    if (beamY > H + 20) beamDir = -1;
+    if (beamY < -20)    beamDir =  1;
+
+    // Draw edges
+    edges.forEach(e => {
+      const na = nodes[e.a], nb = nodes[e.b];
+      const my = (na.y + nb.y) * 0.5;
+      const g = Math.max(0, 1 - Math.abs(my - beamY) / 60);
+      const base = 0.05 + 0.03 * Math.sin(st * 0.3 + e.a * 0.07);
+      const alpha = base + g * 0.6;
+      const R = Math.round(g*255), G2 = Math.round(g*215 + (1-g)*255), B = Math.round((1-g)*255);
+      sctx.save();
+      sctx.strokeStyle = `rgba(${R},${G2},${B},${alpha})`;
+      sctx.lineWidth = 0.5 + g * 0.9;
+      sctx.shadowBlur = g > 0.25 ? 7 : 0;
+      sctx.shadowColor = g > 0.25 ? 'rgba(255,215,0,0.7)' : 'rgba(0,255,255,0.3)';
+      sctx.beginPath(); sctx.moveTo(na.x, na.y); sctx.lineTo(nb.x, nb.y); sctx.stroke();
+      sctx.restore();
+    });
+
+    // Draw nodes
+    nodes.forEach(n => {
+      const g = Math.max(0, 1 - Math.abs(n.y - beamY) / 50);
+      const pulse = 0.3 + 0.7 * ((Math.sin(st * n.sp + n.phase)+1)*0.5);
+      const alpha = 0.1 + pulse*0.12 + g*0.8;
+      const radius = n.r + g * 3;
+      const R = Math.round(g*255), G2 = Math.round(g*215+(1-g)*255), B = Math.round((1-g)*255);
+      sctx.save();
+      sctx.shadowBlur = g > 0.35 ? 14 : 5;
+      sctx.shadowColor = g > 0.35 ? 'rgba(255,215,0,1)' : 'rgba(0,255,255,0.6)';
+      sctx.fillStyle = `rgba(${R},${G2},${B},${alpha})`;
+      sctx.beginPath(); sctx.arc(n.x, n.y, radius, 0, Math.PI*2); sctx.fill();
+      if (g > 0.5) {
+        sctx.fillStyle = `rgba(255,255,180,${g*0.95})`;
+        sctx.shadowBlur = 18; sctx.shadowColor = '#FFD700';
+        sctx.beginPath(); sctx.arc(n.x, n.y, 1.4, 0, Math.PI*2); sctx.fill();
+      }
+      sctx.restore();
+    });
+
+    // Gold scan beam
+    const bg = sctx.createLinearGradient(0, beamY-22, 0, beamY+8);
+    bg.addColorStop(0,    'rgba(255,215,0,0)');
+    bg.addColorStop(0.55, 'rgba(255,215,0,0.07)');
+    bg.addColorStop(0.88, 'rgba(255,215,0,0.20)');
+    bg.addColorStop(1,    'rgba(255,215,0,0.38)');
+    sctx.fillStyle = bg;
+    sctx.fillRect(0, beamY-22, W, 30);
+
+    // Bright leading edge
+    sctx.save();
+    sctx.strokeStyle = 'rgba(255,215,0,0.85)';
+    sctx.lineWidth = 1.5;
+    sctx.shadowBlur = 18; sctx.shadowColor = '#FFD700';
+    sctx.beginPath(); sctx.moveTo(0, beamY); sctx.lineTo(W, beamY); sctx.stroke();
+    // Faint trail
+    sctx.strokeStyle = 'rgba(255,215,0,0.15)';
+    sctx.lineWidth = 0.7; sctx.shadowBlur = 0;
+    sctx.beginPath(); sctx.moveTo(0, beamY+10); sctx.lineTo(W, beamY+10); sctx.stroke();
+    sctx.restore();
+
+    // Labels
+    const ly = Math.min(Math.max(beamY + 20, 14), H - 4);
+    sctx.save();
+    sctx.font = '9px "Share Tech Mono", monospace';
+    sctx.shadowBlur = 8; sctx.shadowColor = '#FFD700';
+    sctx.fillStyle = 'rgba(255,215,0,0.75)';
+    sctx.textAlign = 'right';
+    sctx.fillText('SCANNING...', W - 6, ly);
+    sctx.textAlign = 'left';
+    sctx.fillStyle = 'rgba(255,215,0,0.45)';
+    sctx.fillText('Y:' + Math.abs(Math.floor(beamY)) + 'px', 6, ly);
+    sctx.restore();
+
+    requestAnimationFrame(frame);
+  }
+
+  // Init after map image loads
+  if (mapImg.complete) { resize(); frame(); }
+  else mapImg.addEventListener('load', () => { resize(); frame(); });
+  window.addEventListener('resize', () => setTimeout(resize, 100));
+})();
 
 // === View counter ===
 let count = parseInt(localStorage.getItem('visitCount') || '0') + 1;
