@@ -100,6 +100,9 @@ header.hud-header {
   backdrop-filter: blur(12px);
   gap: 20px;
   animation: headerGlow 4s ease-in-out infinite;
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
 @keyframes headerGlow {
@@ -677,6 +680,9 @@ footer.hud-footer {
   color: rgba(0,255,255,0.35);
   gap: 16px;
   animation: headerGlow 4s ease-in-out infinite reverse;
+  position: sticky;
+  bottom: 0;
+  z-index: 100;
 }
 
 .footer-left { text-align: left; }
@@ -1070,7 +1076,7 @@ footer.hud-footer {
 <div id="app">
 
   <!-- ======== HEADER ======== -->
-  <header class="hud-header" style="position:relative;overflow:hidden;">
+  <header class="hud-header" style="overflow:hidden;">
     <div class="header-scan"></div>
 
     <div class="header-left">
