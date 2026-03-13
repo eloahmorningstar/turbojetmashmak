@@ -690,13 +690,7 @@ display: grid;
    FOOTER
 ============================================= */
 footer.hud-footer {
-flex-shrink: 0; /* Prevents the footer from squishing */
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center;
-  padding: 10px 28px;
-  border-top: 1px solid var(--border);
-  background: rgba(0,6,12,0.95);
+  flex-shrink: 0;
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
@@ -888,6 +882,153 @@ flex-shrink: 0; /* Prevents the footer from squishing */
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: rgba(0,255,255,0.2); border-radius: 4px; }
 ::-webkit-scrollbar-thumb:hover { background: rgba(0,255,255,0.5); }
+
+/* =============================================
+   VERGE MODAL
+============================================= */
+#verge-modal-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(0,0,0,0.8);
+  backdrop-filter: blur(6px);
+  align-items: center;
+  justify-content: center;
+}
+#verge-modal-backdrop.open { display: flex !important; }
+#verge-table-popup {
+  position: relative;
+  width: 94%;
+  max-width: 1200px;
+  max-height: 88vh;
+  overflow: auto;
+  background: rgba(4,12,22,0.98);
+  border: 1px solid var(--cyan);
+  border-radius: 12px;
+  box-shadow: 0 0 40px rgba(0,255,255,0.25), inset 0 0 60px rgba(0,0,0,0.5);
+  padding: 24px;
+}
+#close-verge-btn {
+  background: rgba(255,0,0,0.08);
+  color: rgba(255,80,80,0.8);
+  border: 1px solid rgba(255,0,0,0.3);
+  border-radius: 6px;
+  padding: 6px 14px;
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  transition: all 0.2s;
+}
+#close-verge-btn:hover { background: rgba(255,0,0,0.15); color: #ff4444; }
+
+#verge-table-popup table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+#verge-table-popup th {
+  background: rgba(0,255,255,0.08);
+  color: var(--cyan);
+  text-shadow: var(--glow-c);
+  padding: 10px 12px;
+  text-align: left;
+  letter-spacing: 2px;
+  font-size: 10px;
+  border: 1px solid rgba(0,255,255,0.2);
+  position: sticky;
+  top: 0;
+}
+
+#verge-table-popup td {
+  padding: 8px 12px;
+  border: 1px solid rgba(0,255,255,0.1);
+  color: rgba(0,255,255,0.75);
+  vertical-align: top;
+  line-height: 1.5;
+}
+
+#verge-table-popup td img {
+  width: 140px;
+  height: 140px;
+  object-fit: contain;
+  display: block;
+  cursor: zoom-in;
+  border: 1px solid rgba(0,255,255,0.15);
+  border-radius: 6px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  background: rgba(0,0,0,0.3);
+}
+
+#verge-table-popup td img.icon-inline {
+  width: auto;
+  height: auto;
+  max-width: none;
+  display: inline;
+  border: none;
+  border-radius: 0;
+  background: none;
+  cursor: default;
+  vertical-align: middle;
+}
+
+#verge-table-popup td img:hover {
+  border-color: var(--cyan);
+  box-shadow: var(--glow-c);
+}
+
+/* Map table striker images — small inline with name */
+/* Map preview images in verge table */
+#verge-table-popup td img.map-preview,
+#verge-table-popup td > img[src^="vergemap/"] {
+  width: 140px;
+  height: 90px;
+  object-fit: cover;
+  display: block;
+  cursor: zoom-in;
+  border: 1px solid rgba(0,255,255,0.15);
+  border-radius: 6px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  background: rgba(0,0,0,0.3);
+  margin-bottom: 6px;
+}
+#verge-table-popup td > img[src^="vergemap/"]:hover {
+  border-color: var(--cyan);
+  box-shadow: var(--glow-c);
+}
+
+#verge-table-popup td img.striker-inline {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  display: inline-block;
+  vertical-align: middle;
+  border: 1px solid rgba(0,255,255,0.2);
+  border-radius: 4px;
+  background: rgba(0,0,0,0.3);
+  margin: 3px 4px 3px 0;
+  cursor: zoom-in;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+#verge-table-popup td img.striker-inline:hover {
+  border-color: var(--cyan);
+  box-shadow: var(--glow-c);
+}
+
+#verge-table-popup tbody tr:nth-child(even) td {
+  background: rgba(0,255,255,0.03);
+}
+
+#verge-table-popup tbody tr:hover td {
+  background: rgba(0,255,255,0.06);
+}
+
+#verge-table-popup::-webkit-scrollbar { width: 8px; height: 8px; }
+#verge-table-popup::-webkit-scrollbar-track { background: rgba(0,255,255,0.03); border-radius: 8px; }
+#verge-table-popup::-webkit-scrollbar-thumb { background: var(--magenta); border-radius: 8px; box-shadow: var(--glow-m); }
+#verge-table-popup::-webkit-scrollbar-thumb:hover { background: var(--cyan); }
 
 /* =============================================
    RESPONSIVE
@@ -1229,7 +1370,8 @@ flex-shrink: 0; /* Prevents the footer from squishing */
 
       <div class="panel-section">
       <div class="panel-section-title">INTEL DATABASE</div>
-      <button class="hud-btn" id="open-table-btn">⊞ Advance Tips</button>
+      <button class="hud-btn" id="open-table-btn">⊞ Mashmak Tips</button>
+<button class="hud-btn" id="open-verge-btn">⊞ Verge Tips</button>
       </div>
 
 <div class="audio-player-container">
@@ -1334,51 +1476,180 @@ flex-shrink: 0; /* Prevents the footer from squishing */
           <tr><td><img src="research/reconbeacons.gif"></td><td>Recon Device Driver / Core<br><img src="research/matrixcredit.webp" class="icon-inline"> 80 – 400</td><td>10 – 50 minutes</td></tr>
           <tr><td><img src="research/decoy.gif"></td><td>Decoy Device Driver / Core<br><img src="research/matrixcredit.webp" class="icon-inline"> 100 – 800</td><td>4 – 20 hours</td></tr>
           <tr><td><img src="research/repairstations.gif"></td><td>Repair Station Driver / Core<br><img src="research/matrixcredit.webp" class="icon-inline"> 40 – 200</td><td>2 – 10 minutes</td></tr>
-
-          <tr><td><strong>Strikers</strong></td><td><strong>Strengths</strong></td><td><strong>Weaknesses</strong></td></tr>
-          <tr><td><img src="striker/Alphard.webp"></td><td>High AoE Damage (A) and excellent Chain Control (B). Effective at punishing grouped enemies.</td><td>Low Survivability (D) and slow Movement Speed (C). The Counter: Outlast the Burst — spread out to avoid AoE chains, engage after cooldowns expire.</td></tr>
-          <tr><td><img src="striker/ALYSSNES.webp"></td><td>High Handling (A) and solid all-around defense in Armored Form.</td><td>Lower Energy Defense (D) and Combat Range (D). The Counter: Long-Range Snipers or Energy-based Strikers.</td></tr>
-          <tr><td><img src="striker/AQUILLA.webp"></td><td>Maximum Combat Range (A) and strong Air Combat (B).</td><td>The Counter: High-Mobility Close-Quarters Strikers (like Falcon). Close the gap where its sniper rifle is less effective.</td></tr>
-          <tr><td><img src="striker/FALCON.webp"></td><td>Exceptional Air Combat (A), Handling (A), and Solo Combat (A).</td><td>Extremely low Armor (E) and Ballistic Defense (E). The Counter: Heavy Defenders or AOE Attackers.</td></tr>
-          <tr><td><img src="striker/FREYR.webp"></td><td>Balanced defenses (B/B/B) and solid Solo/Team combat.</td><td>Very low Air Combat (E) and Combat Range (D). The Counter: Aerial Strikers (Falcon) or Snipers.</td></tr>
-          <tr><td><img src="striker/HELL.webp"></td><td>High Energy Defense (B) and strong Support/Team Combat (B).</td><td>Low Ballistic Defense (D) and Air Combat (E). The Counter: Ballistic-focused Attackers.</td></tr>
-          <tr><td><img src="striker/HURRICANE.webp"></td><td>Maximum Armor (A) and Energy Defense (A).</td><td>Low Air Combat (D) and Handling (D). The Counter: Mobility and Physical/Blast Damage.</td></tr>
-          <tr><td><img src="striker/INFERNO.webp"></td><td>High Team Combat (A) and Energy Defense (A).</td><td>Low Solo Combat (D) and Support (E). The Counter: Solo Duelists — isolate it 1-on-1.</td></tr>
-          <tr><td><img src="striker/LUMINAE.webp"></td><td>Max Support (A) and Team Combat (A).</td><td>Lowest Armor (E) and Ballistic Defense (D). The Counter: Prioritize as a First Target — dive and delete.</td></tr>
-          <tr><td><img src="striker/MIKI.webp"></td><td>Max Ballistic Defense (A), Physical Defense (A), and Armor (A).</td><td>Very low Air Combat (E). The Counter: Energy-based Snipers and Aerial Combatants.</td></tr>
-          <tr><td><img src="striker/NARUKAMI.webp"></td><td>Max Combat Range (A) and Team Combat (B).</td><td>Lowest Armor (E) and Ballistic Defense (E). The Counter: Stealth or Fast Gap-Closers.</td></tr>
-          <tr><td><img src="striker/Norne.webp"></td><td>Team Buffing (A) and AoE Debuffing (B). Strong support and zone control.</td><td>Low Offensive Pressure (D) and fragile against burst (E). The Counter: Focus Fire & Disrupt — target her first in team fights.</td></tr>
-          <tr><td><img src="striker/PANTHER.webp"></td><td>High Handling (A) and Solo Combat (A); solid Armor (B).</td><td>Lowest Air Combat (E), Team Combat (E), and Support (E). The Counter: Aerial Suppression — hover above and kite.</td></tr>
-          <tr><td><img src="striker/PINAKA.webp"></td><td>Maximum Support (A) and strong Team Combat (B).</td><td>Low Solo Combat (D) and Air Combat (E). The Counter: Assassin Dive — bypass and force 1v1.</td></tr>
-          <tr><td><img src="striker/SERENITH.webp"></td><td>Maximum Team Combat (A) and decent Solo Combat (B) for a support.</td><td>Very low Ballistic DEF (E) and Armor (D). The Counter: Ballistic Artillery.</td></tr>
-          <tr><td><img src="striker/SKYRAIDER.webp"></td><td>Maximum Air Combat (A) and strong Team Combat (B).</td><td>Low Armor (D) and Combat Range (C). The Counter: Anti-Air Ballistics.</td></tr>
-          <tr><td><img src="striker/STEGO.webp"></td><td>Maximum Team Combat (A) and Physical DEF (A).</td><td>Lowest Air Combat (E) and Handling (D). The Counter: High-Mobility Energy Attackers — circle-strafe with energy damage.</td></tr>
-          <tr><td><img src="striker/STELLARUS.webp"></td><td>Maximum Solo Combat (A) and Handling (A); strong Physical DEF (B).</td><td>Lowest Team Combat (E), Support (E), and Combat Range (E). The Counter: Zoning and Range.</td></tr>
-          <tr><td><img src="striker/TRICERA.webp"></td><td>Max Armor (A), Team Combat (A), Support (A), and Ballistic/Blast/Physical DEF (A).</td><td>Lowest Air Combat (E) and Energy DEF (C). The Counter: Energy Bombardment — stay airborne.</td></tr>
-          <tr><td><img src="striker/WELKIN.webp"></td><td>Maximum Physical DEF (A) and solid Solo/Team Combat (B).</td><td>Lowest Air Combat (E) and low Combat Range (D). The Counter: Kiting — exploit its low range with ranged strikers.</td></tr>
-
-          <tr><td><strong>Tier</strong></td><td><strong>Role</strong></td><td><strong>Reason</strong></td></tr>
-          <tr><td>Tier S: PINAKA</td><td>Medium Support</td><td>Repeatedly flagged as overpowered — topped win rates even after nerfs, devs watching closely</td></tr>
-          <tr><td>Tier S: MIKILLJA</td><td>Ultra-Heavy Attacker</td><td>Dominated Season 2 meta, environment kills, high pick rates, required multiple nerfs</td></tr>
-          <tr><td>Tier S: NORNE</td><td>Light Sniper</td><td>Top-tier utilization rate at S2 launch, then buffed further in Dec patch</td></tr>
-          <tr><td>Tier A: SERENITH</td><td>Light Support</td><td>Overperforming in specific match types, received nerf in S3</td></tr>
-          <tr><td>Tier A: ALPHARD</td><td>Medium Attacker</td><td>Overperforming in S3, nerfed; strong frontline bombardment kit</td></tr>
-          <tr><td>Tier A: NARUKAMI</td><td>Light Sniper</td><td>Consistent top presence, buffed extensively, Kanon TYPE-S variant is premium unlock</td></tr>
-          <tr><td>Tier A: STELLARUS</td><td>Light Brawler</td><td>Buffed multiple times through S1 and S2, solid stealth assassin</td></tr>
-          <tr><td>Tier B: HEL</td><td>Medium Attacker</td><td>Multiple buffs; versatile but skill-dependent</td></tr>         
-          <tr><td>Tier B: WELKIN</td><td>Heavy Brawler</td><td>Multiple balance tweaks; Defense Field nerfed but remains viable</td></tr>
-          <tr><td>Tier B: PANTHER</td><td>Medium Brawler</td><td>Received buffs in S3 (better Lance feel, shield restores); also got CUSTOM</td></tr>
-          <tr><td>Tier B: INFERNO</td><td>Ultra-Heavy Attacker</td><td>Several nerfs but energy/reload buffs helped; strong but inconsistent</td></tr>
-          <tr><td>Tier B: LUMINAE</td><td>Light Support</td><td>Buffed in S3 with lock-on and cooldown improvements; got CUSTOM</td></tr> 
-          <tr><td>Tier B: FREYR</td><td>Heavy Attacker</td><td>Brand new in S3 — too early to place higher; bug-heavy launch, devs monitoring</td></tr>
-          <tr><td>Tier B: HURRICANE</td><td>Ultra-Heavy Defender</td><td>Consistently underperforming its defender role; multiple reworks ongoing</td></tr>          
-          <tr><td>Tier C: ALYSNES</td><td>Medium Attacker</td><td>Balanced across patches, not flagged as over/undertuned</td></tr>
-          <tr><td>Tier C: SKYRAIDER</td><td>Medium Attacker</td><td>Hit with nerfs in S1, then given reload buff in S2</td></tr>
-          <tr><td>Tier C: TRICERA</td><td>Ultra-Heavy Defender</td><td>Buffed in S3 but previously considered slow/exploitable</td></tr>
-          <tr><td>Tier C: STEGO</td><td>Ultra-Heavy Attacker</td><td>Buffed in S3, but consistently struggled in fast-paced battles</td></tr>
-          <tr><td>Tier C: AQUILA</td><td>Heavy Sniper</td><td>Low play rates, modest buffs; energy regen nerfs hurt sustain</td></tr>
-          <tr><td>Tier C: FALCON</td><td>Light Attacker</td><td>High skill ceiling but low impact; devs acknowledged "not making much impact" in S2</td></tr>
           
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div id="verge-modal-backdrop">
+  <div id="verge-table-popup">
+    <div class="popup-header">
+      <h2>VERGE TIPS</h2>
+      <button id="close-verge-btn">✕ CLOSE</button>
+    </div>
+    <div style="overflow-x:auto;">
+      <table>
+        <thead>
+          <tr>
+            <th>Map</th>
+            <th>Objective / Map Characteristics</th>
+            <th>Strong Strikers</th>
+          </tr>
+        </thead>
+        <tbody>
+         
+          <tr>
+            <td><img src="verge/eyeofmisra.webp">Eye of Misra</td>
+            <td>Upload Keys — Medium map with vertical platforms and mid-range sightlines</td>
+            <td style="display:flex;flex-wrap:wrap;align-items:center;gap:4px;">
+              <span style="display:inline-flex;align-items:center;gap:4px;margin:3px 8px 3px 0;white-space:nowrap;"><img class="striker-inline" src="striker/NARUKAMI.webp"> <span style="font-size:10px;color:rgba(0,255,255,0.8);">Narukami</span></span>
+              <span style="display:inline-flex;align-items:center;gap:4px;margin:3px 8px 3px 0;white-space:nowrap;"><img class="striker-inline" src="striker/FALCON.webp"> <span style="font-size:10px;color:rgba(0,255,255,0.8);">Falcon</span></span>
+              <span style="display:inline-flex;align-items:center;gap:4px;margin:3px 8px 3px 0;white-space:nowrap;"><img class="striker-inline" src="striker/PANTHER.webp"> <span style="font-size:10px;color:rgba(0,255,255,0.8);">Panther</span></span>
+              <span style="display:inline-flex;align-items:center;gap:4px;margin:3px 8px 3px 0;white-space:nowrap;"><img class="striker-inline" src="striker/PINAKA.webp"> <span style="font-size:10px;color:rgba(0,255,255,0.8);">Pinaka</span></span>
+            </td>
+          </tr>
+          <tr>
+            <td><img src="verge/vigilimbrium.webp">Vigil Imbrium</td>
+            <td>Upload Keys — Open terrain with long sniper angles and tall structures</td>
+            <td style="display:flex;flex-wrap:wrap;align-items:center;gap:4px;">
+              <span style="display:inline-flex;align-items:center;gap:4px;margin:3px 8px 3px 0;white-space:nowrap;"><img class="striker-inline" src="striker/NARUKAMI.webp"> <span style="font-size:10px;color:rgba(0,255,255,0.8);">Narukami</span></span>
+              <span style="display:inline-flex;align-items:center;gap:4px;margin:3px 8px 3px 0;white-space:nowrap;"><img class="striker-inline" src="striker/AQUILLA.webp"> <span style="font-size:10px;color:rgba(0,255,255,0.8);">Aquila</span></span>
+              <span style="display:inline-flex;align-items:center;gap:4px;margin:3px 8px 3px 0;white-space:nowrap;"><img class="striker-inline" src="striker/FALCON.webp"> <span style="font-size:10px;color:rgba(0,255,255,0.8);">Falcon</span></span>
+              <span style="display:inline-flex;align-items:center;gap:4px;margin:3px 8px 3px 0;white-space:nowrap;"><img class="striker-inline" src="striker/PINAKA.webp"> <span style="font-size:10px;color:rgba(0,255,255,0.8);">Pinaka</span></span>
+            </td>
+          </tr>
+          <tr>
+            <td><img src="verge/kraubsinkhole.webp">Kraub Sinkhole</td>
+            <td>Capture Data Nodes — Circular arena with heavy point fighting and close combat</td>
+            <td style="display:flex;flex-wrap:wrap;align-items:center;gap:4px;">
+              <span style="display:inline-flex;align-items:center;gap:4px;margin:3px 8px 3px 0;white-space:nowrap;"><img class="striker-inline" src="striker/TRICERA.webp"> <span style="font-size:10px;color:rgba(0,255,255,0.8);">Tricera</span></span>
+              <span style="display:inline-flex;align-items:center;gap:4px;margin:3px 8px 3px 0;white-space:nowrap;"><img class="striker-inline" src="striker/WELKIN.webp"> <span style="font-size:10px;color:rgba(0,255,255,0.8);">Welkin</span></span>
+              <span style="display:inline-flex;align-items:center;gap:4px;margin:3px 8px 3px 0;white-space:nowrap;"><img class="striker-inline" src="striker/STEGO.webp"> <span style="font-size:10px;color:rgba(0,255,255,0.8);">Stego</span></span>
+              <span style="display:inline-flex;align-items:center;gap:4px;margin:3px 8px 3px 0;white-space:nowrap;"><img class="striker-inline" src="striker/PINAKA.webp"> <span style="font-size:10px;color:rgba(0,255,255,0.8);">Pinaka</span></span>
+            </td>
+          </tr>
+          <tr>
+            <td><img src="verge/poseidonarmory.webp">Poseidon Armory</td>
+            <td>Capture Data Nodes — Indoor corridors and chokepoints favor close-range brawls</td>
+            <td style="display:flex;flex-wrap:wrap;align-items:center;gap:4px;">
+              <span style="display:inline-flex;align-items:center;gap:4px;margin:3px 8px 3px 0;white-space:nowrap;"><img class="striker-inline" src="striker/WELKIN.webp"> <span style="font-size:10px;color:rgba(0,255,255,0.8);">Welkin</span></span>
+              <span style="display:inline-flex;align-items:center;gap:4px;margin:3px 8px 3px 0;white-space:nowrap;"><img class="striker-inline" src="striker/PANTHER.webp"> <span style="font-size:10px;color:rgba(0,255,255,0.8);">Panther</span></span>
+              <span style="display:inline-flex;align-items:center;gap:4px;margin:3px 8px 3px 0;white-space:nowrap;"><img class="striker-inline" src="striker/INFERNO.webp"> <span style="font-size:10px;color:rgba(0,255,255,0.8);">Inferno</span></span>
+              <span style="display:inline-flex;align-items:center;gap:4px;margin:3px 8px 3px 0;white-space:nowrap;"><img class="striker-inline" src="striker/TRICERA.webp"> <span style="font-size:10px;color:rgba(0,255,255,0.8);">Tricera</span></span>
+            </td>
+          </tr>
+          <tr>
+            <td><img src="verge/palmbayharbor.webp">Palmbay Harbor</td>
+            <td>Escort Payload — Long escort path with high-ground defense positions</td>
+            <td style="display:flex;flex-wrap:wrap;align-items:center;gap:4px;">
+              <span style="display:inline-flex;align-items:center;gap:4px;margin:3px 8px 3px 0;white-space:nowrap;"><img class="striker-inline" src="striker/TRICERA.webp"> <span style="font-size:10px;color:rgba(0,255,255,0.8);">Tricera</span></span>
+              <span style="display:inline-flex;align-items:center;gap:4px;margin:3px 8px 3px 0;white-space:nowrap;"><img class="striker-inline" src="striker/STEGO.webp"> <span style="font-size:10px;color:rgba(0,255,255,0.8);">Stego</span></span>
+              <span style="display:inline-flex;align-items:center;gap:4px;margin:3px 8px 3px 0;white-space:nowrap;"><img class="striker-inline" src="striker/PINAKA.webp"> <span style="font-size:10px;color:rgba(0,255,255,0.8);">Pinaka</span></span>
+              <span style="display:inline-flex;align-items:center;gap:4px;margin:3px 8px 3px 0;white-space:nowrap;"><img class="striker-inline" src="striker/FALCON.webp"> <span style="font-size:10px;color:rgba(0,255,255,0.8);">Falcon</span></span>
+            </td>
+          </tr>
+          <tr>
+            <td><img src="verge/longmenlaunchsite.webp">Longmen Launch Site</td>
+            <td>Escort Payload — Large open launch complex with vertical structures</td>
+            <td style="display:flex;flex-wrap:wrap;align-items:center;gap:4px;">
+              <span style="display:inline-flex;align-items:center;gap:4px;margin:3px 8px 3px 0;white-space:nowrap;"><img class="striker-inline" src="striker/TRICERA.webp"> <span style="font-size:10px;color:rgba(0,255,255,0.8);">Tricera</span></span>
+              <span style="display:inline-flex;align-items:center;gap:4px;margin:3px 8px 3px 0;white-space:nowrap;"><img class="striker-inline" src="striker/NARUKAMI.webp"> <span style="font-size:10px;color:rgba(0,255,255,0.8);">Narukami</span></span>
+              <span style="display:inline-flex;align-items:center;gap:4px;margin:3px 8px 3px 0;white-space:nowrap;"><img class="striker-inline" src="striker/SKYRAIDER.webp"> <span style="font-size:10px;color:rgba(0,255,255,0.8);">Skyraider</span></span>
+              <span style="display:inline-flex;align-items:center;gap:4px;margin:3px 8px 3px 0;white-space:nowrap;"><img class="striker-inline" src="striker/PINAKA.webp"> <span style="font-size:10px;color:rgba(0,255,255,0.8);">Pinaka</span></span>
+            </td>
+          </tr>
+          <tr>
+            <td><img src="verge/gracelynnskycity.webp">Gracelynn Skycity</td>
+            <td>Team Deathmatch — Highly vertical city environment with rooftop combat</td>
+            <td style="display:flex;flex-wrap:wrap;align-items:center;gap:4px;">
+              <span style="display:inline-flex;align-items:center;gap:4px;margin:3px 8px 3px 0;white-space:nowrap;"><img class="striker-inline" src="striker/FALCON.webp"> <span style="font-size:10px;color:rgba(0,255,255,0.8);">Falcon</span></span>
+              <span style="display:inline-flex;align-items:center;gap:4px;margin:3px 8px 3px 0;white-space:nowrap;"><img class="striker-inline" src="striker/SKYRAIDER.webp"> <span style="font-size:10px;color:rgba(0,255,255,0.8);">Skyraider</span></span>
+              <span style="display:inline-flex;align-items:center;gap:4px;margin:3px 8px 3px 0;white-space:nowrap;"><img class="striker-inline" src="striker/STELLARUS.webp"> <span style="font-size:10px;color:rgba(0,255,255,0.8);">Stellarus</span></span>
+              <span style="display:inline-flex;align-items:center;gap:4px;margin:3px 8px 3px 0;white-space:nowrap;"><img class="striker-inline" src="striker/NARUKAMI.webp"> <span style="font-size:10px;color:rgba(0,255,255,0.8);">Narukami</span></span>
+            </td>
+          </tr>
+          <tr>
+            <td><img src="verge/babylonskyfortress.webp">Babylon Sky Fortress</td>
+            <td>Team Deathmatch — Industrial structures with multiple flank routes</td>
+            <td style="display:flex;flex-wrap:wrap;align-items:center;gap:4px;">
+              <span style="display:inline-flex;align-items:center;gap:4px;margin:3px 8px 3px 0;white-space:nowrap;"><img class="striker-inline" src="striker/PANTHER.webp"> <span style="font-size:10px;color:rgba(0,255,255,0.8);">Panther</span></span>
+              <span style="display:inline-flex;align-items:center;gap:4px;margin:3px 8px 3px 0;white-space:nowrap;"><img class="striker-inline" src="striker/WELKIN.webp"> <span style="font-size:10px;color:rgba(0,255,255,0.8);">Welkin</span></span>
+              <span style="display:inline-flex;align-items:center;gap:4px;margin:3px 8px 3px 0;white-space:nowrap;"><img class="striker-inline" src="striker/STEGO.webp"> <span style="font-size:10px;color:rgba(0,255,255,0.8);">Stego</span></span>
+              <span style="display:inline-flex;align-items:center;gap:4px;margin:3px 8px 3px 0;white-space:nowrap;"><img class="striker-inline" src="striker/PINAKA.webp"> <span style="font-size:10px;color:rgba(0,255,255,0.8);">Pinaka</span></span>
+            </td>
+          </tr>
+          <tr>
+            <td><img src="verge/capeblancobserbatory.webp">Cape Blanc Observatory</td>
+            <td>Destroy Extractors — Multi-level defensive terrain and siege fights</td>
+            <td style="display:flex;flex-wrap:wrap;align-items:center;gap:4px;">
+              <span style="display:inline-flex;align-items:center;gap:4px;margin:3px 8px 3px 0;white-space:nowrap;"><img class="striker-inline" src="striker/INFERNO.webp"> <span style="font-size:10px;color:rgba(0,255,255,0.8);">Inferno</span></span>
+              <span style="display:inline-flex;align-items:center;gap:4px;margin:3px 8px 3px 0;white-space:nowrap;"><img class="striker-inline" src="striker/STEGO.webp"> <span style="font-size:10px;color:rgba(0,255,255,0.8);">Stego</span></span>
+              <span style="display:inline-flex;align-items:center;gap:4px;margin:3px 8px 3px 0;white-space:nowrap;"><img class="striker-inline" src="striker/NARUKAMI.webp"> <span style="font-size:10px;color:rgba(0,255,255,0.8);">Narukami</span></span>
+              <span style="display:inline-flex;align-items:center;gap:4px;margin:3px 8px 3px 0;white-space:nowrap;"><img class="striker-inline" src="striker/PINAKA.webp"> <span style="font-size:10px;color:rgba(0,255,255,0.8);">Pinaka</span></span>
+            </td>
+          </tr>
+          <tr>
+            <td><img src="verge/stellaobserbatoryisle.webp">Stella Observatory Island</td>
+            <td>Destroy Extractors — Open island terrain with strong sniper sightlines</td>
+            <td style="display:flex;flex-wrap:wrap;align-items:center;gap:4px;">
+              <span style="display:inline-flex;align-items:center;gap:4px;margin:3px 8px 3px 0;white-space:nowrap;"><img class="striker-inline" src="striker/NARUKAMI.webp"> <span style="font-size:10px;color:rgba(0,255,255,0.8);">Narukami</span></span>
+              <span style="display:inline-flex;align-items:center;gap:4px;margin:3px 8px 3px 0;white-space:nowrap;"><img class="striker-inline" src="striker/FALCON.webp"> <span style="font-size:10px;color:rgba(0,255,255,0.8);">Falcon</span></span>
+              <span style="display:inline-flex;align-items:center;gap:4px;margin:3px 8px 3px 0;white-space:nowrap;"><img class="striker-inline" src="striker/AQUILLA.webp"> <span style="font-size:10px;color:rgba(0,255,255,0.8);">Aquila</span></span>
+              <span style="display:inline-flex;align-items:center;gap:4px;margin:3px 8px 3px 0;white-space:nowrap;"><img class="striker-inline" src="striker/PANTHER.webp"> <span style="font-size:10px;color:rgba(0,255,255,0.8);">Panther</span></span>
+            </td>
+          </tr>
+
+          <tr><td colspan="3" style="padding:16px 0 4px;"><strong style="font-size:12px;letter-spacing:3px;color:var(--cyan);text-shadow:var(--glow-c);">▸ VERGE RANKED TIER LIST</strong></td></tr>
+          <tr><td><strong>Tier</strong></td><td><strong>Striker</strong></td><td><strong>Role</strong></td></tr>
+
+          <tr>
+            <td style="color:#FFD700;text-shadow:0 0 8px #FFD700,0 0 20px rgba(255,215,0,0.5);font-weight:900;font-size:15px;letter-spacing:2px;">S</td>
+            <td style="display:flex;flex-wrap:wrap;align-items:center;gap:6px;">
+              <span style="display:inline-flex;align-items:center;gap:4px;white-space:nowrap;"><img class="striker-inline" src="striker/SERENITH.webp"> <span style="font-size:10px;color:rgba(0,255,255,0.8);">Serenith</span></span>
+              <span style="display:inline-flex;align-items:center;gap:4px;white-space:nowrap;"><img class="striker-inline" src="striker/LUMINAE.webp"> <span style="font-size:10px;color:rgba(0,255,255,0.8);">Luminae</span></span>
+              <span style="display:inline-flex;align-items:center;gap:4px;white-space:nowrap;"><img class="striker-inline" src="striker/WELKIN.webp"> <span style="font-size:10px;color:rgba(0,255,255,0.8);">Welkin</span></span>
+              <span style="display:inline-flex;align-items:center;gap:4px;white-space:nowrap;"><img class="striker-inline" src="striker/FREYR.webp"> <span style="font-size:10px;color:rgba(0,255,255,0.8);">Freyr</span></span>
+              <span style="display:inline-flex;align-items:center;gap:4px;white-space:nowrap;"><img class="striker-inline" src="striker/Norne.webp"> <span style="font-size:10px;color:rgba(0,255,255,0.8);">Norne</span></span>
+              <span style="display:inline-flex;align-items:center;gap:4px;white-space:nowrap;"><img class="striker-inline" src="striker/MIKI.webp"> <span style="font-size:10px;color:rgba(0,255,255,0.8);">Mikillja</span></span>
+            </td>
+            <td style="font-size:11px;color:rgba(255,215,0,0.8);">Dominant picks — highest win rate and survivability in ranked Verge. Priority bans/picks.</td>
+          </tr>
+
+          <tr>
+            <td style="color:#ff6ec7;text-shadow:0 0 8px #ff6ec7,0 0 20px rgba(255,110,199,0.5);font-weight:900;font-size:15px;letter-spacing:2px;">A</td>
+            <td style="display:flex;flex-wrap:wrap;align-items:center;gap:6px;">
+              <span style="display:inline-flex;align-items:center;gap:4px;white-space:nowrap;"><img class="striker-inline" src="striker/AQUILLA.webp"> <span style="font-size:10px;color:rgba(0,255,255,0.8);">Aquila</span></span>
+              <span style="display:inline-flex;align-items:center;gap:4px;white-space:nowrap;"><img class="striker-inline" src="striker/STEGO.webp"> <span style="font-size:10px;color:rgba(0,255,255,0.8);">Stego</span></span>
+              <span style="display:inline-flex;align-items:center;gap:4px;white-space:nowrap;"><img class="striker-inline" src="striker/FALCON.webp"> <span style="font-size:10px;color:rgba(0,255,255,0.8);">Falcon</span></span>
+            </td>
+            <td style="font-size:11px;color:rgba(255,110,199,0.8);">Strong performers — reliable in most ranked scenarios with good map coverage.</td>
+          </tr>
+
+          <tr>
+            <td style="color:#00cfff;text-shadow:0 0 8px #00cfff,0 0 20px rgba(0,207,255,0.5);font-weight:900;font-size:15px;letter-spacing:2px;">B</td>
+            <td style="display:flex;flex-wrap:wrap;align-items:center;gap:6px;">
+              <span style="display:inline-flex;align-items:center;gap:4px;white-space:nowrap;"><img class="striker-inline" src="striker/PINAKA.webp"> <span style="font-size:10px;color:rgba(0,255,255,0.8);">Pinaka</span></span>
+              <span style="display:inline-flex;align-items:center;gap:4px;white-space:nowrap;"><img class="striker-inline" src="striker/HELL.webp"> <span style="font-size:10px;color:rgba(0,255,255,0.8);">Hel</span></span>
+              <span style="display:inline-flex;align-items:center;gap:4px;white-space:nowrap;"><img class="striker-inline" src="striker/Alphard.webp"> <span style="font-size:10px;color:rgba(0,255,255,0.8);">Alphard</span></span>
+              <span style="display:inline-flex;align-items:center;gap:4px;white-space:nowrap;"><img class="striker-inline" src="striker/PANTHER.webp"> <span style="font-size:10px;color:rgba(0,255,255,0.8);">Panther</span></span>
+              <span style="display:inline-flex;align-items:center;gap:4px;white-space:nowrap;"><img class="striker-inline" src="striker/INFERNO.webp"> <span style="font-size:10px;color:rgba(0,255,255,0.8);">Inferno</span></span>
+              <span style="display:inline-flex;align-items:center;gap:4px;white-space:nowrap;"><img class="striker-inline" src="striker/HURRICANE.webp"> <span style="font-size:10px;color:rgba(0,255,255,0.8);">Hurricane</span></span>
+              <span style="display:inline-flex;align-items:center;gap:4px;white-space:nowrap;"><img class="striker-inline" src="striker/SKYRAIDER.webp"> <span style="font-size:10px;color:rgba(0,255,255,0.8);">Skyraider</span></span>
+            </td>
+            <td style="font-size:11px;color:rgba(0,207,255,0.8);">Viable picks — situationally strong. Good in the right team comp or map.</td>
+          </tr>
+
+          <tr>
+            <td style="color:#aaaaaa;text-shadow:0 0 6px #aaaaaa;font-weight:900;font-size:15px;letter-spacing:2px;">C</td>
+            <td style="display:flex;flex-wrap:wrap;align-items:center;gap:6px;">
+              <span style="display:inline-flex;align-items:center;gap:4px;white-space:nowrap;"><img class="striker-inline" src="striker/ALYSSNES.webp"> <span style="font-size:10px;color:rgba(0,255,255,0.8);">Alysnes</span></span>
+              <span style="display:inline-flex;align-items:center;gap:4px;white-space:nowrap;"><img class="striker-inline" src="striker/TRICERA.webp"> <span style="font-size:10px;color:rgba(0,255,255,0.8);">Tricera</span></span>
+              <span style="display:inline-flex;align-items:center;gap:4px;white-space:nowrap;"><img class="striker-inline" src="striker/STELLARUS.webp"> <span style="font-size:10px;color:rgba(0,255,255,0.8);">Stellarus</span></span>
+            </td>
+            <td style="font-size:11px;color:rgba(170,170,170,0.8);">Below average — outclassed by higher tiers in most ranked scenarios. Use only if mastered.</td>
+          </tr>
         </tbody>
       </table>
     </div>
@@ -2020,12 +2291,31 @@ document.getElementById('table-popup').addEventListener('click', e => {
   }
 });
 
+document.getElementById('verge-table-popup').addEventListener('click', e => {
+  if (e.target.tagName === 'IMG') {
+    lightboxImg.src = e.target.src;
+    lightbox.classList.add('open');
+    e.stopPropagation();
+  }
+});
+
 lightbox.addEventListener('click', () => lightbox.classList.remove('open'));
-document.addEventListener('keydown', e => { if (e.key === 'Escape') lightbox.classList.remove('open'); });
 const backdrop = document.getElementById('modal-backdrop');
 document.getElementById('open-table-btn').addEventListener('click', () => backdrop.classList.add('open'));
 document.getElementById('close-table-btn').addEventListener('click', () => backdrop.classList.remove('open'));
 backdrop.addEventListener('click', e => { if (e.target === backdrop) backdrop.classList.remove('open'); });
+
+const vergeBackdrop = document.getElementById('verge-modal-backdrop');
+document.getElementById('open-verge-btn').addEventListener('click', () => vergeBackdrop.classList.add('open'));
+document.getElementById('close-verge-btn').addEventListener('click', () => vergeBackdrop.classList.remove('open'));
+vergeBackdrop.addEventListener('click', e => { if (e.target === vergeBackdrop) vergeBackdrop.classList.remove('open'); });
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    lightbox.classList.remove('open');
+    backdrop.classList.remove('open');
+    vergeBackdrop.classList.remove('open');
+  }
+});
 
 // === Audio ===
 const audio = document.getElementById('myAudio');
