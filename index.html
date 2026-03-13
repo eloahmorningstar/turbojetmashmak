@@ -51,7 +51,7 @@
 
 html, body {
   height: 100%;
-  background: var(--bg);
+  background: transparent;
   color: var(--cyan);
   font-family: var(--font-hud);
   overflow-x: hidden;
@@ -72,7 +72,7 @@ canvas#bg-canvas {
   position: fixed;
   inset: 0;
   z-index: 1;
-  background: radial-gradient(ellipse at 50% 0%, rgba(0,40,60,0.6) 0%, rgba(6,8,16,0.85) 70%);
+  background: radial-gradient(ellipse at 50% 0%, rgba(0,20,40,0.15) 0%, rgba(0,2,10,0.35) 100%);
   pointer-events: none;
 }
 
@@ -296,7 +296,7 @@ display: grid;
 .map-area {
   position: relative;
   overflow: auto;
-  background: #000;
+  background: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1537,130 +1537,12 @@ footer.hud-footer {
       <table>
         <thead>
           <tr>
-            <th>Section</th>
-            <th>Topic</th>
-            <th>Key Details</th>
+            <th>Map</th>
+            <th>Objective / Map Characteristics</th>
+            <th>Strong Strikers</th>
           </tr>
         </thead>
         <tbody>
-          <tr><td>Overview</td><td>What is The Verge</td><td>The Verge is a high-intensity PvPvE mode set in a collapsed orbital zone. Teams compete for scarce resources while fighting both enemy mechs and dangerous NPC threats. Speed, adaptability, and target priority are essential.</td></tr>
-          <tr><td>Overview</td><td>Core Objective</td><td>Secure energy cores, eliminate rival teams, and extract before the zone collapses. Solo extraction with a full load of cores yields the highest rewards.</td></tr>
-          <tr><td>Preparation</td><td>Recommended Loadout</td><td>Prioritize mobility weapons: Charge Blaster, Twin Rocket Launcher, Thermal Sword. Carry at least 2 Repair Kits and 1 Extraction Beacon. Tier 5 Gliders strongly recommended.</td></tr>
-          <tr><td>Preparation</td><td>Recommended Mechs</td><td>Alphard: Best for fast core scouting and evasion. Falcon: Top-tier aerial duelist. Narukami: Long-range suppression. Stellarus: Stealth assassin for surprise eliminations. Serenith: Sustained team support.</td></tr>
-          <tr><td>Preparation</td><td>Key Items</td><td>Must bring: Extraction Beacon, 2 Repair Kits, ammo reserves. Optional: Recon Beacon (to track enemy positions), Decoy Device (to bait enemies away from cores).</td></tr>
-          <tr><td>Core Strategy</td><td>Entry Priority</td><td>Land near the outer core clusters first — center cores draw immediate PvP. Secure 2–3 outer cores before rotating inward.</td></tr>
-          <tr><td>Core Strategy</td><td>Core Collection</td><td>Do not stack all cores on one player. Distribute evenly across the team. If one player is eliminated, the team doesn't lose everything.</td></tr>
-          <tr><td>Core Strategy</td><td>When to Fight</td><td>Engage only when you have positional advantage or numerical superiority. Avoid 1v2+ situations. Disengage and reposition if outnumbered — cores are more valuable than kills.</td></tr>
-          <tr><td>Core Strategy</td><td>Extraction Timing</td><td>Begin extraction when the zone is at 40% collapse or earlier if enemy pressure is high. Do not wait until the last moment — extraction takes time and enemies will camp beacons.</td></tr>
-          <tr><td>Boss Strategy</td><td>Zone Guardians</td><td>Heavy NPC Guardians patrol high-value core zones. Use burst weapons to eliminate quickly. Guardians drop bonus cores and temp buffs — always worth clearing if safe.</td></tr>
-          <tr><td>Boss Strategy</td><td>Guardian Weak Spots</td><td>Most Guardians have exposed energy cores on their back or under the chassis. Flank and use Howitzer / Charge Blaster for fast kills. DPS window is short — coordinate with team.</td></tr>
-          <tr><td>Advanced Techniques</td><td>Beacon Baiting</td><td>Place a Decoy Extraction Beacon away from your real extraction point to lure enemy teams into a false ambush zone while your team safely extracts elsewhere.</td></tr>
-          <tr><td>Advanced Techniques</td><td>Recon Usage</td><td>Deploy Recon Beacons at chokepoints early. Real-time enemy tracking gives your team a decisive positional edge during late-zone rotations.</td></tr>
-          <tr><td>Advanced Techniques</td><td>Melee Boost Travel</td><td>Use melee swings without hitting to sustain airspeed between zones. Combine with Tier 5 Glider for near-continuous aerial movement across the map.</td></tr>
-          <tr><td>Advanced Techniques</td><td>Zone Collapse Exploit</td><td>Collapse damage hurts enemies too. Lure pursuing enemies into the collapsing edge — zone damage + your burst DPS can finish off low-HP mechs quickly.</td></tr>
-          <tr>
-            <td>Team Roles</td>
-            <td>🔍 Scout</td>
-            <td>
-              <div style="margin-bottom:8px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;">
-                <span style="display:inline-flex;align-items:center;gap:4px;"><img class="striker-inline" src="striker/Alphard.webp"><span style="font-size:10px;color:rgba(0,255,255,0.8);">Alphard</span></span>
-                <span style="display:inline-flex;align-items:center;gap:4px;"><img class="striker-inline" src="striker/SKYRAIDER.webp"><span style="font-size:10px;color:rgba(0,255,255,0.8);">Skyraider</span></span>
-                <span style="display:inline-flex;align-items:center;gap:4px;"><img class="striker-inline" src="striker/FALCON.webp"><span style="font-size:10px;color:rgba(0,255,255,0.8);">Falcon</span></span>
-              </div>
-              <strong style="color:var(--cyan);font-size:10px;">PRIMARY DUTIES:</strong><br>
-              Deploy Recon Beacons at high-traffic chokepoints immediately on landing. Mark all enemy positions in real time — your intel dictates the whole team's decision-making. Identify which zone cluster enemies are rotating toward and relay early.<br><br>
-              <strong style="color:var(--cyan);font-size:10px;">MOVEMENT:</strong><br>
-              Stay airborne as much as possible. Use melee boost + Tier 5 Glider to maintain speed across zones. Never land unless absolutely necessary — you are not a fighter, you are eyes.<br><br>
-              <strong style="color:var(--cyan);font-size:10px;">ENGAGEMENT RULES:</strong><br>
-              Avoid all direct combat unless you are 100% sure of a clean kill. If spotted, disengage immediately and kite. Your death loses the team more than any kill could gain.<br><br>
-              <strong style="color:var(--cyan);font-size:10px;">CORE MANAGEMENT:</strong><br>
-              Carry zero or minimal cores — your job is information, not resources. In the late game, switch to scouting the safest extraction path and watching for enemy beacon campers.<br><br>
-              <strong style="color:var(--cyan);font-size:10px;">BEST LOADOUT:</strong><br>
-              Tier 5 Mobility Glider, Recon Beacon x2, Charge Blaster (escape tool only), Repair Kit x1. Alphard: use Dual Auto Splitters V for burst-and-run if cornered.
-            </td>
-          </tr>
-          <tr>
-            <td>Team Roles</td>
-            <td>🎯 Fragger</td>
-            <td>
-              <div style="margin-bottom:8px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;">
-                <span style="display:inline-flex;align-items:center;gap:4px;"><img class="striker-inline" src="striker/FALCON.webp"><span style="font-size:10px;color:rgba(0,255,255,0.8);">Falcon</span></span>
-                <span style="display:inline-flex;align-items:center;gap:4px;"><img class="striker-inline" src="striker/STELLARUS.webp"><span style="font-size:10px;color:rgba(0,255,255,0.8);">Stellarus</span></span>
-                <span style="display:inline-flex;align-items:center;gap:4px;"><img class="striker-inline" src="striker/NARUKAMI.webp"><span style="font-size:10px;color:rgba(0,255,255,0.8);">Narukami</span></span>
-                <span style="display:inline-flex;align-items:center;gap:4px;"><img class="striker-inline" src="striker/PANTHER.webp"><span style="font-size:10px;color:rgba(0,255,255,0.8);">Panther</span></span>
-              </div>
-              <strong style="color:var(--cyan);font-size:10px;">PRIMARY DUTIES:</strong><br>
-              Hunt and eliminate isolated enemy mechs before they can reunite with their team. Your job is to reduce enemy numbers, not to collect cores. Every kill creates a numbers advantage that snowballs into extraction control.<br><br>
-              <strong style="color:var(--cyan);font-size:10px;">TARGET PRIORITY:</strong><br>
-              1. Enemy Scouts — blind them first. 2. Enemy Supports — cut off enemy healing. 3. Enemy Core Carriers — force them to drop cores. Never waste time chasing a full-health tank. Pick fights you can win in under 10 seconds.<br><br>
-              <strong style="color:var(--cyan);font-size:10px;">ENGAGEMENT RULES:</strong><br>
-              Strike from range or from an angle the enemy isn't watching. Disengage after each kill — reset your position before re-engaging. Never 1v2. If outnumbered, disengage and relay enemy position to the team.<br><br>
-              <strong style="color:var(--cyan);font-size:10px;">ZONE COLLAPSE EXPLOIT:</strong><br>
-              Use the collapsing ring as a weapon. Bait enemies toward the edge, then burst them from behind while the zone chips their HP. Stellarus stealth dive + zone damage is a reliable kill combo late-game.<br><br>
-              <strong style="color:var(--cyan);font-size:10px;">BEST LOADOUT:</strong><br>
-              Tier 5 Enhancement Glider, Charge Blaster V or Twin Rocket Launcher, Thermal Sword (mobility + burst), Repair Kit x1. Falcon: max aerial mobility, burst from above. Narukami: long-range suppression, force enemies off cover.
-            </td>
-          </tr>
-          <tr>
-            <td>Team Roles</td>
-            <td>🛡️ Support / Anchor</td>
-            <td>
-              <div style="margin-bottom:8px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;">
-                <span style="display:inline-flex;align-items:center;gap:4px;"><img class="striker-inline" src="striker/SERENITH.webp"><span style="font-size:10px;color:rgba(0,255,255,0.8);">Serenith</span></span>
-                <span style="display:inline-flex;align-items:center;gap:4px;"><img class="striker-inline" src="striker/PINAKA.webp"><span style="font-size:10px;color:rgba(0,255,255,0.8);">Pinaka</span></span>
-                <span style="display:inline-flex;align-items:center;gap:4px;"><img class="striker-inline" src="striker/LUMINAE.webp"><span style="font-size:10px;color:rgba(0,255,255,0.8);">Luminae</span></span>
-                <span style="display:inline-flex;align-items:center;gap:4px;"><img class="striker-inline" src="striker/Norne.webp"><span style="font-size:10px;color:rgba(0,255,255,0.8);">Norne</span></span>
-              </div>
-              <strong style="color:var(--cyan);font-size:10px;">PRIMARY DUTIES:</strong><br>
-              Stay within proximity of the Core Carrier at all times. Provide continuous heals, shields, and buffs. You are the lifeline of the team — your positioning determines whether your carrier survives extraction.<br><br>
-              <strong style="color:var(--cyan);font-size:10px;">PEELING:</strong><br>
-              When a Fragger or enemy diver targets your carrier, immediately rotate and peel. Use AoE denial skills to disrupt their engage. Norne's debuff zone and Luminae's lock-on suppression are excellent for forcing enemies off your carrier.<br><br>
-              <strong style="color:var(--cyan);font-size:10px;">BEACON MANAGEMENT:</strong><br>
-              The Support places the Extraction Beacon — never the carrier. Choose a concealed, defensible position. Avoid open flat areas. Best spots: elevated platforms, tight corridors, behind large structures enemies can't see over.<br><br>
-              <strong style="color:var(--cyan);font-size:10px;">ZONE AWARENESS:</strong><br>
-              Call out zone collapse timing for the team. Begin guiding everyone toward extraction 10–15 seconds earlier than feels necessary. Overconfidence in late-zone timing is the #1 cause of failed extractions at high rank.<br><br>
-              <strong style="color:var(--cyan);font-size:10px;">BEST LOADOUT:</strong><br>
-              Tier 5 Suppression Glider, Extraction Beacon, Decoy Beacon (misdirect enemies), Repair Kit x2. Serenith: sustained sustain loop, best for long extraction defense. Pinaka: Aux 3 burst heals, excellent peel. Luminae: aerial support, hardest to kill while providing buffs.
-            </td>
-          </tr>
-          <tr>
-            <td>Team Roles</td>
-            <td>📦 Core Carrier</td>
-            <td>
-              <div style="margin-bottom:8px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;">
-                <span style="display:inline-flex;align-items:center;gap:4px;"><img class="striker-inline" src="striker/HURRICANE.webp"><span style="font-size:10px;color:rgba(0,255,255,0.8);">Hurricane</span></span>
-                <span style="display:inline-flex;align-items:center;gap:4px;"><img class="striker-inline" src="striker/TRICERA.webp"><span style="font-size:10px;color:rgba(0,255,255,0.8);">Tricera</span></span>
-                <span style="display:inline-flex;align-items:center;gap:4px;"><img class="striker-inline" src="striker/MIKI.webp"><span style="font-size:10px;color:rgba(0,255,255,0.8);">Mikillja</span></span>
-                <span style="display:inline-flex;align-items:center;gap:4px;"><img class="striker-inline" src="striker/WELKIN.webp"><span style="font-size:10px;color:rgba(0,255,255,0.8);">Welkin</span></span>
-                <span style="display:inline-flex;align-items:center;gap:4px;"><img class="striker-inline" src="striker/STEGO.webp"><span style="font-size:10px;color:rgba(0,255,255,0.8);">Stego</span></span>
-              </div>
-              <strong style="color:var(--cyan);font-size:10px;">PRIMARY DUTIES:</strong><br>
-              Carry the majority of the team's cores — typically 60–70% of total collected. Your survival is the team's top priority. Do not engage in combat unless cornered. Let your Fragger clear the path and your Support keep you alive.<br><br>
-              <strong style="color:var(--cyan);font-size:10px;">CORE DISTRIBUTION RULE:</strong><br>
-              Never carry 100% of cores. Always distribute 30–40% across teammates before extraction begins. If you are eliminated, the team loses everything you carried — distribution is insurance.<br><br>
-              <strong style="color:var(--cyan);font-size:10px;">MOVEMENT:</strong><br>
-              Always move through the most covered, least exposed path. Let the Scout identify safe corridors. Stay behind the Fragger when rotating. Hug cover between zones — never cross open ground alone.<br><br>
-              <strong style="color:var(--cyan);font-size:10px;">DURING EXTRACTION:</strong><br>
-              Stand inside the beacon zone and do not leave under any circumstances. Your only job is to absorb damage and survive the extraction timer. Pop all defensive cooldowns the moment enemies engage. Call out incoming attackers to your Support immediately.<br><br>
-              <strong style="color:var(--cyan);font-size:10px;">MINDSET:</strong><br>
-              The Carrier is not a fighter — it is a vault. Pride kills Carriers. If an enemy taunts you, ignore it. If a fight looks easy, let the Fragger handle it. Every second you are not moving toward extraction is a second wasted.<br><br>
-              <strong style="color:var(--cyan);font-size:10px;">BEST LOADOUT:</strong><br>
-              Tier 5 Suppression Glider, Repair Kit x2, Cargo Rocket x2, Weapon Bay. Hurricane: drone shields + self-repair make it nearly unkillable during extraction. Mikillja: raw armor and crowd control. Welkin: Defense Field blocks burst combos reliably.
-            </td>
-          </tr>
-          <tr><td>Route Flow</td><td>Step 1</td><td>Deploy Recon Beacon at the map center on landing.</td></tr>
-          <tr><td>Route Flow</td><td>Step 2</td><td>Secure 2–3 outer core clusters before teams converge at center.</td></tr>
-          <tr><td>Route Flow</td><td>Step 3</td><td>Eliminate Zone Guardians for bonus cores — split roles: 2 fight, 1 watches flanks.</td></tr>
-          <tr><td>Route Flow</td><td>Step 4</td><td>Rotate to center cores once outer ring is cleared. Watch for ambushes.</td></tr>
-          <tr><td>Route Flow</td><td>Step 5</td><td>Redistribute cores evenly across all surviving team members.</td></tr>
-          <tr><td>Route Flow</td><td>Step 6</td><td>Place Extraction Beacon at a safe, concealed location — NOT the obvious center.</td></tr>
-          <tr><td>Route Flow</td><td>Step 7</td><td>Defend extraction for the full duration. Anchor holds the beacon, fraggers push back any attackers.</td></tr>
-          <tr><td>Route Flow</td><td>Step 8</td><td>Extract and confirm all teammates are out before collapse completes.</td></tr>
-          <tr><td>Loot Priority</td><td>Always Take</td><td>Energy Cores (primary objective), Guardian drops (bonus cores + temp buffs), Gold Mod Chests, Glider components.</td></tr>
-          <tr><td>Loot Priority</td><td>Skip or Leave</td><td>Low-tier ammo, white/green mods, weapons below blue tier. Time spent looting junk costs you positioning.</td></tr>
-          <tr><td>Success Factors</td><td>Performance Breakdown</td><td>Positioning & zone awareness: 35%. Core distribution discipline: 25%. Team coordination during extraction: 25%. Mech synergy & role clarity: 15%.</td></tr>
-
-          <tr><td><strong>Map</strong></td><td><strong>Objective / Map Characteristics</strong></td><td><strong>Strong Strikers</strong></td></tr>
           <tr>
             <td><img src="verge/eyeofmisra.webp">Eye of Misra</td>
             <td>Upload Keys — Medium map with vertical platforms and mid-range sightlines</td>
@@ -1844,42 +1726,302 @@ setInterval(() => {
 }, 1000);
 
 
-// === Three.js Background ===
-const canvas = document.getElementById('bg-canvas');
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 0.1, 1000);
-const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
-renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.setPixelRatio(window.devicePixelRatio);
-camera.position.z = 60;
+// === Three.js Background — Cinematic Digital City Flythrough ===
+{
+const _canvas = document.getElementById('bg-canvas');
+const _scene = new THREE.Scene();
+_scene.fog = new THREE.FogExp2(0x00020a, 0.012);
 
-const grid = new THREE.GridHelper(200, 50, 0x00ffff, 0x003333);
-grid.rotation.x = Math.PI / 2;
-grid.material.opacity = 0.15;
-grid.material.transparent = true;
-scene.add(grid);
+const _cam = new THREE.PerspectiveCamera(72, window.innerWidth/window.innerHeight, 0.1, 500);
+_cam.position.set(0,0,0);
 
-const particles = new THREE.BufferGeometry();
-const positions = [];
-for (let i = 0; i < 600; i++) {
-  positions.push((Math.random()-.5)*200, (Math.random()-.5)*200, (Math.random()-.5)*200);
+const _renderer = new THREE.WebGLRenderer({ canvas: _canvas, antialias: true });
+_renderer.setSize(window.innerWidth, window.innerHeight);
+_renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+_renderer.setClearColor(0x00020a, 1);
+
+const D  = 280;   // tunnel depth
+const TW = 34;    // tunnel width
+const TH = 19;    // tunnel height
+
+// ─── 1. FLOOR / CEILING / WALL GRIDS (perspective receding) ───
+function makeGrid(axis, coord, w, d, stepsW, stepsD, col, opa) {
+  const pts = [];
+  // lines along depth
+  for(let i=0;i<=stepsW;i++){
+    const u = -w/2 + i*(w/stepsW);
+    if(axis==='y'){ pts.push(u,coord,0, u,coord,-d); }
+    else           { pts.push(coord,u,0, coord,u,-d); }
+  }
+  // lines across width at depth intervals
+  for(let j=0;j<=stepsD;j++){
+    const v = -j*(d/stepsD);
+    if(axis==='y'){ pts.push(-w/2,coord,v, w/2,coord,v); }
+    else           { pts.push(coord,-w/2,v, coord,w/2,v); }
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.Float32BufferAttribute(pts,3));
+  return new THREE.LineSegments(geo, new THREE.LineBasicMaterial({color:col,transparent:true,opacity:opa}));
 }
-particles.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-const particleSystem = new THREE.Points(particles, new THREE.PointsMaterial({ color: 0x00ffff, size: 0.5, transparent: true, opacity: 0.5 }));
-scene.add(particleSystem);
 
-window.addEventListener('resize', () => {
-  camera.aspect = window.innerWidth / window.innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
+// Floor
+const floor = makeGrid('y', -TH/2, TW, D, 17, 70, 0x0d3a5a, 0.55);
+_scene.add(floor);
+// Ceiling
+const ceil = makeGrid('y',  TH/2, TW, D, 17, 70, 0x0d3a5a, 0.35);
+_scene.add(ceil);
+// Left wall
+const wallL = makeGrid('x', -TW/2, TH, D, 9, 70, 0x081e30, 0.3);
+_scene.add(wallL);
+// Right wall
+const wallR = makeGrid('x',  TW/2, TH, D, 9, 70, 0x081e30, 0.3);
+_scene.add(wallR);
+
+// ─── 2. CITY BUILDING BLOCKS — sides & top/bottom along the tunnel ───
+function addBuilding(x,y,z,w,h,d,isOrange){
+  const col  = isOrange ? 0x1a0500 : 0x001020;
+  const edge = isOrange ? (Math.random()<0.5?0xff4400:0xff7700) : (Math.random()<0.5?0x0077cc:0x00aaff);
+  const geo  = new THREE.BoxGeometry(w,h,d);
+  const mesh = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({color:col,transparent:true,opacity:0.8}));
+  mesh.position.set(x,y,z);
+  _scene.add(mesh);
+  const eg = new THREE.LineSegments(new THREE.EdgesGeometry(geo),
+    new THREE.LineBasicMaterial({color:edge,transparent:true,opacity:0.7}));
+  eg.position.set(x,y,z);
+  _scene.add(eg);
+  // emissive glow strip on top edge
+  if(Math.random()<0.6){
+    const sw=w*0.8, pts2=[sw/2,0,0,-sw/2,0,0];
+    const sg=new THREE.BufferGeometry();
+    sg.setAttribute('position',new THREE.Float32BufferAttribute(pts2,3));
+    const sl=new THREE.Line(sg,new THREE.LineBasicMaterial({color:edge,transparent:true,opacity:0.9}));
+    sl.position.set(x, isOrange?y+h/2:y-h/2, z);
+    _scene.add(sl);
+  }
+}
+
+// Scatter ~120 buildings on left/right sides and floor/ceiling of tunnel
+for(let i=0;i<120;i++){
+  const isOrange = Math.random()<0.28;
+  const side = Math.floor(Math.random()*4); // 0=left,1=right,2=floor,3=ceil
+  const bw = 0.6+Math.random()*3.5;
+  const bh = 0.5+Math.random()*6;
+  const bd = 0.6+Math.random()*4;
+  const z  = -(8+Math.random()*D*0.95);
+  let x,y;
+  if(side===0){ x=-TW/2-bw/2; y=(Math.random()-0.5)*TH*0.9; }
+  else if(side===1){ x=TW/2+bw/2; y=(Math.random()-0.5)*TH*0.9; }
+  else if(side===2){ x=(Math.random()-0.5)*TW*1.1; y=-TH/2-bh/2; }
+  else             { x=(Math.random()-0.5)*TW*1.1; y=TH/2+bh/2; }
+  addBuilding(x,y,z,bw,bh,bd,isOrange);
+}
+
+// ─── 3. FLOATING HUD PANELS ───
+const _panels=[];
+const panelDefs=[
+  {x:-14,y:4,z:-28,w:9,h:5.5,ec:0x00aaff},{x:13,y:-3,z:-38,w:11,h:4,ec:0xff5500},
+  {x:-11,y:-5,z:-55,w:7,h:5,ec:0x0088cc},{x:9,y:5,z:-48,w:8,h:3.5,ec:0xff6600},
+  {x:0,y:7,z:-42,w:14,h:2,ec:0x00ccff},{x:-13,y:2,z:-75,w:10,h:6,ec:0x0055ff},
+  {x:12,y:-6,z:-65,w:8,h:5,ec:0xff4400},{x:-7,y:-3,z:-90,w:12,h:3,ec:0x00ffaa},
+  {x:7,y:3,z:-110,w:9,h:6,ec:0x0077dd},{x:-5,y:6,z:-130,w:7,h:4,ec:0xff7700},
+  {x:14,y:0,z:-145,w:6,h:8,ec:0x0099ff},{x:-12,y:-4,z:-160,w:10,h:5,ec:0xff3300},
+  {x:3,y:-7,z:-70,w:5,h:3,ec:0x00ddff},{x:-9,y:6,z:-85,w:8,h:2,ec:0xff8800},
+];
+panelDefs.forEach((pd,i)=>{
+  const g=new THREE.Group();
+  g.position.set(pd.x,pd.y,pd.z);
+  // dark fill
+  const fc=new THREE.Color(pd.ec); fc.multiplyScalar(0.06);
+  g.add(new THREE.Mesh(new THREE.PlaneGeometry(pd.w,pd.h),
+    new THREE.MeshBasicMaterial({color:fc,transparent:true,opacity:0.55,side:THREE.DoubleSide})));
+  // bright edge
+  g.add(new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(pd.w,pd.h,0.01)),
+    new THREE.LineBasicMaterial({color:pd.ec,transparent:true,opacity:0.9})));
+  // corner ticks
+  const hw=pd.w/2,hh=pd.h/2,tl=Math.min(pd.w,pd.h)*0.16;
+  [[-hw,-hh],[hw,-hh],[hw,hh],[-hw,hh]].forEach(([cx,cy])=>{
+    const sx=Math.sign(cx),sy=Math.sign(cy);
+    const tg=new THREE.BufferGeometry();
+    tg.setAttribute('position',new THREE.Float32BufferAttribute([
+      cx,cy,0.01, cx-sx*tl,cy,0.01, cx,cy,0.01, cx,cy-sy*tl,0.01],3));
+    g.add(new THREE.LineSegments(tg,new THREE.LineBasicMaterial({color:pd.ec,transparent:true,opacity:1})));
+  });
+  // scan bar
+  const barGeo=new THREE.PlaneGeometry(pd.w*0.88,0.07);
+  const barMat=new THREE.MeshBasicMaterial({color:pd.ec,transparent:true,opacity:0.6,side:THREE.DoubleSide});
+  const bar=new THREE.Mesh(barGeo,barMat);
+  bar.position.z=0.02;
+  g.add(bar);
+  // data rows — thin horizontal lines inside panel
+  for(let r=0;r<3;r++){
+    const rw=pd.w*(0.4+Math.random()*0.45);
+    const rg=new THREE.PlaneGeometry(rw,0.04);
+    const rm=new THREE.MeshBasicMaterial({color:pd.ec,transparent:true,opacity:0.25,side:THREE.DoubleSide});
+    const rm2=new THREE.Mesh(rg,rm);
+    rm2.position.set((Math.random()-0.5)*(pd.w-rw)*0.5, -pd.h/2+0.6+(r*0.5), 0.02);
+    g.add(rm2);
+  }
+  _scene.add(g);
+  _panels.push({g,bar,barMat,pd,barY:Math.random()*pd.h-pd.h/2,barDir:Math.random()<0.5?1:-1,
+    dx:(Math.random()-.5)*0.002,dy:(Math.random()-.5)*0.002,phase:i*0.7});
 });
 
-(function animate() {
-  requestAnimationFrame(animate);
-  grid.rotation.z += 0.0005;
-  particleSystem.rotation.y += 0.001;
-  renderer.render(scene, camera);
+// ─── 4. LIGHT STREAKS — horizontal speed lines flying TOWARD camera ───
+const _streaks=[];
+function spawnStreak(){
+  const isOrange=Math.random()<0.35;
+  const col=isOrange?0xff4400:(Math.random()<0.55?0x0088ff:0x00eeff);
+  // streaks are HORIZONTAL along X or Y axis — like lateral speed blur in reference
+  const axis=Math.random()<0.5?'x':'y';
+  const len=1.5+Math.random()*9;
+  const speed=0.06+Math.random()*0.18;
+  let x=(Math.random()-0.5)*TW*1.3, y=(Math.random()-0.5)*TH*1.3;
+  const z=-(10+Math.random()*D*0.9);
+  const pts=axis==='x'?[x-len/2,y,z, x+len/2,y,z]:[x,y-len/2,z, x,y+len/2,z];
+  const geo=new THREE.BufferGeometry();
+  geo.setAttribute('position',new THREE.Float32BufferAttribute(pts,3));
+  const mat=new THREE.LineBasicMaterial({color:col,transparent:true,opacity:0.5+Math.random()*0.45});
+  const line=new THREE.Line(geo,mat);
+  _scene.add(line);
+  return{line,geo,axis,x,y,z,len,speed,col,life:1,decay:0.003+Math.random()*0.005};
+}
+for(let i=0;i<100;i++) _streaks.push(spawnStreak());
+
+// ─── 5. VERTICAL DEPTH STREAKS (like the reference's vertical city lines) ───
+const _vstreaks=[];
+function spawnVStreak(){
+  const isOrange=Math.random()<0.3;
+  const col=isOrange?0xff5500:0x0066bb;
+  const len=0.8+Math.random()*5;
+  const x=(Math.random()-0.5)*TW*1.4;
+  const y=(Math.random()-0.5)*TH*1.4;
+  const z=-(8+Math.random()*D*0.9);
+  const speed=0.04+Math.random()*0.12;
+  const pts=[x,y-len/2,z, x,y+len/2,z];
+  const geo=new THREE.BufferGeometry();
+  geo.setAttribute('position',new THREE.Float32BufferAttribute(pts,3));
+  const mat=new THREE.LineBasicMaterial({color:col,transparent:true,opacity:0.35+Math.random()*0.4});
+  const line=new THREE.Line(geo,mat);
+  _scene.add(line);
+  return{line,geo,x,y,z,len,speed,life:1,decay:0.004+Math.random()*0.006};
+}
+for(let i=0;i<80;i++) _vstreaks.push(spawnVStreak());
+
+// ─── 6. AMBIENT DUST PARTICLES ───
+const _partGeo=new THREE.BufferGeometry();
+const _partPos=[];
+for(let i=0;i<1200;i++){
+  _partPos.push((Math.random()-.5)*TW*1.6,(Math.random()-.5)*TH*1.6,-(Math.random()*D));
+}
+_partGeo.setAttribute('position',new THREE.Float32BufferAttribute(_partPos,3));
+_scene.add(new THREE.Points(_partGeo,new THREE.PointsMaterial({color:0x336688,size:0.06,transparent:true,opacity:0.4})));
+
+// ─── 7. VANISHING POINT GLOW HAZE ───
+// Layered halos at different depths
+[{z:-60,r:3,c:0x002244},{z:-120,r:5,c:0x001122},{z:-200,r:8,c:0x000a18}].forEach(h=>{
+  const g=new THREE.Mesh(new THREE.SphereGeometry(h.r,16,16),
+    new THREE.MeshBasicMaterial({color:h.c,transparent:true,opacity:0.5}));
+  g.position.z=h.z; _scene.add(g);
+});
+
+// ─── 8. DENSE HORIZONTAL DATA BARS (reference has many thin bright bars) ───
+for(let i=0;i<60;i++){
+  const isOrange=Math.random()<0.3;
+  const col=isOrange?0xff5500:0x0077cc;
+  const w=0.3+Math.random()*5;
+  const x=(Math.random()-.5)*TW*1.2;
+  const y=(Math.random()-.5)*TH*1.2;
+  const z=-(12+Math.random()*D*0.85);
+  const geo=new THREE.BufferGeometry();
+  geo.setAttribute('position',new THREE.Float32BufferAttribute([x-w/2,y,z, x+w/2,y,z],3));
+  _scene.add(new THREE.Line(geo,new THREE.LineBasicMaterial({color:col,transparent:true,opacity:0.3+Math.random()*0.5})));
+}
+
+// ─── ANIMATE ───
+let _t=0, _camZ=0;
+const _clock={last:performance.now()};
+
+window.addEventListener('resize',()=>{
+  _cam.aspect=window.innerWidth/window.innerHeight;
+  _cam.updateProjectionMatrix();
+  _renderer.setSize(window.innerWidth,window.innerHeight);
+});
+
+(function _animate(){
+  requestAnimationFrame(_animate);
+  const now=performance.now();
+  const dt=Math.min((now-_clock.last)/16.67,3); _clock.last=now;
+  _t+=0.008*dt;
+  _camZ-=0.15*dt;
+  if(_camZ<-D+40) _camZ=0;
+
+  // Camera: slow pan + cinematic tilt
+  _cam.position.set(
+    Math.sin(_t*0.22)*2.0 + Math.sin(_t*0.07)*0.8,
+    Math.sin(_t*0.15)*1.0 + Math.cos(_t*0.09)*0.5,
+    _camZ
+  );
+  _cam.rotation.y=Math.sin(_t*0.12)*0.06;
+  _cam.rotation.x=Math.sin(_t*0.09)*0.025;
+  _cam.rotation.z=Math.sin(_t*0.05)*0.015;
+
+  // Panels: scan bar + drift
+  _panels.forEach((p,i)=>{
+    p.barY+=p.barDir*0.018*dt;
+    if(p.barY> p.pd.h/2-0.08){p.barDir=-1;}
+    if(p.barY<-p.pd.h/2+0.08){p.barDir= 1;}
+    p.bar.position.y=p.barY;
+    p.barMat.opacity=0.15+0.45*Math.abs(Math.sin(_t*0.7+p.phase));
+    p.g.position.x+=p.dx*dt; p.g.position.y+=p.dy*dt;
+    if(Math.abs(p.g.position.x-p.pd.x)>2) p.dx*=-1;
+    if(Math.abs(p.g.position.y-p.pd.y)>1.2) p.dy*=-1;
+    p.g.rotation.y=Math.sin(_t*0.18+p.phase)*0.07;
+    p.g.rotation.x=Math.sin(_t*0.12+p.phase)*0.04;
+  });
+
+  // Horizontal streaks
+  _streaks.forEach((s,i)=>{
+    s.life-=s.decay*dt;
+    if(s.life<=0){
+      // respawn
+      _scene.remove(s.line);
+      const ns=spawnStreak();
+      _streaks[i]=ns;
+      return;
+    }
+    s.line.material.opacity=s.life*(0.5+Math.random()*0.3);
+    // drift slowly along tunnel
+    s.z+=s.speed*dt;
+    if(s.z>2){ _scene.remove(s.line); _streaks[i]=spawnStreak(); return; }
+    const pos=s.geo.attributes.position;
+    if(s.axis==='x'){
+      pos.setXYZ(0,s.x-s.len/2,s.y,s.z);
+      pos.setXYZ(1,s.x+s.len/2,s.y,s.z);
+    } else {
+      pos.setXYZ(0,s.x,s.y-s.len/2,s.z);
+      pos.setXYZ(1,s.x,s.y+s.len/2,s.z);
+    }
+    pos.needsUpdate=true;
+  });
+
+  // Vertical streaks
+  _vstreaks.forEach((s,i)=>{
+    s.life-=s.decay*dt;
+    if(s.life<=0){ _scene.remove(s.line); _vstreaks[i]=spawnVStreak(); return; }
+    s.line.material.opacity=s.life*0.45;
+    s.z+=s.speed*dt;
+    if(s.z>2){ _scene.remove(s.line); _vstreaks[i]=spawnVStreak(); return; }
+    const pos=s.geo.attributes.position;
+    pos.setXYZ(0,s.x,s.y-s.len/2,s.z);
+    pos.setXYZ(1,s.x,s.y+s.len/2,s.z);
+    pos.needsUpdate=true;
+  });
+
+  _renderer.render(_scene,_cam);
 })();
+}
+
+
 
 // === HUD Tech Canvas (map surround) ===
 (function() {
