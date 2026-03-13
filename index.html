@@ -1491,7 +1491,7 @@ footer.hud-footer {
   <footer class="hud-footer">
     <div class="footer-left">STARK SYSTEM ONLINE · PH-2026</div>
     <div class="footer-center">TURBO JET · COVERT-OPS MASHMAK</div>
-    <div class="footer-right">BUILD v2.3 · KUSANAGI <a href="https://mbmtj.github.io/turbojet/">Light Version</a></div>
+    <div class="footer-right">BUILD v2.3 · KUSANAGI</div>
   </footer>
 
 </div><!-- /#app -->
@@ -3226,13 +3226,36 @@ btnEl.addEventListener('click', () => {
     'READY'
   ];
 
+  // Minimum display time: 10 seconds
+  const MIN_DISPLAY_MS = 10000;
+  const startTime = Date.now();
+
+  // Animate the progress bar smoothly over 10 seconds regardless of actual load speed
+  const ANIM_DURATION = 9400;
+  let animStart = null;
+  function animateBar(ts) {
+    if (!animStart) animStart = ts;
+    const elapsed = ts - animStart;
+    const fakeProgress = Math.min(elapsed / ANIM_DURATION, 0.97);
+    const pct = Math.floor(fakeProgress * 100);
+    bar.style.width = pct + '%';
+    const msgIdx = Math.min(Math.floor(fakeProgress / (1 / (STATUS_MSGS.length - 1))), STATUS_MSGS.length - 2);
+    status.textContent = STATUS_MSGS[msgIdx];
+    if (elapsed < ANIM_DURATION) {
+      requestAnimationFrame(animateBar);
+    }
+  }
+  requestAnimationFrame(animateBar);
+
   function onAssetLoaded() {
     loaded++;
-    const pct = Math.floor((loaded / TOTAL) * 100);
-    bar.style.width = pct + '%';
-    const msgIdx = Math.min(Math.floor(pct / (100 / (STATUS_MSGS.length - 1))), STATUS_MSGS.length - 2);
-    status.textContent = STATUS_MSGS[msgIdx];
-    if (loaded >= TOTAL) dismiss();
+    if (loaded >= TOTAL) tryDismiss();
+  }
+
+  function tryDismiss() {
+    const elapsed = Date.now() - startTime;
+    const remaining = MIN_DISPLAY_MS - elapsed;
+    setTimeout(dismiss, Math.max(0, remaining));
   }
 
   function dismiss() {
