@@ -1491,7 +1491,7 @@ footer.hud-footer {
   <footer class="hud-footer">
     <div class="footer-left">STARK SYSTEM ONLINE · PH-2026</div>
     <div class="footer-center">TURBO JET · COVERT-OPS MASHMAK</div>
-    <div class="footer-right">BUILD v2.3 · KUSANAGI <a href="https://mbmtj.github.io/turbojet/">Light Version</a></div>
+    <div class="footer-right">BUILD v2.3 · KUSANAGI</div>
   </footer>
 
 </div><!-- /#app -->
@@ -3177,24 +3177,121 @@ btnEl.addEventListener('click', () => {
 </script>
 
 
+
+
 <script>
-// === Loading Screen WebGL ===
+// === Loading Screen — Asset Preloader + WebGL ===
 (function(){
+
+  // ── All assets to preload ──
+  const IMAGES = [
+    'img/Logo-Turbojet.webp','img/map.webp','img/Codered.webp',
+    'img/ultimate.webp','img/bluerz.webp','img/purplerz.webp',
+    'img/goldrz.webp','img/goldbox.webp','img/cextrators.webp',
+    'img/frigates.webp','img/lsplitters.webp','img/drillers.webp',
+    'img/makalu.webp','img/constatine.webp','img/eship.webp',
+    'img/profitablefarmarea.webp','img/Exit.webp','img/cargo.webp',
+    'img/repairhub.webp','img/thirdgens.webp','img/tank.webp','img/corite.webp',
+    'research/extractionbeacons.gif','research/gliders.gif',
+    'research/reconbeacons.gif','research/decoy.gif','research/repairstations.gif',
+    'research/matrixcredit.webp',
+    'striker/Alphard.webp','striker/ALYSSNES.webp','striker/AQUILLA.webp',
+    'striker/FALCON.webp','striker/FREYR.webp','striker/HELL.webp',
+    'striker/HURRICANE.webp','striker/INFERNO.webp','striker/LUMINAE.webp',
+    'striker/MIKI.webp','striker/NARUKAMI.webp','striker/Norne.webp',
+    'striker/PANTHER.webp','striker/PINAKA.webp','striker/SERENITH.webp',
+    'striker/SKYRAIDER.webp','striker/STEGO.webp','striker/STELLARUS.webp',
+    'striker/TRICERA.webp','striker/WELKIN.webp',
+    'verge/babylonskyfortress.webp','verge/capeblancobserbatory.webp',
+    'verge/eyeofmisra.webp','verge/gracelynnskycity.webp',
+    'verge/kraubsinkhole.webp','verge/longmenlaunchsite.webp',
+    'verge/palmbayharbor.webp','verge/poseidonarmory.webp',
+    'verge/stellaobserbatoryisle.webp','verge/vigilimbrium.webp'
+  ];
+  const AUDIO = ['mp3/guide.mp3','mp3/theme.mp3'];
+
+  const TOTAL = IMAGES.length + AUDIO.length;
+  let loaded = 0;
+
+  const bar    = document.getElementById('loader-bar');
+  const status = document.getElementById('loader-status');
+
+  const STATUS_MSGS = [
+    'LOADING ASSETS...',
+    'LOADING MAP DATA...',
+    'LOADING STRIKER DATABASE...',
+    'LOADING INTEL...',
+    'CALIBRATING SYSTEMS...',
+    'SYNCING COMMS...',
+    'READY'
+  ];
+
+  function onAssetLoaded() {
+    loaded++;
+    const pct = Math.floor((loaded / TOTAL) * 100);
+    bar.style.width = pct + '%';
+    const msgIdx = Math.min(Math.floor(pct / (100 / (STATUS_MSGS.length - 1))), STATUS_MSGS.length - 2);
+    status.textContent = STATUS_MSGS[msgIdx];
+    if (loaded >= TOTAL) dismiss();
+  }
+
+  function dismiss() {
+    bar.style.width = '100%';
+    status.textContent = 'READY';
+    setTimeout(() => {
+      document.getElementById('loader').classList.add('hidden');
+      // Auto-play theme music once loading is complete
+      const theme = document.getElementById('myAudio');
+      if (theme) {
+        theme.volume = 0;
+        theme.play().then(() => {
+          // Fade in volume smoothly
+          let vol = 0;
+          const fadeIn = setInterval(() => {
+            vol = Math.min(vol + 0.005, 0.1);
+            theme.volume = vol;
+            if (vol >= 0.1) clearInterval(fadeIn);
+          }, 80);
+        }).catch(() => {
+          // Autoplay blocked — user interaction needed, silently ignore
+        });
+      }
+    }, 600);
+  }
+
+  // Preload images
+  IMAGES.forEach(src => {
+    const img = new Image();
+    img.onload  = onAssetLoaded;
+    img.onerror = onAssetLoaded; // count failed too so loader never gets stuck
+    img.src = src;
+  });
+
+  // Preload audio (canplaythrough or error)
+  AUDIO.forEach(src => {
+    const audio = new Audio();
+    audio.oncanplaythrough = onAssetLoaded;
+    audio.onerror          = onAssetLoaded;
+    audio.src = src;
+    audio.load();
+  });
+
+  // Fallback — dismiss after 12s no matter what
+  setTimeout(dismiss, 12000);
+
+  // ── WebGL flythrough on loader canvas ──
   const lc = document.getElementById('loader-canvas');
   const ls = new THREE.Scene();
+  ls.fog = new THREE.FogExp2(0x000000, 0.022);
   const lcam = new THREE.PerspectiveCamera(70, window.innerWidth/window.innerHeight, 0.1, 300);
   lcam.position.set(0,0,0);
   const lr = new THREE.WebGLRenderer({canvas:lc, antialias:true});
   lr.setSize(window.innerWidth, window.innerHeight);
   lr.setPixelRatio(Math.min(window.devicePixelRatio,2));
-  lr.setClearColor(0x000000,1);
-
-  // Fog
-  ls.fog = new THREE.FogExp2(0x000000, 0.022);
+  lr.setClearColor(0x000000, 1);
 
   const D=180, TW=28, TH=16;
 
-  // Floor grid
   function makeGrid(axis,coord,w,d,sw,sd,col,opa){
     const pts=[];
     for(let i=0;i<=sw;i++){
@@ -3265,33 +3362,7 @@ btnEl.addEventListener('click', () => {
     lr.setSize(window.innerWidth,window.innerHeight);
   });
 
-  // Progress bar + status messages
-  const bar = document.getElementById('loader-bar');
-  const status = document.getElementById('loader-status');
-  const steps = [
-    {pct:15,  msg:'LOADING ASSETS...'},
-    {pct:35,  msg:'INITIALIZING MAP...'},
-    {pct:55,  msg:'CALIBRATING SYSTEMS...'},
-    {pct:72,  msg:'SYNCING INTEL DATABASE...'},
-    {pct:88,  msg:'ESTABLISHING COMMS...'},
-    {pct:100, msg:'READY'},
-  ];
-  let si=0;
-  const tick=setInterval(()=>{
-    if(si>=steps.length){clearInterval(tick); return;}
-    const s=steps[si++];
-    bar.style.width=s.pct+'%';
-    status.textContent=s.msg;
-  }, 320);
-
-  // Dismiss after load
-  window.addEventListener('load',()=>{
-    setTimeout(()=>{
-      document.getElementById('loader').classList.add('hidden');
-    }, steps.length * 320 + 400);
-  });
 })();
 </script>
-
 </body>
 </html>
