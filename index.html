@@ -1064,12 +1064,124 @@ footer.hud-footer {
     letter-spacing: -1px;
     font-size: 14px;
 }
+
+/* =============================================
+   LOADING SCREEN
+============================================= */
+#loader {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: #000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.8s ease, visibility 0.8s ease;
+}
+#loader.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+#loader-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.loader-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  text-align: center;
+}
+.loader-logo {
+  width: 80px;
+  height: 80px;
+  border: 2px solid #FFD700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  animation: loaderSpin 4s linear infinite;
+  box-shadow: 0 0 20px rgba(255,215,0,0.4), inset 0 0 20px rgba(255,215,0,0.05);
+}
+.loader-logo::before {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  border: 1px solid rgba(0,255,255,0.4);
+  animation: loaderSpinRev 3s linear infinite;
+}
+.loader-logo::after {
+  content: '';
+  position: absolute;
+  width: 8px; height: 8px;
+  background: #FFD700;
+  box-shadow: 0 0 12px #FFD700;
+  animation: loaderSpinRev 3s linear infinite;
+}
+@keyframes loaderSpin    { to { transform: rotate(360deg);  } }
+@keyframes loaderSpinRev { to { transform: rotate(-360deg); } }
+
+.loader-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 18px;
+  font-weight: 900;
+  letter-spacing: 6px;
+  color: #FFD700;
+  text-shadow: 0 0 20px rgba(255,215,0,0.8);
+}
+.loader-sub {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: rgba(0,255,255,0.6);
+}
+.loader-bar-wrap {
+  width: 220px;
+  height: 2px;
+  background: rgba(255,215,0,0.15);
+  position: relative;
+  overflow: hidden;
+}
+.loader-bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #FFD700, #00ffff);
+  box-shadow: 0 0 8px #FFD700;
+  transition: width 0.1s linear;
+}
+.loader-status {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: rgba(255,215,0,0.5);
+  min-height: 14px;
+}
 </style>
 
 <title>Turbo Jet: Mashmak Covert-OPS</title>
 
 </head>
 <body>
+
+<div id="loader">
+  <canvas id="loader-canvas"></canvas>
+  <div class="loader-content">
+    <div class="loader-logo"></div>
+    <div class="loader-title">TURBO JET</div>
+    <div class="loader-sub">COVERT-OPS // MASHMAK</div>
+    <div class="loader-bar-wrap">
+      <div class="loader-bar" id="loader-bar"></div>
+    </div>
+    <div class="loader-status" id="loader-status">INITIALIZING...</div>
+  </div>
+</div>
 
 <canvas id="bg-canvas"></canvas>
 <div id="overlay"></div>
@@ -1379,7 +1491,7 @@ footer.hud-footer {
   <footer class="hud-footer">
     <div class="footer-left">STARK SYSTEM ONLINE · PH-2026</div>
     <div class="footer-center">TURBO JET · COVERT-OPS MASHMAK</div>
-    <div class="footer-right">BUILD v2.3 · KUSANAGI <a href="https://mbmtj.github.io/turbojet/">Light Version</a></div>
+    <div class="footer-right">BUILD v2.3 · KUSANAGI</div>
   </footer>
 
 </div><!-- /#app -->
@@ -3062,6 +3174,123 @@ btnEl.addEventListener('click', () => {
         btnEl.style.opacity = "1";
     }
 });
+</script>
+
+
+<script>
+// === Loading Screen WebGL ===
+(function(){
+  const lc = document.getElementById('loader-canvas');
+  const ls = new THREE.Scene();
+  const lcam = new THREE.PerspectiveCamera(70, window.innerWidth/window.innerHeight, 0.1, 300);
+  lcam.position.set(0,0,0);
+  const lr = new THREE.WebGLRenderer({canvas:lc, antialias:true});
+  lr.setSize(window.innerWidth, window.innerHeight);
+  lr.setPixelRatio(Math.min(window.devicePixelRatio,2));
+  lr.setClearColor(0x000000,1);
+
+  // Fog
+  ls.fog = new THREE.FogExp2(0x000000, 0.022);
+
+  const D=180, TW=28, TH=16;
+
+  // Floor grid
+  function makeGrid(axis,coord,w,d,sw,sd,col,opa){
+    const pts=[];
+    for(let i=0;i<=sw;i++){
+      const u=-w/2+i*(w/sw);
+      axis==='y'?pts.push(u,coord,0,u,coord,-d):pts.push(coord,u,0,coord,u,-d);
+    }
+    for(let j=0;j<=sd;j++){
+      const v=-j*(d/sd);
+      axis==='y'?pts.push(-w/2,coord,v,w/2,coord,v):pts.push(coord,-w/2,v,coord,w/2,v);
+    }
+    const g=new THREE.BufferGeometry();
+    g.setAttribute('position',new THREE.Float32BufferAttribute(pts,3));
+    return new THREE.LineSegments(g,new THREE.LineBasicMaterial({color:col,transparent:true,opacity:opa}));
+  }
+  ls.add(makeGrid('y',-TH/2,TW,D,14,50,0xFFD700,0.35));
+  ls.add(makeGrid('y', TH/2,TW,D,14,50,0xFFD700,0.18));
+  ls.add(makeGrid('x',-TW/2,TH,D,8,50,0x00ffff,0.15));
+  ls.add(makeGrid('x', TW/2,TH,D,8,50,0x00ffff,0.15));
+
+  // Streaks
+  const streaks=[];
+  function spawnStreak(){
+    const isGold=Math.random()<0.4;
+    const col=isGold?0xFFD700:0x00ffff;
+    const x=(Math.random()-.5)*TW*1.2, y=(Math.random()-.5)*TH*1.2;
+    const z=-(8+Math.random()*D*0.9);
+    const len=1+Math.random()*7;
+    const axis=Math.random()<0.5?'x':'y';
+    const pts=axis==='x'?[x-len/2,y,z,x+len/2,y,z]:[x,y-len/2,z,x,y+len/2,z];
+    const geo=new THREE.BufferGeometry();
+    geo.setAttribute('position',new THREE.Float32BufferAttribute(pts,3));
+    const mat=new THREE.LineBasicMaterial({color:col,transparent:true,opacity:0.5+Math.random()*0.4});
+    const line=new THREE.Line(geo,mat);
+    ls.add(line);
+    return{line,geo,axis,x,y,z,len,speed:0.05+Math.random()*0.18};
+  }
+  for(let i=0;i<70;i++) streaks.push(spawnStreak());
+
+  // Particles
+  const pg=new THREE.BufferGeometry();
+  const pp=[];
+  for(let i=0;i<600;i++) pp.push((Math.random()-.5)*TW*1.4,(Math.random()-.5)*TH*1.4,-(Math.random()*D));
+  pg.setAttribute('position',new THREE.Float32BufferAttribute(pp,3));
+  ls.add(new THREE.Points(pg,new THREE.PointsMaterial({color:0xFFD700,size:0.07,transparent:true,opacity:0.35})));
+
+  let lt=0, lcz=0;
+  const lanim=()=>{
+    requestAnimationFrame(lanim);
+    lt+=0.012; lcz-=0.18;
+    if(lcz<-D+30) lcz=0;
+    lcam.position.set(Math.sin(lt*0.25)*1.5, Math.sin(lt*0.18)*0.8, lcz);
+    lcam.rotation.y=Math.sin(lt*0.12)*0.05;
+    streaks.forEach((s,i)=>{
+      s.z+=s.speed;
+      if(s.z>2){ls.remove(s.line); streaks[i]=spawnStreak(); return;}
+      const pos=s.geo.attributes.position;
+      if(s.axis==='x'){pos.setXYZ(0,s.x-s.len/2,s.y,s.z);pos.setXYZ(1,s.x+s.len/2,s.y,s.z);}
+      else{pos.setXYZ(0,s.x,s.y-s.len/2,s.z);pos.setXYZ(1,s.x,s.y+s.len/2,s.z);}
+      pos.needsUpdate=true;
+    });
+    lr.render(ls,lcam);
+  };
+  lanim();
+
+  window.addEventListener('resize',()=>{
+    lcam.aspect=window.innerWidth/window.innerHeight;
+    lcam.updateProjectionMatrix();
+    lr.setSize(window.innerWidth,window.innerHeight);
+  });
+
+  // Progress bar + status messages
+  const bar = document.getElementById('loader-bar');
+  const status = document.getElementById('loader-status');
+  const steps = [
+    {pct:15,  msg:'LOADING ASSETS...'},
+    {pct:35,  msg:'INITIALIZING MAP...'},
+    {pct:55,  msg:'CALIBRATING SYSTEMS...'},
+    {pct:72,  msg:'SYNCING INTEL DATABASE...'},
+    {pct:88,  msg:'ESTABLISHING COMMS...'},
+    {pct:100, msg:'READY'},
+  ];
+  let si=0;
+  const tick=setInterval(()=>{
+    if(si>=steps.length){clearInterval(tick); return;}
+    const s=steps[si++];
+    bar.style.width=s.pct+'%';
+    status.textContent=s.msg;
+  }, 320);
+
+  // Dismiss after load
+  window.addEventListener('load',()=>{
+    setTimeout(()=>{
+      document.getElementById('loader').classList.add('hidden');
+    }, steps.length * 320 + 400);
+  });
+})();
 </script>
 
 </body>
