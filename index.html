@@ -1375,6 +1375,44 @@ footer.hud-footer {
             <span>Repair H.</span>
           </label>
         </li>
+
+        <!-- ── TRANSLATION BUTTON ── -->
+        <li>
+          <div style="padding: 10px 16px 6px;">
+            <button id="translate-btn"
+              style="
+                width:100%; padding:7px 10px;
+                background: rgba(0,255,255,0.07);
+                border: 1px solid rgba(0,255,255,0.35);
+                border-radius:4px;
+                color: var(--cyan);
+                font-family: var(--font-mono);
+                font-size: 11px;
+                letter-spacing: 2px;
+                cursor: pointer;
+                display: flex; align-items: center; justify-content: center; gap: 8px;
+                transition: all 0.2s;
+                text-shadow: var(--glow-c);
+              "
+              onmouseover="this.style.background='rgba(0,255,255,0.14)';this.style.borderColor='var(--cyan)'"
+              onmouseout="this.style.background='rgba(0,255,255,0.07)';this.style.borderColor='rgba(0,255,255,0.35)'">
+              🌐 <span>TRANSLATE</span>
+            </button>
+
+            <!-- Language dropdown panel -->
+            <div id="translate-panel" style="
+              display:none; margin-top:6px;
+              background: rgba(0,0,0,0.92);
+              border: 1px solid rgba(0,255,255,0.25);
+              border-radius:4px;
+              overflow:hidden;
+            ">
+              <div style="padding:6px 10px; font-size:8px; letter-spacing:3px; color:rgba(0,255,255,0.3); border-bottom:1px solid rgba(0,255,255,0.1);">SELECT LANGUAGE</div>
+              <div id="lang-list" style="max-height:180px; overflow-y:auto;"></div>
+            </div>
+          </div>
+        </li>
+
         <li>
           <div style="padding: 8px 16px;">
             <img src="img/Codered.webp" alt="Code Red" style="width:100%; max-width:180px; display:block; border-radius:6px; filter:drop-shadow(0 0 8px rgba(255,215,0,0.8)) drop-shadow(0 0 20px rgba(255,215,0,0.5));">
@@ -3297,6 +3335,222 @@ btnEl.addEventListener('click', () => {
 
 
 <script>
+// === Translation System (Google Translate — no API key needed) ===
+(function(){
+  const LANGS = [
+    { code: 'en',    label: '🇺🇸 English'        },
+    { code: 'fil',   label: '🇵🇭 Filipino'        },
+    { code: 'zh-CN', label: '🇨🇳 Chinese (简体)'  },
+    { code: 'zh-TW', label: '🇹🇼 Chinese (繁體)'  },
+    { code: 'ja',    label: '🇯🇵 Japanese'        },
+    { code: 'ko',    label: '🇰🇷 Korean'          },
+    { code: 'id',    label: '🇮🇩 Indonesian'      },
+    { code: 'th',    label: '🇹🇭 Thai'            },
+    { code: 'vi',    label: '🇻🇳 Vietnamese'      },
+    { code: 'ms',    label: '🇲🇾 Malay'           },
+    { code: 'es',    label: '🇪🇸 Spanish'         },
+    { code: 'pt',    label: '🇧🇷 Portuguese'      },
+    { code: 'fr',    label: '🇫🇷 French'          },
+    { code: 'de',    label: '🇩🇪 German'          },
+    { code: 'ru',    label: '🇷🇺 Russian'         },
+    { code: 'ar',    label: '🇸🇦 Arabic'          },
+  ];
+
+  let currentLang = 'en';
+
+  // ── Add Google Translate meta tag so GT knows original language ──
+  if (!document.querySelector('meta[name="google"]')) {
+    const m = document.createElement('meta');
+    m.name = 'google'; m.content = 'notranslate'; // we control translation ourselves
+    document.head.appendChild(m);
+  }
+
+  // ── Inject Google Translate script (only once) ──
+  let gtReady = false;
+  function loadGoogleTranslate(cb) {
+    if (window.google && window.google.translate) { cb(); return; }
+    window._gtCallback = cb;
+    const s = document.createElement('script');
+    s.src = 'https://translate.googleapis.com/translate_a/element.js?cb=_gtCallback';
+    document.head.appendChild(s);
+  }
+
+  // ── Core: use Google Translate's free REST endpoint ──
+  // This is the same endpoint the Google Translate website uses — no key required
+  async function gtTranslateTexts(texts, targetLang) {
+    const results = [];
+    const CHUNK = 50;
+    for (let i = 0; i < texts.length; i += CHUNK) {
+      const chunk = texts.slice(i, i + CHUNK);
+      const params = new URLSearchParams();
+      params.append('client', 'gtx');
+      params.append('sl', 'en');
+      params.append('tl', targetLang);
+      params.append('dt', 't');
+      chunk.forEach(t => params.append('q', t));
+      const url = 'https://translate.googleapis.com/translate_a/t?' + params.toString();
+      const res = await fetch(url);
+      const data = await res.json();
+      // Response is an array of translated strings
+      if (Array.isArray(data)) {
+        data.forEach((item, idx) => {
+          results.push(Array.isArray(item) ? item[0] : (typeof item === 'string' ? item : chunk[idx]));
+        });
+      } else {
+        chunk.forEach(t => results.push(t));
+      }
+    }
+    return results;
+  }
+
+  // ── Node collection ──
+  const SKIP_TAGS = new Set(['SCRIPT','STYLE','NOSCRIPT','META','LINK','TITLE','HEAD','AUDIO','VIDEO','CANVAS','INPUT']);
+  const SKIP_IDS  = new Set(['counter']);
+
+  function shouldSkip(node) {
+    let el = node.parentElement;
+    while (el) {
+      if (SKIP_IDS.has(el.id)) return true;
+      if (el.id === 'translate-btn' || el.id === 'translate-panel' || el.id === 'lang-list') return true;
+      el = el.parentElement;
+    }
+    return false;
+  }
+
+  function collectTextNodes(root) {
+    const nodes = [];
+    const walk = node => {
+      if (node.nodeType === Node.TEXT_NODE) {
+        const t = node.textContent.trim();
+        if (t.length > 1 && !shouldSkip(node)) nodes.push(node);
+      } else if (node.nodeType === Node.ELEMENT_NODE && !SKIP_TAGS.has(node.tagName)) {
+        node.childNodes.forEach(walk);
+      }
+    };
+    walk(root);
+    return nodes;
+  }
+
+  // ── Zone definitions ──
+  const ZONES = [
+    { key: 'ui',      selector: '#app'                  },
+    { key: 'mashmak', selector: '#modal-backdrop'       },
+    { key: 'verge',   selector: '#verge-modal-backdrop' },
+  ];
+
+  const nodeCaches = {};
+  const translationCache = {};
+
+  function getZoneCache(zoneKey, selector) {
+    if (nodeCaches[zoneKey]) return nodeCaches[zoneKey];
+    const root = document.querySelector(selector);
+    if (!root) return null;
+    const nodes = collectTextNodes(root);
+    nodeCaches[zoneKey] = nodes.map(n => ({ node: n, original: n.textContent }));
+    return nodeCaches[zoneKey];
+  }
+
+  async function translateZone(zoneKey, selector, langCode) {
+    const cache = getZoneCache(zoneKey, selector);
+    if (!cache || cache.length === 0) return;
+
+    if (langCode === 'en') {
+      cache.forEach(({ node, original }) => { node.textContent = original; });
+      return;
+    }
+
+    const cacheKey = zoneKey + ':' + langCode;
+    if (translationCache[cacheKey]) {
+      translationCache[cacheKey].forEach(({ node, text }) => { node.textContent = text; });
+      return;
+    }
+
+    const texts = cache.map(o => o.original);
+    const translated = await gtTranslateTexts(texts, langCode);
+
+    const result = [];
+    cache.forEach(({ node }, i) => {
+      const text = (translated[i] != null) ? String(translated[i]) : cache[i].original;
+      node.textContent = text;
+      result.push({ node, text });
+    });
+    translationCache[cacheKey] = result;
+  }
+
+  // ── UI setup ──
+  const langList = document.getElementById('lang-list');
+  LANGS.forEach(lang => {
+    const btn = document.createElement('button');
+    btn.textContent = lang.label;
+    btn.setAttribute('data-code', lang.code);
+    btn.style.cssText = `
+      display:block; width:100%; padding:7px 12px;
+      background:transparent; border:none; border-bottom:1px solid rgba(0,255,255,0.06);
+      color:rgba(0,255,255,0.6); font-family:'Share Tech Mono',monospace; font-size:11px;
+      text-align:left; cursor:pointer; transition:all 0.15s; letter-spacing:1px;
+    `;
+    btn.onmouseover = () => { btn.style.background = 'rgba(0,255,255,0.08)'; btn.style.color = 'var(--cyan)'; };
+    btn.onmouseout  = () => {
+      const active = btn.getAttribute('data-code') === currentLang;
+      btn.style.background = active ? 'rgba(255,215,0,0.08)' : 'transparent';
+      btn.style.color = active ? 'var(--gold)' : 'rgba(0,255,255,0.6)';
+    };
+    btn.onclick = () => selectLang(lang.code, lang.label);
+    langList.appendChild(btn);
+  });
+
+  const panel = document.getElementById('translate-panel');
+  const tBtn  = document.getElementById('translate-btn');
+
+  tBtn.addEventListener('click', () => {
+    panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+  });
+  document.addEventListener('click', e => {
+    if (!tBtn.contains(e.target) && !panel.contains(e.target)) panel.style.display = 'none';
+  });
+
+  function updateLangButtons(activeCode) {
+    langList.querySelectorAll('button').forEach(b => {
+      const active = b.getAttribute('data-code') === activeCode;
+      b.style.background = active ? 'rgba(255,215,0,0.08)' : 'transparent';
+      b.style.color = active ? 'var(--gold)' : 'rgba(0,255,255,0.6)';
+    });
+  }
+
+  async function selectLang(code, label) {
+    panel.style.display = 'none';
+    currentLang = code;
+    updateLangButtons(code);
+
+    const btnSpan = tBtn.querySelector('span');
+
+    if (code === 'en') {
+      ZONES.forEach(z => translateZone(z.key, z.selector, 'en'));
+      btnSpan.textContent = 'TRANSLATE';
+      return;
+    }
+
+    btnSpan.textContent = 'TRANSLATING...';
+    tBtn.disabled = true;
+    tBtn.style.opacity = '0.6';
+
+    try {
+      await Promise.all(ZONES.map(z => translateZone(z.key, z.selector, code)));
+      const langName = label.replace(/^[\S]+\s*/, '').toUpperCase();
+      btnSpan.textContent = langName;
+    } catch (err) {
+      console.error('Translation error:', err);
+      btnSpan.textContent = 'ERROR — RETRY';
+    }
+
+    tBtn.disabled = false;
+    tBtn.style.opacity = '1';
+  }
+
+})();
+
+
+
 // === Loading Screen — Asset Preloader + WebGL ===
 (function(){
 
