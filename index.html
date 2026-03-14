@@ -3855,5 +3855,117 @@ btnEl.addEventListener('click', () => {
 
 })();
 </script>
+
+<script>
+// ── Pixel Scan Effect on TURBO JET loader title ──
+(function () {
+  const titleEl = document.querySelector('.loader-title');
+  if (!titleEl) return;
+
+  const oc = document.createElement('canvas');
+  oc.style.cssText = 'position:absolute;pointer-events:none;z-index:10;left:0;top:0;width:100%;height:100%;';
+  document.getElementById('loader').appendChild(oc);
+  const ctx = oc.getContext('2d');
+
+  let W, H, t = 0;
+  let startTime = null;
+
+  function resize() {
+    W = oc.width  = window.innerWidth;
+    H = oc.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const CELL = 6;
+
+  function drawPixelScan(rx, ry, rw, rh, progress) {
+    const cols = Math.ceil(rw / CELL);
+    const rows = Math.ceil(rh / CELL);
+    for (let row = 0; row < rows; row++) {
+      for (let col = 0; col < cols; col++) {
+        const nx = col / cols;
+        const seed = (col * 7 + row * 13) % 97;
+        const rand = seed / 97;
+        const threshold = nx + rand * 0.25;
+        const cellProgress = progress * 1.3 - 0.15;
+        const diff = cellProgress - threshold;
+        if (diff < 0) continue;
+        const cx = rx + col * CELL;
+        const cy = ry + row * CELL;
+        const cw = Math.min(CELL, rx + rw - cx);
+        const ch = Math.min(CELL, ry + rh - cy);
+        if (diff < 0.15) {
+          const hue = (col * 17 + row * 31 + t * 40) % 360;
+          const intensity = 1 - diff / 0.15;
+          ctx.fillStyle = `hsla(${hue},100%,70%,${intensity * 0.9})`;
+          ctx.shadowBlur = 8;
+          ctx.shadowColor = `hsl(${hue},100%,60%)`;
+          ctx.fillRect(cx, cy, cw, ch);
+          ctx.shadowBlur = 0;
+        } else {
+          const shimmer = 0.06 + 0.04 * Math.sin(t * 3 + col * 0.4 + row * 0.3);
+          ctx.fillStyle = `rgba(255,215,0,${shimmer})`;
+          ctx.fillRect(cx, cy, cw, ch);
+        }
+      }
+    }
+  }
+
+  function drawGlitch(rx, ry, rw, rh) {
+    const slices = 5 + Math.floor(Math.random() * 4);
+    for (let i = 0; i < slices; i++) {
+      const sy = ry + (rh / slices) * i;
+      const sh = rh / slices;
+      const ox = (Math.random() - 0.5) * 18;
+      const a = 0.15 + Math.random() * 0.25;
+      ctx.fillStyle = Math.random() < 0.5 ? `rgba(0,255,255,${a})` : `rgba(255,0,255,${a})`;
+      ctx.fillRect(rx + ox, sy, rw, sh * 0.6);
+    }
+    const scanY = ry + ((t * 30) % rh);
+    const grad = ctx.createLinearGradient(0, scanY - 3, 0, scanY + 3);
+    grad.addColorStop(0,   'rgba(0,255,255,0)');
+    grad.addColorStop(0.5, 'rgba(0,255,255,0.5)');
+    grad.addColorStop(1,   'rgba(0,255,255,0)');
+    ctx.fillStyle = grad;
+    ctx.fillRect(rx - 20, scanY - 3, rw + 40, 6);
+  }
+
+  function drawBrackets(rx, ry, rw, rh) {
+    const bLen = 12, bW = 2;
+    ctx.strokeStyle = `rgba(0,255,255,${0.4 + 0.3 * Math.sin(t * 2)})`;
+    ctx.lineWidth = bW;
+    ctx.beginPath(); ctx.moveTo(rx, ry + bLen); ctx.lineTo(rx, ry); ctx.lineTo(rx + bLen, ry); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(rx + rw - bLen, ry); ctx.lineTo(rx + rw, ry); ctx.lineTo(rx + rw, ry + bLen); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(rx, ry + rh - bLen); ctx.lineTo(rx, ry + rh); ctx.lineTo(rx + bLen, ry + rh); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(rx + rw - bLen, ry + rh); ctx.lineTo(rx + rw, ry + rh); ctx.lineTo(rx + rw, ry + rh - bLen); ctx.stroke();
+  }
+
+  function frame(ts) {
+    if (!startTime) startTime = ts;
+    const elapsed = (ts - startTime) / 1000;
+    t += 0.016;
+    ctx.clearRect(0, 0, W, H);
+    const loader = document.getElementById('loader');
+    if (!loader || loader.classList.contains('hidden')) { requestAnimationFrame(frame); return; }
+    const rect = titleEl.getBoundingClientRect();
+    const pad = 10;
+    const rx = rect.left - pad, ry = rect.top - pad;
+    const rw = rect.width + pad * 2, rh = rect.height + pad * 2;
+    if (rw <= 0 || rh <= 0) { requestAnimationFrame(frame); return; }
+    if (elapsed < 2.5) {
+      drawPixelScan(rx, ry, rw, rh, elapsed / 2.5);
+    } else {
+      drawPixelScan(rx, ry, rw, rh, 1.0);
+      const glitchCycle = (elapsed - 2.5) % 2.5;
+      if (glitchCycle < 0.12) drawGlitch(rx, ry, rw, rh);
+      drawBrackets(rx, ry, rw, rh);
+    }
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+</script>
+
 </body>
 </html>
