@@ -226,8 +226,7 @@ display: grid;
 @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
 
 .radio-list {
-  padding: 10px 0;
-  flex: 1;
+  padding: 4px 0 0;
   list-style: none;
 }
 
@@ -295,14 +294,7 @@ display: grid;
   box-shadow: var(--glow-g);
 }
 
-.radio-list .section-divider {
-  padding: 8px 16px 4px;
-  font-size: 8px;
-  letter-spacing: 3px;
-  color: rgba(0,255,255,0.2);
-  border-top: 1px solid rgba(0,255,255,0.1);
-  margin-top: 4px;
-}
+/* section-divider replaced by panel-section-title */
 
 /* =============================================
    CENTER — MAP
@@ -570,7 +562,7 @@ display: grid;
 .panel-section-title {
   font-size: 8px;
   letter-spacing: 3px;
-  color: rgba(0,255,255,0.3);
+  color: rgba(0,255,255,0.65);
   margin-bottom: 10px;
 }
 
@@ -1338,179 +1330,198 @@ footer.hud-footer {
     <aside class="left-panel">
       <div class="panel-header">INTEL LAYERS</div>
 
-      <ul class="radio-list">
-        <li class="section-divider">PRIORITY</li>
-        <li>
-          <label>
-            <input type="radio" name="marker" value="">
-            <span class="radio-dot"></span>
-            <span>None</span>
-          </label>
-        </li>
-        <li>
-          <label>
-            <input type="radio" name="marker" value="marker0">
-            <span class="radio-dot"></span>
-            <span>Important</span>
-          </label>
-        </li>
-        <li>
-          <label>
-            <input type="radio" name="marker" value="marker12">
-            <span class="radio-dot"></span>
-            <span>Farm Area</span>
-          </label>
-        </li>
-        <li>
-          <label>
-            <input type="radio" name="marker" value="marker13">
-            <span class="radio-dot"></span>
-            <span>RZ Entry/Exit</span>
-          </label>
-        </li>
-        <li>
-          <label>
-            <input type="radio" name="marker" value="marker18">
-            <span class="radio-dot"></span>
-            <span>Corite</span>
-          </label>
-        </li>
-        <li class="section-divider">RESTRICTED ZONES</li>
-        <li>
-          <label>
-            <input type="radio" name="marker" value="marker1">
-            <span class="radio-dot"></span>
-            <span>Blue RZ</span>
-          </label>
-        </li>
-        <li>
-          <label>
-            <input type="radio" name="marker" value="marker2">
-            <span class="radio-dot"></span>
-            <span>Purple RZ</span>
-          </label>
-        </li>
-        <li>
-          <label>
-            <input type="radio" name="marker" value="marker3">
-            <span class="radio-dot"></span>
-            <span>Gold RZ</span>
-          </label>
-        </li>
-        <li class="section-divider">OBJECTIVES</li>
-        <li>
-          <label>
-            <input type="radio" name="marker" value="marker4">
-            <span class="radio-dot"></span>
-            <span>G. Box</span>
-          </label>
-        </li>
-        <li>
-          <label>
-            <input type="radio" name="marker" value="marker5">
-            <span class="radio-dot"></span>
-            <span>C. Extractors</span>
-          </label>
-        </li>
-        <li>
-          <label>
-            <input type="radio" name="marker" value="marker6">
-            <span class="radio-dot"></span>
-            <span>Frigates</span>
-          </label>
-        </li>
-        <li>
-          <label>
-            <input type="radio" name="marker" value="marker7">
-            <span class="radio-dot"></span>
-            <span>L. Splitters</span>
-          </label>
-        </li>
-        <li>
-          <label>
-            <input type="radio" name="marker" value="marker8">
-            <span class="radio-dot"></span>
-            <span>Drillers</span>
-          </label>
-        </li>
+      <div class="panel-section">
+        <div class="panel-section-title">PRIORITY</div>
+        <ul class="radio-list">
+          <li>
+            <label>
+              <input type="radio" name="marker" value="">
+              <span class="radio-dot"></span>
+              <span>None</span>
+            </label>
+          </li>
+          <li>
+            <label>
+              <input type="radio" name="marker" value="marker0">
+              <span class="radio-dot"></span>
+              <span>Important</span>
+            </label>
+          </li>
+          <li>
+            <label>
+              <input type="radio" name="marker" value="marker12">
+              <span class="radio-dot"></span>
+              <span>Farm Area</span>
+            </label>
+          </li>
+          <li>
+            <label>
+              <input type="radio" name="marker" value="marker13">
+              <span class="radio-dot"></span>
+              <span>RZ Entry/Exit</span>
+            </label>
+          </li>
+          <li>
+            <label>
+              <input type="radio" name="marker" value="marker18">
+              <span class="radio-dot"></span>
+              <span>Corite</span>
+            </label>
+          </li>
+        </ul>
+      </div>
 
-        <li class="section-divider">ENEMIES</li>
-        <li>
-          <label>
-            <input type="radio" name="marker" value="marker9">
-            <span class="radio-dot"></span>
-            <span>Makalu</span>
-          </label>
-        </li>
-        <li>
-          <label>
-            <input type="radio" name="marker" value="marker10">
-            <span class="radio-dot"></span>
-            <span>Constantine</span>
-          </label>
-        </li>
-        <li>
-          <label>
-            <input type="radio" name="marker" value="marker17">
-            <span class="radio-dot"></span>
-            <span>Allosaurus</span>
-          </label>
-        </li>
-        <li>
-          <label>
-            <input type="radio" name="marker" value="marker11">
-            <span class="radio-dot"></span>
-            <span>E. Ships</span>
-          </label>
-        </li>
-        <li>
-          <label>
-            <input type="radio" name="marker" value="marker16">
-            <span class="radio-dot"></span>
-            <span>3rd Gen S.</span>
-          </label>
-        </li>
+      <div class="panel-section">
+        <div class="panel-section-title">RESTRICTED ZONES</div>
+        <ul class="radio-list">
+          <li>
+            <label>
+              <input type="radio" name="marker" value="marker1">
+              <span class="radio-dot"></span>
+              <span>Blue RZ</span>
+            </label>
+          </li>
+          <li>
+            <label>
+              <input type="radio" name="marker" value="marker2">
+              <span class="radio-dot"></span>
+              <span>Purple RZ</span>
+            </label>
+          </li>
+          <li>
+            <label>
+              <input type="radio" name="marker" value="marker3">
+              <span class="radio-dot"></span>
+              <span>Gold RZ</span>
+            </label>
+          </li>
+        </ul>
+      </div>
 
-        <li class="section-divider">FACILITIES</li>
-        <li>
-          <label>
-            <input type="radio" name="marker" value="marker14">
-            <span class="radio-dot"></span>
-            <span>Cargo R.</span>
-          </label>
-        </li>
-        <li>
-          <label>
-            <input type="radio" name="marker" value="marker15">
-            <span class="radio-dot"></span>
-            <span>Repair H.</span>
-          </label>
-        </li>
+      <div class="panel-section">
+        <div class="panel-section-title">OBJECTIVES</div>
+        <ul class="radio-list">
+          <li>
+            <label>
+              <input type="radio" name="marker" value="marker4">
+              <span class="radio-dot"></span>
+              <span>G. Box</span>
+            </label>
+          </li>
+          <li>
+            <label>
+              <input type="radio" name="marker" value="marker5">
+              <span class="radio-dot"></span>
+              <span>C. Extractors</span>
+            </label>
+          </li>
+          <li>
+            <label>
+              <input type="radio" name="marker" value="marker6">
+              <span class="radio-dot"></span>
+              <span>Frigates</span>
+            </label>
+          </li>
+          <li>
+            <label>
+              <input type="radio" name="marker" value="marker7">
+              <span class="radio-dot"></span>
+              <span>L. Splitters</span>
+            </label>
+          </li>
+          <li>
+            <label>
+              <input type="radio" name="marker" value="marker8">
+              <span class="radio-dot"></span>
+              <span>Drillers</span>
+            </label>
+          </li>
+        </ul>
+      </div>
 
-        <li class="section-divider" style="width:100%;flex-basis:100%;">SETTINGS</li>
+      <div class="panel-section">
+        <div class="panel-section-title">ENEMIES</div>
+        <ul class="radio-list">
+          <li>
+            <label>
+              <input type="radio" name="marker" value="marker9">
+              <span class="radio-dot"></span>
+              <span>Makalu</span>
+            </label>
+          </li>
+          <li>
+            <label>
+              <input type="radio" name="marker" value="marker10">
+              <span class="radio-dot"></span>
+              <span>Constantine</span>
+            </label>
+          </li>
+          <li>
+            <label>
+              <input type="radio" name="marker" value="marker17">
+              <span class="radio-dot"></span>
+              <span>Allosaurus</span>
+            </label>
+          </li>
+          <li>
+            <label>
+              <input type="radio" name="marker" value="marker11">
+              <span class="radio-dot"></span>
+              <span>E. Ships</span>
+            </label>
+          </li>
+          <li>
+            <label>
+              <input type="radio" name="marker" value="marker16">
+              <span class="radio-dot"></span>
+              <span>3rd Gen S.</span>
+            </label>
+          </li>
+        </ul>
+      </div>
+
+      <div class="panel-section">
+        <div class="panel-section-title">FACILITIES</div>
+        <ul class="radio-list">
+          <li>
+            <label>
+              <input type="radio" name="marker" value="marker14">
+              <span class="radio-dot"></span>
+              <span>Cargo R.</span>
+            </label>
+          </li>
+          <li>
+            <label>
+              <input type="radio" name="marker" value="marker15">
+              <span class="radio-dot"></span>
+              <span>Repair H.</span>
+            </label>
+          </li>
+        </ul>
+      </div>
+
+      <div class="panel-section">
+        <div class="panel-section-title">SETTINGS</div>
         <audio id="myAudio" loop>
           <source src="mp3/theme.mp3" type="audio/mpeg">
         </audio>
-        <li style="padding:4px 16px;width:100%;flex-basis:100%;box-sizing:border-box;">
-          <button id="muteBtn" class="hud-btn">⏸ Mute</button>
-        </li>
-        <li style="padding:4px 16px 8px;width:100%;flex-basis:100%;box-sizing:border-box;">
-          <button id="translate-btn" class="hud-btn">
-            <span>TRANSLATE</span>
-          </button>
-          <div id="translate-panel" style="
-            display:none; margin-top:6px;
-            background: rgba(0,0,0,0.92);
-            border: 1px solid rgba(0,255,255,0.25);
-            border-radius:4px;
-            overflow:hidden;
-          ">
-            <div style="padding:6px 10px; font-size:8px; letter-spacing:3px; color:rgba(0,255,255,0.3); border-bottom:1px solid rgba(0,255,255,0.1);">SELECT LANGUAGE</div>
-            <div id="lang-list" style="max-height:180px; overflow-y:auto;"></div>
-          </div>
-        </li>
+        <button id="muteBtn" class="hud-btn">⏸ Mute</button>
+        <button id="translate-btn" class="hud-btn">
+          <span>TRANSLATE</span>
+        </button>
+        <div id="translate-panel" style="
+          display:none; margin-top:6px;
+          background: rgba(0,0,0,0.92);
+          border: 1px solid rgba(0,255,255,0.25);
+          border-radius:4px;
+          overflow:hidden;
+        ">
+          <div style="padding:6px 10px; font-size:8px; letter-spacing:3px; color:rgba(0,255,255,0.3); border-bottom:1px solid rgba(0,255,255,0.1);">SELECT LANGUAGE</div>
+          <div id="lang-list" style="max-height:180px; overflow-y:auto;"></div>
+        </div>
+      </div>
+      <style>#app aside.left-panel > div.panel-section:last-of-type { border-bottom: none; }</style>
 
-      </ul>
     </aside>
     <!-- CENTER: MAP -->
     <section class="map-area">
@@ -1560,9 +1571,6 @@ footer.hud-footer {
 
       <div class="panel-section">
         <div class="panel-section-title">SOCIAL MEDIA</div>
-      </div>
-
-      <div class="panel-section">
         <a class="nav-link" href="https://www.facebook.com/groups/mechabreakglobal" target="_blank">FB Group</a>
         <a class="nav-link" href="https://www.facebook.com/MechaBREAK" target="_blank">Facebook</a>
         <a class="nav-link" href="https://www.youtube.com/@MechaBREAK" target="_blank">YouTube</a>
